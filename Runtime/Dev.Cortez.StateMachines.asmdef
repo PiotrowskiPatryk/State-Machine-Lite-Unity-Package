@@ -1,0 +1,14 @@
+﻿{
+  "name": "Dev.Cortez.StateMachines",
+  "rootNamespace": "Dev.Cortez.StateMachines",
+  "references": [],
+  "optionalUnityReferences": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "noEngineReferences": false
+}

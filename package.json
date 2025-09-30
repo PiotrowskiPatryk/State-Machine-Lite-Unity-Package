@@ -1,0 +1,30 @@
+﻿{
+  "name": "dev.cortez.state-machines",
+  "displayName": "State Machines",
+  "version": "0.1.0",
+  "unity": "6000.0",
+  "description": "A lightweight, extensible set of utilities to build state machines for Unity projects.",
+  "keywords": [
+    "state",
+    "state-machine",
+    "fsm",
+    "utility"
+  ],
+  "author": {
+    "name": "Cortez Dev",
+    "email": "dev@cortez.dev",
+    "url": "https://example.com"
+  },
+  "documentationUrl": "Documentation~/index.md",
+  "changelogUrl": "CHANGELOG.md",
+  "licensesUrl": "LICENSE.md",
+  "type": "library",
+  "dependencies": {},
+  "samples": [
+    {
+      "displayName": "Example",
+      "description": "Minimal sample to verify the package imports correctly.",
+      "path": "Samples~/Example"
+    }
+  ]
+}
