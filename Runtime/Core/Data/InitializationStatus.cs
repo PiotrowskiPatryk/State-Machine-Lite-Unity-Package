@@ -3,8 +3,9 @@
     public enum InitializationStatus
     {
         Undefined = 0,
-        Initializing = 1,
-        Initialized = 2,
-        Failed = 3
+        NotInitialized = 1,
+        Initializing = 2,
+        Initialized = 3,
+        Failed = 4
     }
 }

@@ -9,9 +9,6 @@ namespace Dev.Cortez.StateMachines.Core
         string StateMachineId { get; }
 
         [NotNull]
-        IStatePayload StatePayload { get; }
-
-        [NotNull]
         ITransitionSolver TransitionSolver { get; }
 
         [NotNull]

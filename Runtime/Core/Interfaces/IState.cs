@@ -11,6 +11,7 @@ namespace Dev.Cortez.StateMachines.Core
     public interface IState : IIdentifable, IAsyncInitializable, IAsyncDisposable
     {
         event Action<StateStatus> StatusChanged;
+
         StateStatus StateStatus { get; }
 
         /// <summary>
@@ -19,12 +20,16 @@ namespace Dev.Cortez.StateMachines.Core
         bool IsActive { get; }
     }
 
+    public interface IState<in TContext, in TPayload> : IState<TContext>
+    {
+    }
+
     /// <summary>
     ///     Represents a generic state in a state machine with context and payload.
     /// </summary>
     /// <typeparam name="TContext">The type of the context.</typeparam>
     /// <typeparam name="TPayload">The type of the payload.</typeparam>
-    public interface IState<in TContext, in TPayload> : IState where TPayload : IPayload
+    public interface IState<in TContext> : IState
     {
         /// <summary>
         ///     Enters the state asynchronously.
@@ -32,7 +37,7 @@ namespace Dev.Cortez.StateMachines.Core
         /// <param name="context">The context for the state.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        UniTask EnterAsync(TContext context, CancellationToken cancellationToken);
+        UniTask<bool> EnterAsync(TContext context, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Exits the state asynchronously.
@@ -40,6 +45,6 @@ namespace Dev.Cortez.StateMachines.Core
         /// <param name="context">The context for the state.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        UniTask ExitAsync(TContext context, CancellationToken cancellationToken);
+        UniTask<bool> ExitAsync(TContext context, CancellationToken cancellationToken);
     }
 }

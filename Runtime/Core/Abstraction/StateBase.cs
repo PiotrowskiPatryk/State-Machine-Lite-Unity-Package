@@ -7,6 +7,14 @@ using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Abstraction
 {
+    public abstract class StateBase : StateBase<EmptyContext>
+    {
+    }
+
+    public abstract class StateBase<TStateContext> : StateBase<TStateContext, DefaultStatePayload>
+    {
+    }
+
     public abstract class StateBase<TStateContext, TStatePayload> : IState<TStateContext, TStatePayload>
         where TStatePayload : IStatePayload
     {
@@ -24,7 +32,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
         }
 
-        public InitializationStatus InitializationStatus { get; private set; }
+        public InitializationStatus InitializationStatus { get; private set; } = InitializationStatus.NotInitialized;
 
         public bool IsActive { get; private set; }
 
@@ -33,24 +41,26 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         public UniTask<bool> InitializeAsync(IPayload payload, CancellationToken cancellationToken)
         {
-            if (payload is TStatePayload statePayload)
+            if (payload is not TStatePayload statePayload)
             {
-                Id = statePayload.Id;
+                InitializationStatus = InitializationStatus.Failed;
 
-                return InitializeAsyncInternal(statePayload, cancellationToken);
+                return UniTask.FromResult(false);
             }
 
-            return UniTask.FromResult(false);
+            Id = statePayload.Id;
+
+            return InitializeAsyncInternal(statePayload, cancellationToken);
         }
 
-        public async UniTask EnterAsync(TStateContext context, CancellationToken cancellationToken)
+        public async UniTask<bool> EnterAsync(TStateContext context, CancellationToken cancellationToken)
         {
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             if (IsActive)
             {
-                return;
+                return false;
             }
 
             StateStatus = StateStatus.Activating;
@@ -58,22 +68,26 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             StateStatus = StateStatus.Active;
 
             IsActive = true;
+
+            return true;
         }
 
-        public async UniTask ExitAsync(TStateContext context, CancellationToken cancellationToken)
+        public async UniTask<bool> ExitAsync(TStateContext context, CancellationToken cancellationToken)
         {
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             if (!IsActive)
             {
-                return;
+                return false;
             }
 
             StateStatus = StateStatus.Deactivating;
             await DoExitAsync(context, linkedCancellationTokenSource.Token);
             StateStatus = StateStatus.Inactive;
             IsActive = false;
+
+            return true;
         }
 
         public ValueTask DisposeAsync()
@@ -113,6 +127,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
             if (!initializationResult)
             {
+                InitializationStatus = InitializationStatus.Failed;
+
                 return false;
             }
 
