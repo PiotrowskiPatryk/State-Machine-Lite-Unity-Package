@@ -15,6 +15,6 @@ namespace Dev.Cortez.StateMachines.Core
         IState InitialState { get; }
 
         [NotNull]
-        IEnumerable<IState> States { get; }
+        List<IState> States { get; }
     }
 }
