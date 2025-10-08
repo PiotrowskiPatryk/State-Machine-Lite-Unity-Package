@@ -2,7 +2,7 @@
 
 namespace Dev.Cortez.StateMachines.Core
 {
-    public interface ICondition
+    public interface ICondition : IAsyncDisposable
     {
         event Action<bool> SatisfiedChanged;
 

@@ -41,7 +41,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     ///     lifecycle of a state, including initialization, activation, deactivation,
     ///     and disposal.
     /// </summary>
-    public abstract class StateBase<TStateContext, TStatePayload> : IState<TStateContext, TStatePayload>
+    public abstract class StateBase<TStateContext, TStatePayload> : IState<TStateContext, TStatePayload>,
+        IEquatable<IState>
         where TStatePayload : IStatePayload
     {
         /// <summary>
@@ -188,6 +189,50 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             StatusChanged = null;
 
             return DoDisposeAsync();
+        }
+
+        public bool Equals(IState other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other is null)
+            {
+                return false;
+            }
+
+            var rightId = other.Id;
+
+            return StringComparer.Ordinal.Equals(Id, rightId);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj is IState state && Equals(state);
+        }
+
+        public override int GetHashCode()
+        {
+            return StringComparer.Ordinal.GetHashCode(Id);
+        }
+
+        public static bool operator ==(StateBase<TStateContext, TStatePayload> left,
+            StateBase<TStateContext, TStatePayload> right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(StateBase<TStateContext, TStatePayload> left,
+            StateBase<TStateContext, TStatePayload> right)
+        {
+            return !Equals(left, right);
         }
 
         /// Executes the logic required when entering the state asynchronously.

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Abstraction
@@ -71,11 +72,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         private TState _activeState;
         private TState _defaultState;
+        private CancellationTokenSource _transitionCts;
 
         /// <summary>
         ///     Gets the unique identifier of the state machine.
         ///     This property is used to identify and distinguish state machines.
         /// </summary>
+        [NotNull]
         public string Id { get; private set; }
 
         /// Represents the active state of the state machine.
@@ -94,6 +97,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     interface, or null if no state is active. This property is useful for querying or
         ///     interacting with the current state of the state machine.
         /// </remarks>
+        [CanBeNull]
         public IState ActiveState => _activeState;
 
         /// <summary>
@@ -111,6 +115,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     object for the specific state machine implementation. The context can be used to pass state-specific
         ///     information or handles required for the transition logic between states.
         /// </remarks>
+        [NotNull]
         protected abstract TStateContext StateContext { get; }
 
         /// <summary>
@@ -120,6 +125,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     This property is a read-only list that contains all registered states within the state machine.
         ///     It is useful for inspecting or debugging the state machine's configuration.
         /// </remarks>
+        [NotNull]
         protected IReadOnlyList<TState> States => _states;
 
         /// <summary>
@@ -127,6 +133,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     The <see cref="ITransitionSolver" /> is responsible for managing and applying
         ///     transition rules between states based on the provided configuration.
         /// </summary>
+        [NotNull]
         protected ITransitionSolver TransitionSolver { get; private set; }
 
         /// Activates the state machine asynchronously, transitioning it to an operational state.
@@ -148,8 +155,12 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
             try
             {
+                LoggerService.Logger.LogTrace("Activating state machine");
+
                 if (IsActive)
                 {
+                    LoggerService.Logger.LogWarning("State machine is already active. Skipping activation.");
+
                     return false;
                 }
 
@@ -157,6 +168,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 if (!canActivate)
                 {
+                    LoggerService.Logger.LogError("State machine cannot be activated. Skipping activation.");
+
                     return false;
                 }
 
@@ -172,19 +185,17 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                     return false;
                 }
 
-                var properlyEnteredState = await EnterStateAsync(_defaultState, linkedCancellationTokenSource.Token);
+                var properlyEnteredState = await MoveToStateAsync(_defaultState, linkedCancellationTokenSource.Token);
 
                 if (activatedSuccessfully && properlyEnteredState)
                 {
+                    LoggerService.Logger.LogInfo(
+                        "State machine successfully activated and properly entered default state.");
+
                     IsActive = true;
                     _activeState = _defaultState;
 
                     return true;
-                }
-
-                if (activatedSuccessfully)
-                {
-                    await DoDeactivateAsync(linkedCancellationTokenSource.Token);
                 }
 
                 return false;
@@ -193,6 +204,57 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             {
                 _lifecycleLock.Release();
             }
+        }
+
+        public async UniTask<bool> MoveToStateAsync(IState state, CancellationToken cancellationToken)
+        {
+            using var linkedCancellationTokenSource =
+                CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            LoggerService.Logger.LogInfo($"Moving to state: {state.GetType().Name}");
+
+            if (state is not TState targetState)
+            {
+                LoggerService.Logger.LogError(
+                    $"State machine cannot move to state. State is not of the correct type. Expected state of type {typeof(TState).Name}, but got {state.GetType().Name}.");
+
+                return false;
+            }
+
+            if (!IsActive || ActiveState == null || state.Equals(_activeState))
+            {
+                LoggerService.Logger.LogError(
+                    "Unable to move to state. State machine is not active or state is already active.");
+
+                return false;
+            }
+
+            var previousState = _activeState;
+
+            if (previousState != null)
+            {
+                var exitSucceeded = await ExitStateAsync(previousState, linkedCancellationTokenSource.Token);
+
+                if (!exitSucceeded)
+                {
+                    LoggerService.Logger.LogError("Unable to exit previous state. Exiting state failed.");
+
+                    return false;
+                }
+            }
+
+            var enterSucceeded = await EnterStateAsync(targetState, linkedCancellationTokenSource.Token);
+
+            if (!enterSucceeded)
+            {
+                LoggerService.Logger.LogError("Unable to enter target state. Entering state failed.");
+
+                return false;
+            }
+
+            _activeState = targetState;
+
+            return true;
         }
 
         /// Asynchronously deactivates the current state machine.
@@ -210,12 +272,16 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
+            LoggerService.Logger.LogInfo("Deactivating state machine");
+
             await _lifecycleLock.WaitAsync(linkedCancellationTokenSource.Token).ConfigureAwait(false);
 
             try
             {
                 if (!IsActive)
                 {
+                    LoggerService.Logger.LogWarning("State machine is not active. Skipping deactivation.");
+
                     return false;
                 }
 
@@ -223,6 +289,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 if (!canDeactivate)
                 {
+                    LoggerService.Logger.LogError("State machine cannot be deactivated. Skipping deactivation.");
+
                     return false;
                 }
 
@@ -235,6 +303,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 if (!exitSucceeded)
                 {
+                    LoggerService.Logger.LogError(
+                        "State machine deactivation. Unable to exit current state. Exiting state failed.");
+
                     return false;
                 }
 
@@ -242,6 +313,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 if (deactivatedSuccessfully)
                 {
+                    LoggerService.Logger.LogInfo("State machine deactivated successfully.");
+
                     IsActive = false;
                     _activeState = default;
                 }
@@ -261,6 +334,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// <returns>A task representing the asynchronous dispose operation.</returns>
         public async ValueTask DisposeAsync()
         {
+            LoggerService.Logger.LogInfo("Disposing state machine");
+
             await _lifecycleLock.WaitAsync().ConfigureAwait(false);
 
             try
@@ -271,6 +346,23 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 IsActive = false;
                 InitializationStatus = InitializationStatus.NotInitialized;
                 _defaultState = default;
+
+                // Cancel and dispose in-flight transition if any.
+                var cts = Interlocked.Exchange(ref _transitionCts, null);
+
+                if (cts != null)
+                {
+                    try
+                    {
+                        cts.Cancel();
+                    }
+                    finally
+                    {
+                        cts.Dispose();
+                    }
+                }
+
+                TransitionSolver.TransitionRuleApplied -= OnTransitionRuleApplied;
                 TransitionSolver = null;
             }
             finally
@@ -293,6 +385,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
+            LoggerService.Logger.LogInfo("Initializing state machine");
+
             if (payload is TStateMachinePayload stateMachinePayload)
             {
                 var initializationResult =
@@ -303,6 +397,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 return initializationResult;
             }
+
+            LoggerService.Logger.LogError(
+                $"Unable to initialize state machine. Invalid payload type. Expected payload of type {typeof(TStateMachinePayload).Name}, but got {payload.GetType().Name}.");
 
             InitializationStatus = InitializationStatus.Failed;
 
@@ -395,46 +492,16 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             return default;
         }
 
-        /// Attempts to enter the specified state asynchronously within the state machine.
-        /// The method invokes the `EnterAsync` method of the given state, utilizing the state machine's context.
-        /// <param name="state">
-        ///     The target state to transition into. Must not be null.
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     A CancellationToken that can be used to cancel the activation operation while it is in progress.
-        /// </param>
-        /// <return>
-        ///     A task that represents the asynchronous operation. The result indicates whether the state was successfully entered.
-        /// </return>
         private UniTask<bool> EnterStateAsync([NotNull] TState state, CancellationToken cancellationToken)
         {
             return state.EnterAsync(StateContext, cancellationToken);
         }
 
-        /// Exits the specified state asynchronously, invoking the state's exit logic with the provided context and cancellation token.
-        /// <param name="state">The state to exit. Must not be null.</param>
-        /// <param name="cancellationToken">
-        ///     A CancellationToken that can be used to cancel the activation operation while it is in progress.
-        /// </param>
-        /// <returns>
-        ///     A task that represents the asynchronous operation, containing a boolean value indicating whether the state
-        ///     exited successfully.
-        /// </returns>
         private UniTask<bool> ExitStateAsync([NotNull] TState state, CancellationToken cancellationToken)
         {
             return state.ExitAsync(StateContext, cancellationToken);
         }
 
-        /// Initializes the state machine asynchronously.
-        /// <param name="stateMachinePayload">
-        ///     The payload containing initialization data for the state machine.
-        /// </param>
-        /// <param name="cancellationToken">
-        ///     A CancellationToken that can be used to cancel the activation operation while it is in progress.
-        /// </param>
-        /// <returns>
-        ///     A UniTask that resolves to a boolean indicating whether the initialization was successful or not.
-        /// </returns>
         private async UniTask<bool> InitializeAsync(TStateMachinePayload stateMachinePayload,
             CancellationToken cancellationToken)
         {
@@ -445,6 +512,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 InitializationStatus = InitializationStatus.Initializing;
 
                 ApplyVariables(stateMachinePayload);
+                InitializeTransitionSolver(stateMachinePayload.TransitionSolver);
 
                 var initResult = await DoInitializeStateMachineAsync(stateMachinePayload, cancellationToken);
 
@@ -458,13 +526,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
         }
 
-        /// <summary>
-        ///     Applies the variables from the provided state machine payload.
-        /// </summary>
-        /// <param name="stateMachinePayload">
-        ///     The payload containing initialization data, including states, initial state, state
-        ///     machine ID, and the transition solver.
-        /// </param>
+        private void InitializeTransitionSolver([NotNull] ITransitionSolver transitionSolver)
+        {
+            transitionSolver.TransitionRuleApplied += OnTransitionRuleApplied;
+        }
+
         private void ApplyVariables(TStateMachinePayload stateMachinePayload)
         {
             Id = stateMachinePayload.StateMachineId;
@@ -481,6 +547,16 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
             _defaultState = stateMachinePayload.InitialState is TState tState ? tState : default;
             TransitionSolver = stateMachinePayload.TransitionSolver;
+        }
+
+        private void OnTransitionRuleApplied(TransitionRule transitionRule)
+        {
+            if (transitionRule.TargetState is not TState targetState)
+            {
+                return;
+            }
+
+            MoveToStateAsync(targetState, CancellationToken.None).Forget();
         }
     }
 }

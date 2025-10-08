@@ -17,15 +17,25 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
         private readonly Dictionary<TransitionRule, bool> _lastKnownSatisfied = new();
 
         public event Action<TransitionRule> TransitionRuleApplied;
+        private Dictionary<IState, IReadOnlyList<TransitionRule>> _cachedTransitionRules;
 
         private CancellationTokenSource _composeCts;
         private bool _composeScheduled;
 
         private bool IsComposing { get; set; }
 
-        public void SetupNewRules(IReadOnlyCollection<TransitionRule> transitionRules)
+        public UniTask<bool> PopulateRulesAsync(Dictionary<IState, IReadOnlyList<TransitionRule>> transitionRules)
+        {
+            _cachedTransitionRules = new Dictionary<IState, IReadOnlyList<TransitionRule>>(transitionRules);
+
+            return UniTask.FromResult(true);
+        }
+
+        public void SetupNewRules(IState state)
         {
             DisposeOldTransitionRules();
+            
+            var transitionRules = _cachedTransitionRules?.GetValueOrDefault(state);
 
             if (transitionRules == null || transitionRules.Count == 0)
             {
@@ -34,20 +44,20 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
 
             var index = 0;
 
-            foreach (var rule in transitionRules)
+            foreach (var transitionRule in transitionRules)
             {
-                var isSatisfiedNow = rule.Condition.IsSatisfied;
-                _lastKnownSatisfied[rule] = isSatisfiedNow;
+                var isSatisfiedNow = transitionRule.Condition.IsSatisfied;
+                _lastKnownSatisfied[transitionRule] = isSatisfiedNow;
 
-                SubscribeToTransitionRule(rule);
-                _transitionRules.Add(rule);
-                _ruleOrder[rule] = index++;
+                SubscribeToTransitionRule(transitionRule);
+                _transitionRules.Add(transitionRule);
+                _ruleOrder[transitionRule] = index++;
 
                 if (isSatisfiedNow)
                 {
-                    if (!_frameSuccessCache.Contains(rule))
+                    if (!_frameSuccessCache.Contains(transitionRule))
                     {
-                        _frameSuccessCache.Add(rule);
+                        _frameSuccessCache.Add(transitionRule);
                     }
 
                     if (!_composeScheduled)

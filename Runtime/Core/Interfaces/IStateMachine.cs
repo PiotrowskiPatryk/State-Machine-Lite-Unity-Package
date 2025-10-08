@@ -15,6 +15,7 @@ namespace Dev.Cortez.StateMachines.Core
         [CanBeNull]
         IState ActiveState { get; }
 
+        UniTask<bool> MoveToStateAsync([NotNull] IState state, CancellationToken cancellationToken);
         UniTask<bool> ActivateAsync(CancellationToken cancellationToken);
         UniTask<bool> DeactivateAsync(CancellationToken cancellationToken);
     }

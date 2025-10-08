@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 
 namespace Dev.Cortez.StateMachines.Core
@@ -8,6 +9,7 @@ namespace Dev.Cortez.StateMachines.Core
     {
         event Action<TransitionRule> TransitionRuleApplied;
 
-        void SetupNewRules(IReadOnlyCollection<TransitionRule> transitionRules);
+        UniTask<bool> PopulateRulesAsync(Dictionary<IState, IReadOnlyList<TransitionRule>> transitionRules);
+        void SetupNewRules(IState state);
     }
 }

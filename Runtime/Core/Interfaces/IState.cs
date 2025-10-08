@@ -8,7 +8,7 @@ namespace Dev.Cortez.StateMachines.Core
     /// <summary>
     ///     Represents a state in a state machine.
     /// </summary>
-    public interface IState : IIdentifable, IAsyncInitializable, IAsyncDisposable
+    public interface IState : IIdentifable, IAsyncInitializable, IAsyncDisposable, IEquatable<IState>
     {
         event Action<StateStatus> StatusChanged;
 
