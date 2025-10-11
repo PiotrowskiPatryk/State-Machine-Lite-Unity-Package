@@ -6,6 +6,6 @@
         Activating = 1,
         Active = 2,
         Deactivating = 3,
-        Inactive = 4
+        Inactive = 4,
     }
 }

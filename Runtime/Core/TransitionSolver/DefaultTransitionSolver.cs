@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Logging;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.TransitionSolver
@@ -12,13 +13,13 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
     {
         private readonly List<TransitionRule> _transitionRules = new();
         private readonly Dictionary<TransitionRule, int> _ruleOrder = new();
-        private readonly Dictionary<TransitionRule, Action<bool>> _ruleSubscriptions = new();
+        private readonly Dictionary<TransitionRule, Action<ICondition, bool>> _ruleSubscriptions = new();
         private readonly List<TransitionRule> _frameSuccessCache = new();
         private readonly Dictionary<TransitionRule, bool> _lastKnownSatisfied = new();
 
         public event Action<TransitionRule> TransitionRuleApplied;
-        private Dictionary<IState, IReadOnlyList<TransitionRule>> _cachedTransitionRules;
 
+        private Dictionary<IState, IReadOnlyList<TransitionRule>> _cachedTransitionRules;
         private CancellationTokenSource _composeCts;
         private bool _composeScheduled;
 
@@ -34,7 +35,7 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
         public void SetupNewRules(IState state)
         {
             DisposeOldTransitionRules();
-            
+
             var transitionRules = _cachedTransitionRules?.GetValueOrDefault(state);
 
             if (transitionRules == null || transitionRules.Count == 0)
@@ -84,7 +85,7 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
 
             return;
 
-            void ConditionRuleSatisfiedChanged(bool isSatisfied)
+            void ConditionRuleSatisfiedChanged(ICondition condition, bool isSatisfied)
             {
                 if (!_ruleOrder.ContainsKey(transitionRule))
                 {
@@ -163,7 +164,7 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
             }
             catch (OperationCanceledException)
             {
-                Debug.LogWarning("Transition composition was cancelled.");
+                LoggerService.Logger.LogWarning("Transition composition was cancelled.");
             }
             finally
             {

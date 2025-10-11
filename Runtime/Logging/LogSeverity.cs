@@ -40,10 +40,5 @@ namespace Dev.Cortez.StateMachines.Logging
         ///     Exceptions or critical errors that provide detailed information about failures.
         /// </summary>
         Exception = 6,
-
-        /// <summary>
-        ///     All severity levels. Typically used to enable logging of all messages.
-        /// </summary>
-        All = 7
     }
 }

@@ -2,6 +2,6 @@
 {
     public static class LoggerService
     {
-        public static ILogger Logger { get; } = LoggerFactory.Create("StateMachines");
+        public static ILogger Logger { get; } = LoggerFactory.Create("StateMachines", LogSeverity.Trace);
     }
 }

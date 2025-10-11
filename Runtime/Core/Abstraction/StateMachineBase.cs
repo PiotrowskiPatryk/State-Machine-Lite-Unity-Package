@@ -46,7 +46,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     ///     Must be a class type.
     /// </typeparam>
     public abstract class StateMachineBase<TState, TStateContext>
-        : StateMachineBase<TState, DefaultStateMachinePayload, TStateContext>
+        : StateMachineBase<TState, EmptyPayload, TStateContext>
         where TState : IState<TStateContext>
         where TStateContext : class
     {
@@ -64,7 +64,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// </typeparam>
     public abstract class StateMachineBase<TState, TStateMachinePayload, TStateContext> : IStateMachine
         where TState : IState<TStateContext>
-        where TStateMachinePayload : IStateMachinePayload
+        where TStateMachinePayload : IPayload
         where TStateContext : class
     {
         private readonly List<TState> _states = new();
@@ -80,6 +80,10 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// </summary>
         [NotNull]
         public string Id { get; private set; }
+        
+        public string Name { get; private set; }
+        
+        public string Description { get; private set; }
 
         /// Represents the active state of the state machine.
         /// This property indicates whether the state machine is currently active.
@@ -375,12 +379,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     Asynchronously initializes the state machine using the provided payload and cancellation token.
         ///     Updates the state machine's initialization status based on the result.
         /// </summary>
+        /// <param name="stateMachineSettings"></param>
         /// <param name="payload">The payload used for initialization.</param>
         /// <param name="cancellationToken">
         ///     A CancellationToken that can be used to cancel the activation operation while it is in progress.
         /// </param>
         /// <returns>A UniTask that resolves to a boolean indicating whether initialization was successful.</returns>
-        public async UniTask<bool> InitializeAsync(IPayload payload, CancellationToken cancellationToken)
+        public async UniTask<bool> InitializeAsync(StateMachineSettings stateMachineSettings, IPayload payload, CancellationToken cancellationToken)
         {
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -390,7 +395,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             if (payload is TStateMachinePayload stateMachinePayload)
             {
                 var initializationResult =
-                    await InitializeAsync(stateMachinePayload, linkedCancellationTokenSource.Token);
+                    await InitializeAsync(stateMachineSettings, stateMachinePayload, linkedCancellationTokenSource.Token);
 
                 InitializationStatus =
                     !initializationResult ? InitializationStatus.Failed : InitializationStatus.Initialized;
@@ -502,7 +507,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             return state.ExitAsync(StateContext, cancellationToken);
         }
 
-        private async UniTask<bool> InitializeAsync(TStateMachinePayload stateMachinePayload,
+        private async UniTask<bool> InitializeAsync(
+            StateMachineSettings stateMachineSettings, 
+            TStateMachinePayload stateMachinePayload,
             CancellationToken cancellationToken)
         {
             await _lifecycleLock.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -511,8 +518,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             {
                 InitializationStatus = InitializationStatus.Initializing;
 
-                ApplyVariables(stateMachinePayload);
-                InitializeTransitionSolver(stateMachinePayload.TransitionSolver);
+                ApplyVariables(stateMachineSettings);
+                InitializeTransitionSolver(stateMachineSettings.TransitionSolver);
 
                 var initResult = await DoInitializeStateMachineAsync(stateMachinePayload, cancellationToken);
 
@@ -531,13 +538,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             transitionSolver.TransitionRuleApplied += OnTransitionRuleApplied;
         }
 
-        private void ApplyVariables(TStateMachinePayload stateMachinePayload)
+        private void ApplyVariables(StateMachineSettings stateMachineSettings)
         {
-            Id = stateMachinePayload.StateMachineId;
+            Id = stateMachineSettings.StateMachineId;
 
             _states.Clear();
 
-            foreach (var state in stateMachinePayload.States)
+            foreach (var state in stateMachineSettings.States)
             {
                 if (state is TState typedState)
                 {
@@ -545,8 +552,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 }
             }
 
-            _defaultState = stateMachinePayload.InitialState is TState tState ? tState : default;
-            TransitionSolver = stateMachinePayload.TransitionSolver;
+            _defaultState = stateMachineSettings.InitialState is TState tState ? tState : default;
+            TransitionSolver = stateMachineSettings.TransitionSolver;
         }
 
         private void OnTransitionRuleApplied(TransitionRule transitionRule)

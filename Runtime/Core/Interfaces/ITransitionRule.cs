@@ -1,6 +1,6 @@
 ﻿namespace Dev.Cortez.StateMachines.Core
 {
-    public interface ITransitionRule : IIdentifable
+    public interface ITransitionRule : IIdentifiable
     {
         bool IsActive { get; }
         ICondition Condition { get; }

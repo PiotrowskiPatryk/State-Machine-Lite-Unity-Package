@@ -28,10 +28,10 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// <remarks>
     ///     StateBase serves as a simplified entry point for creating state machine states using the default context type
     ///     <see cref="EmptyContext" />
-    ///     and default state payload type <see cref="DefaultStatePayload" />.
+    ///     and default state payload type <see cref="EmptyStatePayload" />.
     ///     It abstracts key lifecycle operations such as initialization, entering, and exiting a state.
     /// </remarks>
-    public abstract class StateBase<TStateContext> : StateBase<TStateContext, DefaultStatePayload>
+    public abstract class StateBase<TStateContext> : StateBase<TStateContext, EmptyPayload>
     {
     }
 
@@ -41,9 +41,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     ///     lifecycle of a state, including initialization, activation, deactivation,
     ///     and disposal.
     /// </summary>
-    public abstract class StateBase<TStateContext, TStatePayload> : IState<TStateContext, TStatePayload>,
-        IEquatable<IState>
-        where TStatePayload : IStatePayload
+    public abstract class StateBase<TStateContext, TStatePayload> : IState<TStateContext, TStatePayload>
+        where TStatePayload : IPayload
     {
         /// <summary>
         ///     An event that is triggered whenever the status of the state changes.
@@ -105,17 +104,20 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// </summary>
         [NotNull]
         public string Id { get; private set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
 
         /// <summary>
         ///     Asynchronously initializes the state using the provided payload instance and cancellation token.
         /// </summary>
+        /// <param name="stateSettings">State settings</param>
         /// <param name="payload">The payload containing initialization data required for the state.</param>
         /// <param name="cancellationToken">
         ///     The cancellation token used to propagate notifications if the operation should be
         ///     canceled.
         /// </param>
         /// <returns>A task that resolves to a boolean indicating whether the initialization was successful or failed.</returns>
-        public UniTask<bool> InitializeAsync(IPayload payload, CancellationToken cancellationToken)
+        public UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload, CancellationToken cancellationToken)
         {
             if (payload is not TStatePayload statePayload)
             {
@@ -124,9 +126,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 return UniTask.FromResult(false);
             }
 
-            Id = statePayload.Id;
-
-            return InitializeAsyncInternal(statePayload, cancellationToken);
+            return InitializeAsyncInternal(stateSettings, statePayload, cancellationToken);
         }
 
         /// <summary>
@@ -269,18 +269,19 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     A UniTask representing the asynchronous initialization operation. Returns true if initialization is
         ///     successful; otherwise, false.
         /// </returns>
-        protected virtual UniTask<bool> DoInitializeAsync(TStatePayload statePayload,
-            CancellationToken cancellationToken)
-        {
-            return UniTask.FromResult(true);
-        }
+        protected abstract UniTask<bool> DoInitializeAsync(TStatePayload statePayload,
+            CancellationToken cancellationToken);
 
-        private async UniTask<bool> InitializeAsyncInternal(TStatePayload payload,
+        private async UniTask<bool> InitializeAsyncInternal(StateSettings stateSettings, TStatePayload payload,
             CancellationToken cancellationToken)
         {
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
+            Id = stateSettings.StateId;
+            Name = stateSettings.StateName;
+            Description = stateSettings.StateDescription;
+            
             switch (InitializationStatus)
             {
                 case InitializationStatus.Initialized:

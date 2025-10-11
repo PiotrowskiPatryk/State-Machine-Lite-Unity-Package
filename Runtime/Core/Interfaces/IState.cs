@@ -8,7 +8,7 @@ namespace Dev.Cortez.StateMachines.Core
     /// <summary>
     ///     Represents a state in a state machine.
     /// </summary>
-    public interface IState : IIdentifable, IAsyncInitializable, IAsyncDisposable, IEquatable<IState>
+    public interface IState : IIdentifiable, IAsyncDisposable, IEquatable<IState>
     {
         event Action<StateStatus> StatusChanged;
 
@@ -18,6 +18,8 @@ namespace Dev.Cortez.StateMachines.Core
         ///     Gets whether the state is currently active.
         /// </summary>
         bool IsActive { get; }
+        
+        UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload, CancellationToken cancellationToken);
     }
 
     public interface IState<in TContext, in TPayload> : IState<TContext>
