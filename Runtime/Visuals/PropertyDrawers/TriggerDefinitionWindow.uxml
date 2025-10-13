@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement style="flex-grow: 1; margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px; align-items: flex-start; flex-direction: row; align-self: auto; justify-content: space-between; flex-shrink: 0;">
+        <ui:Label tabindex="-1" text="{id}" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggerId" binding-path="_identifier" style="align-items: auto;" />
+        <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggerName" binding-path="_triggerName" style="align-items: auto;" />
+        <ui:Label tabindex="-1" text="{Type}" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggerType" binding-path="_triggerTypeString" style="align-items: auto;" />
+        <ui:Button text="Edit" parse-escape-sequences="true" display-tooltip-when-elided="true" name="EditButton" style="flex-direction: column; align-items: auto;" />
+    </ui:VisualElement>
+</ui:UXML>

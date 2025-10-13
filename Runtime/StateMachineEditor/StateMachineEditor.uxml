@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/StateMachineEditor.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgb(16, 25, 34);">
+        <ui:VisualElement name="Header" style="flex-direction: row; max-height: 64px; height: 64px; align-self: auto; align-items: center; border-bottom-color: rgba(17, 115, 212, 0.5); border-bottom-width: 1px; padding-right: 40px; padding-left: 40px;">
+            <ui:Label tabindex="-1" text="State Machine Editor" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header" style="color: rgb(255, 255, 255); -unity-font: url(&quot;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&quot;); font-size: 30px; -unity-font-style: bold;" />
+            <ui:VisualElement name="Separator" style="flex-grow: 1; max-width: 25px;" />
+            <ui:Label tabindex="-1" text="0 state machines" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header" style="color: rgb(163, 163, 163); -unity-font: url(&quot;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&quot;); font-size: 20px;" />
+            <ui:Label tabindex="-1" text="•" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Separator" class="header" style="color: rgb(163, 163, 163); -unity-font: url(&quot;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&quot;); font-size: 20px; min-width: 30px; -unity-text-align: upper-center;" />
+            <ui:Label tabindex="-1" text="0 triggers" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header" style="color: rgb(163, 163, 163); -unity-font: url(&quot;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&quot;); font-size: 20px;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; padding-top: 40px; padding-right: 30px; padding-bottom: 40px; padding-left: 30px;">
+            <ui:VisualElement name="Buttons" style="flex-grow: 1; white-space: normal; flex-direction: row; align-self: auto; align-items: flex-start; max-height: 64px; height: 64px;">
+                <ui:Button text="State machines" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonStateMachines" class="button-no-border selected" />
+                <ui:Button text="Triggers" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonTriggers" class="button-no-border not-selected" />
+            </ui:VisualElement>
+            <ui:VisualElement name="StateMachineView" style="flex-grow: 1;">
+                <ui:VisualElement name="TableHeader" class="table-header" style="flex-grow: 1; flex-direction: row; border-top-color: rgb(59, 130, 246); justify-content: space-between;">
+                    <ui:Label tabindex="-1" text="Id" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Id" class="table-label" />
+                    <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Name" class="table-label" />
+                    <ui:Label tabindex="-1" text="State machine type" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-StateMachineType" class="table-label" />
+                    <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Description" class="table-label" />
+                    <ui:Label tabindex="-1" text="States" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-States" class="table-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Footer" style="flex-grow: 1; max-height: 32px; height: 64px; border-top-color: rgba(17, 115, 212, 0.5); border-top-width: 1px;" />
+    </ui:VisualElement>
+</ui:UXML>

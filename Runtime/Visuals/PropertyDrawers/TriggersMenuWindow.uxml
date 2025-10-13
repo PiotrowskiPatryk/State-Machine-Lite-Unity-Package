@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:ListView show-border="true" reorderable="true" show-foldout-header="true" header-title="Triggers" binding-path="_triggers" reorder-mode="Animated" horizontal-scrolling="false" show-add-remove-footer="true" virtualization-method="DynamicHeight" />
+    </ui:VisualElement>
+</ui:UXML>
