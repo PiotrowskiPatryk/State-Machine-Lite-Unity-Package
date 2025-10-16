@@ -14,12 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerConfiguration:
     _triggers:
-    - _id: My id
-      _name: My nam
-      _description: jddskfdskfdnskfdskfdsfndskfdnskfnsdkfndskfnkdsnfkdsfnksdnfksd
-    - _id: 
-      _name: 
-      _description: 
-    - _id: fd
-      _name: 
-      _description: 
+    - _id: 66560072-34e5-44c3-be8e-536836929d54
+      _name: Example trigger
+      _description: My example description
+    - _id: 7dc95c1b-cc89-4beb-8ac8-9b2c4d28d4e7
+      _name: Test
+      _description: description

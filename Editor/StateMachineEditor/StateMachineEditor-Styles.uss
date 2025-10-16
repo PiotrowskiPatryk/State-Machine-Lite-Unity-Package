@@ -1,0 +1,74 @@
+.button-no-border {
+    background-color: rgba(0, 0, 0, 0);
+    -unity-font: url('project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&guid=cd98b80116b484ae09e16718ab2aea43&type=3#Inter-VariableFont_opsz,wght');
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    opacity: 1;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.selected {
+    color: rgb(17, 115, 212);
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(17, 115, 212);
+}
+
+.not-selected {
+    color: rgb(163, 163, 163);
+}
+
+.button-no-border:hover {
+    border-bottom-color: rgb(17, 115, 212);
+}
+
+.text-normal {
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Medium.ttf?fileID=12800000&guid=7c9798c1e9b61304baf3ecef769b48f9&type=3#Inter_18pt-Medium");
+}
+
+.text-bold {
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Bold.ttf?fileID=12800000&guid=2e1527e5f7d2b0546ba028b67a53d316&type=3#Inter_18pt-Bold");
+}
+
+.text-italic {
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Italic.ttf?fileID=12800000&guid=38bc0a2e2100c5949a43d37f55ef3d46&type=3#Inter_18pt-Italic");
+}
+
+.unity-button {
+    background-color: rgb(17, 115, 212);
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Bold.ttf?fileID=12800000&guid=2e1527e5f7d2b0546ba028b67a53d316&type=3#Inter_18pt-Bold");
+    color: rgb(255, 255, 255);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    -unity-font-style: normal;
+}
+
+.unity-button:hover {
+    background-color: rgb(2, 86, 168);
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Bold.ttf?fileID=12800000&guid=2e1527e5f7d2b0546ba028b67a53d316&type=3#Inter_18pt-Bold");
+    color: rgb(255, 255, 255);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    -unity-font-style: normal;
+}
+
+.unity-base-field {
+}
+
+.background-main {
+    background-color: rgb(16, 25, 34);
+}

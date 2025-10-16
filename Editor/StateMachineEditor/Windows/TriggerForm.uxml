@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement name="Root" class="background-main" style="flex-grow: 1;">
+        <ui:VisualElement name="TriggerContainer" />
+        <ui:VisualElement name="ButtonsRow" style="flex-direction: row; justify-content: flex-end; margin-top: 6px; gap: 6px; min-height: 30px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-bottom: 20px; margin-right: 6px;">
+            <ui:Button name="CreateButton" text="Create" />
+            <ui:Button name="CancelButton" text="Cancel" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
