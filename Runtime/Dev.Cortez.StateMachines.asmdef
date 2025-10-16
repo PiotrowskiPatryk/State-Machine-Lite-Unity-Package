@@ -2,7 +2,8 @@
   "name": "Dev.Cortez.StateMachines",
   "rootNamespace": "Dev.Cortez.StateMachines",
   "references": [
-    "UniTask"
+    "UniTask",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],

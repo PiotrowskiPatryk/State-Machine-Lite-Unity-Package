@@ -1,4 +1,5 @@
 using System;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -14,12 +15,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             public string Id { get; }
             public string Name { get; }
             public string Description { get; }
+            public string TypeName { get; }
+            public IPayload Payload { get; }
 
-            public Result(string id, string name, string description)
+            public Result(string id, string name, string description, string typeName, IPayload payload)
             {
                 Id = id;
                 Name = name;
                 Description = description;
+                TypeName = typeName;
+                Payload = payload;
             }
         }
         
@@ -33,6 +38,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
         private string _initialId;
         private string _initialName;
         private string _initialDescription;
+        private string _initialTypeName;
+        private IPayload _initialPayload;
         
         private TriggerDefinitionWrapper _wrapper;
         private SerializedObject _serializedWrapper;
@@ -52,7 +59,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             window.ShowUtility();
         }
         
-        public static void ShowEdit(string id, string name, string description, Action<Result> onSave)
+        public static void ShowEdit(string id, string name, string description, string typeName, IPayload payload, Action<Result> onSave)
         {
             var window = CreateInstance<TriggerForm>();
             window._mode = Mode.Edit;
@@ -60,6 +67,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             window._initialId = id;
             window._initialName = name;
             window._initialDescription = description;
+            window._initialTypeName = typeName;
+            window._initialPayload = payload;
             window.titleContent = new GUIContent("Edit Trigger");
             window.minSize = new Vector2(640, 320);
             window.position = GetCenteredPosition(new Vector2(640, 320));
@@ -81,6 +90,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
                 _dataProperty.FindPropertyRelative("_id").stringValue = Guid.NewGuid().ToString();
                 _dataProperty.FindPropertyRelative("_name").stringValue = string.Empty;
                 _dataProperty.FindPropertyRelative("_description").stringValue = string.Empty;
+                _dataProperty.FindPropertyRelative("_typeName").stringValue = string.Empty;
             }
             else
             {
@@ -88,6 +98,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
                 _dataProperty.FindPropertyRelative("_id").stringValue = _initialId ?? string.Empty;
                 _dataProperty.FindPropertyRelative("_name").stringValue = _initialName ?? string.Empty;
                 _dataProperty.FindPropertyRelative("_description").stringValue = _initialDescription ?? string.Empty;
+                _dataProperty.FindPropertyRelative("_typeName").stringValue = _initialTypeName ?? string.Empty;
+                var payloadPropInit = _dataProperty.FindPropertyRelative("_payload");
+                if (payloadPropInit != null)
+                {
+                    try { payloadPropInit.managedReferenceValue = _initialPayload; } catch { }
+                }
             }
             _serializedWrapper.ApplyModifiedPropertiesWithoutUndo();
 
@@ -193,6 +209,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             var id = _dataProperty.FindPropertyRelative("_id").stringValue?.Trim() ?? string.Empty;
             var name = _dataProperty.FindPropertyRelative("_name").stringValue?.Trim() ?? string.Empty;
             var description = _dataProperty.FindPropertyRelative("_description").stringValue?.Trim() ?? string.Empty;
+            var typeName = _dataProperty.FindPropertyRelative("_typeName").stringValue?.Trim() ?? string.Empty;
 
             if (string.IsNullOrEmpty(id))
             {
@@ -206,7 +223,34 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
                 return;
             }
 
-            _onSubmit?.Invoke(new Result(id, name, description));
+            if (string.IsNullOrEmpty(typeName))
+            {
+                EditorUtility.DisplayDialog("Validation", "Type is required.", "OK");
+                return;           
+            }
+
+            // Extract payload managed reference if any
+            IPayload payload = null;
+            var payloadProp = _dataProperty.FindPropertyRelative("_payload");
+            if (payloadProp != null)
+            {
+                try
+                {
+                    payload = payloadProp.managedReferenceValue as IPayload;
+
+                    if (payload?.IsValid() == false)
+                    {
+                        EditorUtility.DisplayDialog("Validation", "Payload is invalid.", "OK");
+                        return;   
+                    }
+                }
+                catch
+                {
+                    payload = null;
+                }
+            }
+
+            _onSubmit?.Invoke(new Result(id, name, description, typeName, payload));
             Close();
         }
 

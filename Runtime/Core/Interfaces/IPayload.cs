@@ -1,4 +1,4 @@
-﻿namespace Dev.Cortez.StateMachines.Core
+﻿namespace Dev.Cortez.StateMachines.Core.Interfaces
 {
     /// <summary>
     ///     Represents a general contract for a payload that can be used within a state machine.
@@ -7,5 +7,6 @@
     /// </summary>
     public interface IPayload
     {
+        bool IsValid();
     }
 }

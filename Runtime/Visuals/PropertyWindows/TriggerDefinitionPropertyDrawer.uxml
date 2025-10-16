@@ -4,5 +4,7 @@
         <ui:TextField label="Id:" name="TextField-Id" readonly="true" binding-path="_id" class="text-normal" />
         <ui:TextField label="Name:" placeholder-text="Name" name="TextField-Name" binding-path="_name" class="text-normal" />
         <ui:TextField label="Description:" placeholder-text="Description" name="TextField-Description" multiline="true" binding-path="_description" class="text-normal" style="flex-wrap: nowrap; white-space: normal;" />
+        <ui:VisualElement name="TypeContainer" />
+        <ui:VisualElement name="PayloadContainer" />
     </ui:VisualElement>
 </ui:UXML>

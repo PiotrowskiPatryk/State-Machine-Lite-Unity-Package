@@ -2,6 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core

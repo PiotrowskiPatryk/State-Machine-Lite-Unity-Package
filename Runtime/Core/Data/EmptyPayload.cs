@@ -1,4 +1,6 @@
-﻿namespace Dev.Cortez.StateMachines.Core.Data
+﻿using Dev.Cortez.StateMachines.Core.Interfaces;
+
+namespace Dev.Cortez.StateMachines.Core.Data
 {
     /// <summary>
     ///     Represents an empty implementation of the <see cref="IPayload" /> interface.
@@ -7,5 +9,9 @@
     /// </summary>
     public sealed class EmptyPayload : IPayload
     {
+        public bool IsValid()
+        {
+            return true;
+        }
     }
 }

@@ -1,4 +1,4 @@
-using Dev.Cortez.StateMachines.StateMachineEditor.Data;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data

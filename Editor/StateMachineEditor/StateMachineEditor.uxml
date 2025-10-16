@@ -4,9 +4,6 @@
         <ui:VisualElement name="Header" style="flex-direction: row; max-height: 64px; height: 64px; align-self: auto; align-items: center; border-bottom-color: rgba(17, 115, 212, 0.5); border-bottom-width: 1px; padding-right: 40px; padding-left: 40px;">
             <ui:Label tabindex="-1" text="State Machine Editor" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header text" style="color: rgb(255, 255, 255); -unity-font: url(&apos;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&apos;); font-size: 30px; -unity-font-style: bold;" />
             <ui:VisualElement name="Separator" style="flex-grow: 1; max-width: 25px;" />
-            <ui:Label tabindex="-1" text="0 state machines" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header text" style="color: rgb(163, 163, 163); -unity-font: url(&apos;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&apos;); font-size: 20px;" />
-            <ui:Label tabindex="-1" text="•" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Separator" class="header" style="color: rgb(163, 163, 163); -unity-font: url(&apos;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&apos;); font-size: 20px; min-width: 30px; -unity-text-align: upper-center;" />
-            <ui:Label tabindex="-1" text="0 triggers" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header text" style="color: rgb(163, 163, 163); -unity-font: url(&apos;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&apos;); font-size: 20px;" />
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
             <ui:ScrollView>
@@ -28,6 +25,8 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="Footer" style="flex-grow: 1; max-height: 32px; height: 64px; border-top-color: rgba(17, 115, 212, 0.5); border-top-width: 1px;" />
+        <ui:VisualElement name="Footer" style="flex-grow: 1; max-height: 32px; height: 64px; border-top-color: rgba(17, 115, 212, 0.5); border-top-width: 1px; align-items: flex-end; justify-content: center;">
+            <ui:Label text="Author: Patryk Piotrowski" class="text-normal" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
