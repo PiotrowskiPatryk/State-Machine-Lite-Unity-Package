@@ -7,24 +7,24 @@ namespace Dev.Cortez.StateMachines.Core.Data
     [UsedImplicitly]
     public sealed class StateMachineSettings
     {
-        public Type StateMachineType { get; }
-        public string StateMachineId { get; }
+        public Type Type { get; }
+        public string Id { get; }
         public ITransitionSolver TransitionSolver { get; }
         public IState InitialState { get; }
         public List<IState> States { get; }
         public IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> TransitionRules { get; }
         
-        public StateMachineSettings(string stateMachineId, ITransitionSolver transitionSolver, IState initialState,
+        public StateMachineSettings(string id, ITransitionSolver transitionSolver, IState initialState,
             List<IState> states,
             IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules,
-            Type stateMachineType)
+            Type type)
         {
-            StateMachineId = stateMachineId;
+            Id = id;
             TransitionSolver = transitionSolver;
             InitialState = initialState;
             States = states;
             TransitionRules = transitionRules;
-            StateMachineType = stateMachineType;
+            Type = type;
         }
     }
 }

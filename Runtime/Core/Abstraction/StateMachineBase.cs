@@ -140,6 +140,12 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         [NotNull]
         protected ITransitionSolver TransitionSolver { get; private set; }
 
+        /// Checks whether the state machine can be activated
+        /// <return>
+        ///     Boolean indicating whether the state machine can be activated.
+        /// </return>
+        protected virtual bool CanActivate => true;
+        
         /// Activates the state machine asynchronously, transitioning it to an operational state.
         /// This involves evaluating conditions necessary for activation and entering the default state if possible.
         /// If the state machine is already active, the method will terminate early with a result indicating no action performed.
@@ -167,10 +173,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                     return false;
                 }
-
-                var canActivate = await CanActivateAsync(linkedCancellationTokenSource.Token);
-
-                if (!canActivate)
+                
+                if (!CanActivate)
                 {
                     LoggerService.Logger.LogError("State machine cannot be activated. Skipping activation.");
 
@@ -330,12 +334,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 _lifecycleLock.Release();
             }
         }
-
-        /// Releases all resources used by the state machine asynchronously and resets its state.
-        /// This includes clearing the states, resetting the active state, deactivating the state machine,
-        /// and resetting initialization status. It ensures that resources like locks and transition solvers
-        /// are disposed to avoid memory leaks.
-        /// <returns>A task representing the asynchronous dispose operation.</returns>
+        
         public async ValueTask DisposeAsync()
         {
             LoggerService.Logger.LogInfo("Disposing state machine");
@@ -422,20 +421,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         {
             return UniTask.FromResult(true);
         }
-
-        /// Checks whether the state machine can be activated asynchronously.
-        /// <param name="cancellationToken">
-        ///     A CancellationToken that can be used to cancel the activation operation while it is in progress.
-        /// </param>
-        /// <return>
-        ///     A task that represents the asynchronous operation. The task result is a boolean
-        ///     indicating whether the state machine can be activated.
-        /// </return>
-        protected virtual UniTask<bool> CanActivateAsync(CancellationToken cancellationToken)
-        {
-            return UniTask.FromResult(!IsActive);
-        }
-
+        
         /// <summary>
         ///     Determines whether the state machine can be deactivated asynchronously.
         /// </summary>
@@ -540,7 +526,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         private void ApplyVariables(StateMachineSettings stateMachineSettings)
         {
-            Id = stateMachineSettings.StateMachineId;
+            Id = stateMachineSettings.Id;
 
             _states.Clear();
 

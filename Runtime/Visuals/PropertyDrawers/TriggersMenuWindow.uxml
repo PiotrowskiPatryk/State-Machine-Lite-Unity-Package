@@ -1,5 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
     <ui:VisualElement style="flex-grow: 1;">
-        <ui:ListView show-border="true" reorderable="true" show-foldout-header="true" header-title="Triggers" binding-path="_triggers" reorder-mode="Animated" horizontal-scrolling="false" show-add-remove-footer="true" virtualization-method="DynamicHeight" />
+        <ui:MultiColumnListView binding-path="_triggers" virtualization-method="DynamicHeight" show-add-remove-footer="false" focusable="false" allow-add="false" allow-remove="false" show-bound-collection-size="false" show-foldout-header="true" header-title="Triggers" show-border="false">
+            <ui:Columns primary-column-name="Id" stretch-mode="GrowAndFill" reorderable="false">
+                <ui:Column name="Id" title="Id" binding-path="_id" stretchable="true" resizable="false" max-width="150px" min-width="150px" />
+                <ui:Column name="Name" title="Name" binding-path="_name" stretchable="true" resizable="false" />
+                <ui:Column name="Description" title="Description" binding-path="_description" stretchable="true" resizable="false" />
+                <ui:Column stretchable="false" cell-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/ItemButtons.uxml?fileID=9197481963319205126&amp;guid=139e5eb9a775548969ca26931c6ad749&amp;type=3#ItemButtons" max-width="80px" resizable="false" min-width="80px" />
+            </ui:Columns>
+        </ui:MultiColumnListView>
     </ui:VisualElement>
 </ui:UXML>

@@ -8,12 +8,17 @@
             <ui:Label tabindex="-1" text="•" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Separator" class="header" style="color: rgb(163, 163, 163); -unity-font: url(&quot;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&quot;); font-size: 20px; min-width: 30px; -unity-text-align: upper-center;" />
             <ui:Label tabindex="-1" text="0 triggers" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header" style="color: rgb(163, 163, 163); -unity-font: url(&quot;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&quot;); font-size: 20px;" />
         </ui:VisualElement>
-        <ui:VisualElement name="VisualElement" style="flex-grow: 1; padding-top: 40px; padding-right: 30px; padding-bottom: 40px; padding-left: 30px;">
-            <ui:VisualElement name="Buttons" style="flex-grow: 1; white-space: normal; flex-direction: row; align-self: auto; align-items: flex-start; max-height: 64px; height: 64px;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
+            <ui:ScrollView>
+                <uie:PropertyField binding-path="_triggerConfiguration" />
+            </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="VisualElement-Hidden" style="flex-grow: 1; padding-top: 40px; padding-right: 30px; padding-bottom: 40px; padding-left: 30px; display: none;">
+            <ui:VisualElement name="Buttons" style="flex-grow: 1; white-space: normal; flex-direction: row; align-self: auto; align-items: flex-start; max-height: 64px; height: 64px; display: none;">
                 <ui:Button text="State machines" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonStateMachines" class="button-no-border selected" />
                 <ui:Button text="Triggers" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonTriggers" class="button-no-border not-selected" />
             </ui:VisualElement>
-            <ui:VisualElement name="StateMachineView" style="flex-grow: 1;">
+            <ui:VisualElement name="StateMachineView-Hidden" enabled="true" style="flex-grow: 1; display: none;">
                 <ui:VisualElement name="TableHeader" class="table-header" style="flex-grow: 1; flex-direction: row; border-top-color: rgb(59, 130, 246); justify-content: space-between;">
                     <ui:Label tabindex="-1" text="Id" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Id" class="table-label" />
                     <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Name" class="table-label" />

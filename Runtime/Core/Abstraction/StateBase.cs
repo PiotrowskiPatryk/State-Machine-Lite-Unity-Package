@@ -28,7 +28,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// <remarks>
     ///     StateBase serves as a simplified entry point for creating state machine states using the default context type
     ///     <see cref="EmptyContext" />
-    ///     and default state payload type <see cref="EmptyStatePayload" />.
+    ///     and default state payload type <see cref="EmptyPayload" />.
     ///     It abstracts key lifecycle operations such as initialization, entering, and exiting a state.
     /// </remarks>
     public abstract class StateBase<TStateContext> : StateBase<TStateContext, EmptyPayload>
@@ -52,11 +52,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     It allows external systems to react to state transitions dynamically.
         /// </remarks>
         public event Action<StateStatus> StatusChanged;
-
-        /// <summary>
-        ///     Represents the current status of the state within the state machine.
-        ///     Tracks the lifecycle of the state, such as Activating, Active, Deactivating, and Inactive.
-        /// </summary>
+        
         private StateStatus _stateStatus;
 
         /// <summary>
@@ -76,8 +72,6 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     Represents the current initialization status of a state.
         /// </summary>
         /// <remarks>
-        ///     The <c>InitializationStatus</c> property indicates whether a state is:
-        ///     Undefined, NotInitialized, Initializing, Initialized, or Failed.
         ///     This status is updated during state initialization processes to reflect the current state lifecycle.
         /// </remarks>
         /// <value>
@@ -99,8 +93,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         public bool IsActive { get; private set; }
 
         /// <summary>
-        ///     Gets the unique identifier for the state or entity.
-        ///     This property is assigned during initialization and cannot be modified afterwards.
+        ///     Gets the unique identifier for the state.
         /// </summary>
         [NotNull]
         public string Id { get; private set; }
@@ -119,14 +112,16 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// <returns>A task that resolves to a boolean indicating whether the initialization was successful or failed.</returns>
         public UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload, CancellationToken cancellationToken)
         {
-            if (payload is not TStatePayload statePayload)
+            if (payload is TStatePayload statePayload)
             {
-                InitializationStatus = InitializationStatus.Failed;
-
-                return UniTask.FromResult(false);
+                return InitializeAsyncInternal(stateSettings, statePayload, cancellationToken);
             }
 
-            return InitializeAsyncInternal(stateSettings, statePayload, cancellationToken);
+            InitializationStatus = InitializationStatus.Failed;
+
+            Logging.LoggerService.Logger.LogError($"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {payload.GetType().Name}.");
+            
+            return UniTask.FromResult(false);
         }
 
         /// <summary>
@@ -278,9 +273,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            Id = stateSettings.StateId;
-            Name = stateSettings.StateName;
-            Description = stateSettings.StateDescription;
+            Id = stateSettings.Id;
+            Name = stateSettings.Name;
+            Description = stateSettings.Description;
             
             switch (InitializationStatus)
             {

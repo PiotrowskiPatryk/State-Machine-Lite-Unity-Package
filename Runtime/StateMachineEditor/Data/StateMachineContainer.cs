@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dev.Cortez.StateMachines.Core.Configuration
+namespace Dev.Cortez.StateMachines.StateMachineEditor.Data
 {
     [CreateAssetMenu(menuName = "State Machines/Configuration/StateMachineContainer")]
     public class StateMachineContainer : ScriptableObject

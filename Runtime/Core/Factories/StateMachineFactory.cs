@@ -26,7 +26,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
             
-            var isStateMachineType = settings.StateMachineType.IsAssignableFrom(typeof(IStateMachine));
+            var isStateMachineType = settings.Type.IsAssignableFrom(typeof(IStateMachine));
 
             if (!isStateMachineType)
             {
@@ -34,7 +34,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;           
             }
 
-            if (Activator.CreateInstance(settings.StateMachineType) is not IStateMachine stateMachineInstance)
+            if (Activator.CreateInstance(settings.Type) is not IStateMachine stateMachineInstance)
             {
                 LoggerService.Logger.LogError("An error occured during creating a state machine instance.");
                 return null;

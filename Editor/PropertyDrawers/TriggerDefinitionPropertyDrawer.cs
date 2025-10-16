@@ -1,4 +1,4 @@
-using Dev.Cortez.StateMachines.Core.Configuration;
+using Dev.Cortez.StateMachines.StateMachineEditor.Data;
 using UnityEditor;
 using UnityEngine.UIElements;
 

@@ -1,4 +1,4 @@
-using Dev.Cortez.StateMachines.Core.Configuration;
+using Dev.Cortez.StateMachines.StateMachineEditor.Data;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,8 +14,7 @@ namespace Dev.Cortez.StateMachines.Editor.EditorWindows
         public override VisualElement CreateInspectorGUI()
         {
            var root = _visualTreeAsset.CloneTree();
-
-           var tabView = root.Q<TabView>();
+           var listView = new ListView();
            
            return root;
         }

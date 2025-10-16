@@ -20,19 +20,19 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
             
-            if (stateSettings.StateId == null)
+            if (stateSettings.Id == null)
             {
                 LoggerService.Logger.LogError("Unable to create state. Provided state id is null.");
                 return null;
             }
             
-            if (stateSettings.StateType == null)
+            if (stateSettings.Type == null)
             {
                 LoggerService.Logger.LogError("Unable to create state. Provided state type is null.");
                 return null;
             }
             
-            var isAssignableFromState = stateSettings.StateType.IsAssignableFrom(typeof(IState));
+            var isAssignableFromState = stateSettings.Type.IsAssignableFrom(typeof(IState));
 
             if (!isAssignableFromState)
             {
@@ -40,7 +40,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
             
-            var stateInstance = Activator.CreateInstance(stateSettings.StateType) as IState;
+            var stateInstance = Activator.CreateInstance(stateSettings.Type) as IState;
 
             if (stateInstance == null)
             {

@@ -2,6 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
+using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core
 {
@@ -19,7 +20,7 @@ namespace Dev.Cortez.StateMachines.Core
         /// </summary>
         bool IsActive { get; }
         
-        UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload, CancellationToken cancellationToken);
+        UniTask<bool> InitializeAsync([NotNull] StateSettings stateSettings, [NotNull] IPayload payload, CancellationToken cancellationToken);
     }
 
     public interface IState<in TContext, in TPayload> : IState<TContext>
@@ -30,7 +31,6 @@ namespace Dev.Cortez.StateMachines.Core
     ///     Represents a generic state in a state machine with context and payload.
     /// </summary>
     /// <typeparam name="TContext">The type of the context.</typeparam>
-    /// <typeparam name="TPayload">The type of the payload.</typeparam>
     public interface IState<in TContext> : IState
     {
         /// <summary>
@@ -39,7 +39,7 @@ namespace Dev.Cortez.StateMachines.Core
         /// <param name="context">The context for the state.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        UniTask<bool> EnterAsync(TContext context, CancellationToken cancellationToken);
+        UniTask<bool> EnterAsync([NotNull] TContext context, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Exits the state asynchronously.
@@ -47,6 +47,6 @@ namespace Dev.Cortez.StateMachines.Core
         /// <param name="context">The context for the state.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        UniTask<bool> ExitAsync(TContext context, CancellationToken cancellationToken);
+        UniTask<bool> ExitAsync([NotNull] TContext context, CancellationToken cancellationToken);
     }
 }
