@@ -1,9 +1,8 @@
 using System;
-using Dev.Cortez.StateMachines.Core;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using UnityEngine;
 
-namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data
+namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition
 {
     [Serializable]
     public sealed class TriggerDefinition
@@ -16,9 +15,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data
         private string _description;
         [SerializeField]
         private string _typeName;
-        
-        // Managed reference to a payload instance when the trigger supports a payload
         [SerializeReference]
         private IPayload _payload;
+        
+        public string Id => _id;
+        public string Name => _name;
+        public string Description => _description;
+        public string TypeName => _typeName;
+        public IPayload Payload => _payload;
     }
 }

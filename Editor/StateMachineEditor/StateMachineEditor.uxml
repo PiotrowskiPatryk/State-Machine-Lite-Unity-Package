@@ -8,22 +8,8 @@
         <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
             <ui:ScrollView>
                 <uie:PropertyField binding-path="_triggerConfiguration" />
+                <uie:PropertyField binding-path="_stateMachineConfiguration"/>
             </ui:ScrollView>
-        </ui:VisualElement>
-        <ui:VisualElement name="VisualElement-Hidden" style="flex-grow: 1; padding-top: 40px; padding-right: 30px; padding-bottom: 40px; padding-left: 30px; display: none;">
-            <ui:VisualElement name="Buttons" style="flex-grow: 1; white-space: normal; flex-direction: row; align-self: auto; align-items: flex-start; max-height: 64px; height: 64px; display: none;">
-                <ui:Button text="State machines" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonStateMachines" class="button-no-border selected" />
-                <ui:Button text="Triggers" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ButtonTriggers" class="button-no-border not-selected" />
-            </ui:VisualElement>
-            <ui:VisualElement name="StateMachineView-Hidden" enabled="true" style="flex-grow: 1; display: none;">
-                <ui:VisualElement name="TableHeader" class="table-header" style="flex-grow: 1; flex-direction: row; border-top-color: rgb(59, 130, 246); justify-content: space-between;">
-                    <ui:Label tabindex="-1" text="Id" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Id" class="table-label" />
-                    <ui:Label tabindex="-1" text="Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Name" class="table-label" />
-                    <ui:Label tabindex="-1" text="State machine type" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-StateMachineType" class="table-label" />
-                    <ui:Label tabindex="-1" text="Description" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-Description" class="table-label" />
-                    <ui:Label tabindex="-1" text="States" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label-States" class="table-label" />
-                </ui:VisualElement>
-            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Footer" style="flex-grow: 1; max-height: 32px; height: 64px; border-top-color: rgba(17, 115, 212, 0.5); border-top-width: 1px; align-items: flex-end; justify-content: center;">
             <ui:Label text="Author: Patryk Piotrowski" class="text-normal" />

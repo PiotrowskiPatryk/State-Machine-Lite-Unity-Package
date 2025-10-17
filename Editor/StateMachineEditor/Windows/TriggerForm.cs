@@ -1,6 +1,7 @@
 using System;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -86,11 +87,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             _serializedWrapper.Update();
             if (_mode == Mode.Create)
             {
-                _dataProperty.FindPropertyRelative("_id").stringValue = Guid.NewGuid().ToString();
-                _dataProperty.FindPropertyRelative("_name").stringValue = string.Empty;
-                _dataProperty.FindPropertyRelative("_description").stringValue = string.Empty;
-                _dataProperty.FindPropertyRelative("_typeName").stringValue = string.Empty;
-                var payloadPropCreate = _dataProperty.FindPropertyRelative("_payload");
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Id).stringValue = Guid.NewGuid().ToString();
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Name).stringValue = string.Empty;
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Description).stringValue = string.Empty;
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.TypeName).stringValue = string.Empty;
+                var payloadPropCreate = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Payload);
                 
                 if (payloadPropCreate != null)
                 {
@@ -99,11 +100,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             }
             else
             {
-                _dataProperty.FindPropertyRelative("_id").stringValue = _initialId ?? string.Empty;
-                _dataProperty.FindPropertyRelative("_name").stringValue = _initialName ?? string.Empty;
-                _dataProperty.FindPropertyRelative("_description").stringValue = _initialDescription ?? string.Empty;
-                _dataProperty.FindPropertyRelative("_typeName").stringValue = _initialTypeName ?? string.Empty;
-                var payloadPropInit = _dataProperty.FindPropertyRelative("_payload");
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Id).stringValue = _initialId ?? string.Empty;
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Name).stringValue = _initialName ?? string.Empty;
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Description).stringValue = _initialDescription ?? string.Empty;
+                _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.TypeName).stringValue = _initialTypeName ?? string.Empty;
+                var payloadPropInit = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Payload);
                 
                 if (payloadPropInit != null)
                 {
@@ -120,16 +121,27 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
         {
             _serializedWrapper.ApplyModifiedPropertiesWithoutUndo();
 
-            var id = _dataProperty.FindPropertyRelative("_id").stringValue?.Trim() ?? string.Empty;
-            var name = _dataProperty.FindPropertyRelative("_name").stringValue?.Trim() ?? string.Empty;
-            var typeName = _dataProperty.FindPropertyRelative("_typeName").stringValue?.Trim() ?? string.Empty;
+            var id = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Id).stringValue?.Trim() ?? string.Empty;
+            var name = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Name).stringValue?.Trim() ?? string.Empty;
+            var typeName = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.TypeName).stringValue?.Trim() ?? string.Empty;
 
-            if (!FormValidationUtility.RequiredString(id, "ID", out errorMessage)) return false;
-            if (!FormValidationUtility.RequiredString(name, "Name", out errorMessage)) return false;
-            if (!FormValidationUtility.RequiredType(typeName, out errorMessage)) return false;
+            if (!FormValidationUtility.RequiredString(id, "ID", out errorMessage))
+            {
+                return false;
+            }
+
+            if (!FormValidationUtility.RequiredString(name, "Name", out errorMessage))
+            {
+                return false;
+            }
+
+            if (!FormValidationUtility.RequiredType(typeName, out errorMessage))
+            {
+                return false;
+            }
             
             IPayload payload = null;
-            var payloadProp = _dataProperty.FindPropertyRelative("_payload");
+            var payloadProp = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Payload);
             if (payloadProp != null)
             {
                 try { payload = payloadProp.managedReferenceValue as IPayload; } catch { payload = null; }
@@ -141,13 +153,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
 
         protected override Result GatherResult()
         {
-            var id = _dataProperty.FindPropertyRelative("_id").stringValue?.Trim() ?? string.Empty;
-            var name = _dataProperty.FindPropertyRelative("_name").stringValue?.Trim() ?? string.Empty;
-            var description = _dataProperty.FindPropertyRelative("_description").stringValue?.Trim() ?? string.Empty;
-            var typeName = _dataProperty.FindPropertyRelative("_typeName").stringValue?.Trim() ?? string.Empty;
+            var id = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Id).stringValue?.Trim() ?? string.Empty;
+            var name = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Name).stringValue?.Trim() ?? string.Empty;
+            var description = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Description).stringValue?.Trim() ?? string.Empty;
+            var typeName = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.TypeName).stringValue?.Trim() ?? string.Empty;
 
             IPayload payload = null;
-            var payloadProp = _dataProperty.FindPropertyRelative("_payload");
+            var payloadProp = _dataProperty.FindPropertyRelative(TriggerDefinitionPropertyNames.Payload);
             if (payloadProp != null)
             {
                 try { payload = payloadProp.managedReferenceValue as IPayload; } catch { payload = null; }

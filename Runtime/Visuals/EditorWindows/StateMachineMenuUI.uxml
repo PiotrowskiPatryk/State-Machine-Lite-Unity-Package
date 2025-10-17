@@ -1,0 +1,19 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement class="background-main" style="flex-grow: 1;">
+        <ui:VisualElement name="HeaderSection" style="flex-grow: 0; height: 50px; border-bottom-color: rgba(17, 115, 212, 0.14); border-bottom-width: 2px; align-items: center; justify-content: center;">
+            <ui:Label text="State Machine Node Editor" class="text-bold" style="font-size: 24px;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+            <ui:VisualElement name="MenuSection" style="width: 250px; border-right-color: rgba(17, 115, 212, 0.14); border-right-width: 2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; visibility: visible; display: flex; overflow: visible;">
+                <ui:Label text="State Machine Setup" class="text-bold" style="font-size: 18px; -unity-text-align: middle-center;" />
+                <ui:TextField label="State Machine Name" name="TextField-StateMachineName" />
+                <ui:TextField label="Type" name="TextField-StateMachineType" />
+                <ui:TextField label="Transition Solver" name="TextField-TransitionSolverType" />
+                <ui:TextField label="Description" name="TextField-Description" multiline="true" style="min-height: 128px; max-height: 128px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="GraphSection" style="flex-grow: 1;" />
+            <ui:VisualElement name="InspectorSection" style="flex-grow: 0; width: 250px; border-left-color: rgba(17, 115, 212, 0.14); border-left-width: 2px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

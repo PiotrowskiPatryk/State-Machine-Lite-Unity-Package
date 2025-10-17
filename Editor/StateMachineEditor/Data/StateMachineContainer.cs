@@ -1,3 +1,4 @@
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.StateMachineEditor.Data
@@ -7,5 +8,7 @@ namespace Dev.Cortez.StateMachines.StateMachineEditor.Data
     {
         [SerializeField]
         private TriggerConfiguration _triggerConfiguration;
+        [SerializeField]
+        private StateMachineConfiguration _stateMachineConfiguration;
     }
 }

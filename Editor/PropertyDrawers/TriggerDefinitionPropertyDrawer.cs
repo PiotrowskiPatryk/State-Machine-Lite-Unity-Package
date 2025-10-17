@@ -9,6 +9,8 @@ using UnityEngine.UIElements;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities;
 using Dev.Cortez.StateMachines.Core;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition;
 
 namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
 {
@@ -29,8 +31,8 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             var typeContainer = root.Q<VisualElement>("TypeContainer") ?? root;
             var payloadContainer = root.Q<VisualElement>("PayloadContainer") ?? root;
 
-            var typeProp = property.FindPropertyRelative("_typeName");
-            var payloadProp = property.FindPropertyRelative("_payload");
+            var typeProp = property.FindPropertyRelative(TriggerDefinitionPropertyNames.TypeName);
+            var payloadProp = property.FindPropertyRelative(TriggerDefinitionPropertyNames.Payload);
             var currentType = TypePickerUtility.TryGetTypeFromProperty(typeProp);
 
             // Seed cache with existing payload for the current type (so it can be restored if the user switches away and back)

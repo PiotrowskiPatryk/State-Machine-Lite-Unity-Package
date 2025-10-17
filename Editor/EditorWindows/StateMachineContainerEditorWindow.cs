@@ -13,9 +13,7 @@ namespace Dev.Cortez.StateMachines.Editor.EditorWindows
         
         public override VisualElement CreateInspectorGUI()
         {
-           var root = _visualTreeAsset.CloneTree();
-           
-           return root;
+           return _visualTreeAsset.CloneTree();
         }
     }
 }

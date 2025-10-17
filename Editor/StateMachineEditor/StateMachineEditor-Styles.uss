@@ -67,8 +67,77 @@
 }
 
 .unity-base-field {
+    flex-direction: column;
+    flex-shrink: 0;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    padding-left: 5px;
 }
 
 .background-main {
     background-color: rgb(16, 25, 34);
+}
+
+.unity-base-field__input {
+    background-color: rgb(16, 25, 34);
+    border-left-color: rgb(50, 77, 103);
+    border-right-color: rgb(50, 77, 103);
+    border-top-color: rgb(50, 77, 103);
+    border-bottom-color: rgb(50, 77, 103);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    color: rgb(255, 255, 255);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.unity-text-field__label {
+    margin-bottom: 5px;
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Medium.ttf?fileID=12800000&guid=7c9798c1e9b61304baf3ecef769b48f9&type=3#Inter_18pt-Medium");
+    color: rgb(146, 173, 201);
+}
+
+.unity-base-text-field__input--multiline {
+    white-space: normal;
+    text-overflow: clip;
+    width: 100%;
+}
+
+.unity-multi-column-header__column {
+    background-color: rgba(16, 34, 52, 0.52);
+    color: rgb(255, 255, 255);
+    -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Bold.ttf?fileID=12800000&guid=2e1527e5f7d2b0546ba028b67a53d316&type=3#Inter_18pt-Bold");
+    min-height: 25px;
+    border-top-color: rgb(255, 255, 255);
+    border-left-color: rgba(255, 255, 255, 0);
+    border-right-color: rgba(255, 255, 255, 0);
+    border-bottom-color: rgb(255, 255, 255);
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+}
+
+.unity-collection-view {
+    border-left-color: rgb(16, 52, 87);
+    border-right-color: rgb(16, 52, 87);
+    border-top-color: rgb(16, 52, 87);
+    border-bottom-color: rgb(16, 52, 87);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
 }

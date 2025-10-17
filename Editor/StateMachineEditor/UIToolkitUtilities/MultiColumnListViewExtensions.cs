@@ -2,11 +2,23 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
 {
     public static class MultiColumnListViewExtensions
     {
+        public static void SetItemsSourceFromArray(this MultiColumnListView listView, SerializedProperty arrayProp)
+        {
+            listView.itemsSource = Enumerable.Range(0, arrayProp.arraySize).ToList();
+        }
+
+        public static void ResetAndRefreshFromArray(this MultiColumnListView listView, SerializedProperty arrayProp)
+        {
+            listView.SetItemsSourceFromArray(arrayProp);
+            listView.RefreshItems();
+        }
+
         public static void BindColumnWithProperty(this MultiColumnListView multiColumnListView, string columnId,
             SerializedProperty property, string propertyName)
         {
@@ -30,7 +42,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
                         return;
                     }
 
-                    if (columnId == "_typeName")
+                    if (columnId == TriggerDefinitionPropertyNames.TypeName)
                     {
                         // Render a friendly type display name instead of the full assembly-qualified string
                         var type = TypePickerUtility.TryGetTypeFromProperty(relProp);

@@ -6,9 +6,9 @@ using UnityEngine;
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data
 {
     [Serializable]
-    public class TriggerConfiguration
+    public class StateMachineConfiguration
     {
         [SerializeField]
-        private List<TriggerDefinition> _triggers = new();
+        private List<StateMachineDefinition> _stateMachines = new();
     }
 }

@@ -1,9 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
     <ui:VisualElement class="background-main" style="flex-grow: 1;">
-        <ui:TextField label="Id:" name="TextField-Id" readonly="true" binding-path="_id" class="text-normal" />
-        <ui:TextField label="Name:" placeholder-text="Name" name="TextField-Name" binding-path="_name" class="text-normal" />
-        <ui:TextField label="Description:" placeholder-text="Description" name="TextField-Description" multiline="true" binding-path="_description" class="text-normal" style="flex-wrap: nowrap; white-space: normal;" />
+        <ui:TextField label="Id" name="TextField-Id" readonly="true" binding-path="_id" value="Id" class="text-normal" />
+        <ui:TextField label="Name" placeholder-text="Name" name="TextField-Name" binding-path="_name" class="text-normal" />
+        <ui:TextField label="Description" placeholder-text="Description" name="TextField-Description" multiline="true" binding-path="_description" class="text-normal" style="flex-wrap: nowrap; white-space: normal; min-height: 150px;" />
         <ui:VisualElement name="TypeContainer" />
         <ui:VisualElement name="PayloadContainer" />
     </ui:VisualElement>
