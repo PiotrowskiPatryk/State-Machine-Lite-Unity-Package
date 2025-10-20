@@ -8,6 +8,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition
     [Serializable]
     public sealed class StateMachineDefinition
     {
+        public static string ID_PROPERTY_NAME = nameof(_id);
+        public static string NAME_PROPERTY_NAME = nameof(_name);
+        public static string DESCRIPTION_PROPERTY_NAME = nameof(_description);
+        public static string STATE_MACHINE_TYPE_PROPERTY_NAME = nameof(_stateMachineTypeName);
+        public static string TRANSITION_SOLVER_TYPE_PROPERTY_NAME = nameof(_transitionSolverTypeName);
+        public static string STATES_PROPERTY_NAME = nameof(_states);
+        public static string PAYLOAD_PROPERTY_NAME = nameof(_payload);
+        
         [SerializeField]
         private string _id;
         [SerializeField]

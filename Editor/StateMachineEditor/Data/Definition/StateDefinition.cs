@@ -7,6 +7,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition
     [Serializable]
     public sealed class StateDefinition
     {
+        [SerializeField] 
+        private Vector2 _nodePosition;
         [SerializeField]
         private string _id;
         [SerializeField]
@@ -18,6 +20,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition
         [SerializeField]
         private IPayload _payload;
         
+        public Vector2 NodePosition => _nodePosition;
         public string Id => _id;
         public string Name => _name;
         public string Description => _description;

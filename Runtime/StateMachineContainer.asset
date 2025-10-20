@@ -14,25 +14,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerConfiguration:
     _triggers:
-    - _id: d87fb391-2a76-4e31-96ab-71e357595bdb
-      _name: Test
-      _description: Test
+    - _id: 73068fad-7946-4c5b-8450-37f211aba147
+      _name: Example one frame trigger
+      _description: 
       _typeName: Dev.Cortez.StateMachines.Core.Trigger.OneFrameTrigger, Dev.Cortez.StateMachines,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _payload:
         rid: -2
-    - _id: 29dec7ad-900f-428b-ab31-736aaade07a7
-      _name: Test2
+    - _id: 1f879d71-76c1-4129-9571-a745049773c6
+      _name: Pressed attack button
       _description: 
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.UserInputActionBasedTrigger,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: 7210419527543947710
+    - _id: 4af4480e-1ee5-43c3-8806-c9e38fb714ea
+      _name: Time delayed trigger
+      _description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+        minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+        ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+        est laborum
       _typeName: Dev.Cortez.StateMachines.Core.Trigger.TimeDelayedTrigger, Dev.Cortez.StateMachines,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _payload:
-        rid: 7210419511402955432
-    - _id: 98b95ef0-9b15-463b-884e-4d1f33b94b3a
-      _name: Test3
+        rid: 7210419527543947700
+    - _id: e72bec35-fbdb-4962-b1d9-5b86acc84477
+      _name: Test trigger
       _description: 
       _typeName: Dev.Cortez.StateMachines.Core.Trigger.OneFrameTrigger, Dev.Cortez.StateMachines,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: -2
+  _stateMachineConfiguration:
+    _stateMachines:
+    - _id: 
+      _name: 
+      _description: 
+      _stateMachineTypeName: 
+      _transitionSolverTypeName: 
+      _states: []
+      _payload:
+        rid: -2
+    - _id: 
+      _name: 
+      _description: 
+      _stateMachineTypeName: 
+      _transitionSolverTypeName: 
+      _states: []
+      _payload:
+        rid: -2
+    - _id: 
+      _name: 
+      _description: 
+      _stateMachineTypeName: 
+      _transitionSolverTypeName: 
+      _states: []
       _payload:
         rid: -2
   references:
@@ -40,7 +79,12 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 7210419511402955432
+    - rid: 7210419527543947700
       type: {class: TimeDelayTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
       data:
-        delayInSeconds: 4
+        delayInSeconds: 5
+    - rid: 7210419527543947710
+      type: {class: UserInputActionBasedTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+      data:
+        inputActionReference: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        actionType: 1

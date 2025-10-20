@@ -20,7 +20,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
         }
 
         public static void BindColumnWithProperty(this MultiColumnListView multiColumnListView, string columnId,
-            SerializedProperty property, string propertyName)
+            SerializedProperty property, string propertyName, bool isTypeValue = false)
         {
             multiColumnListView.itemsSource = Enumerable.Range(0, property.arraySize).ToList();
             
@@ -42,7 +42,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
                         return;
                     }
 
-                    if (columnId == TriggerDefinitionPropertyNames.TypeName)
+                    if (isTypeValue)
                     {
                         // Render a friendly type display name instead of the full assembly-qualified string
                         var type = TypePickerUtility.TryGetTypeFromProperty(relProp);

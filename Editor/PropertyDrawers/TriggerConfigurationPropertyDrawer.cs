@@ -26,7 +26,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             // Bind columns (keeps nice type name rendering via extension)
             listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Id, triggersProperty, TriggerDefinitionPropertyNames.Id);
             listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Name, triggersProperty, TriggerDefinitionPropertyNames.Name);
-            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.TypeName, triggersProperty, TriggerDefinitionPropertyNames.TypeName);
+            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.TypeName, triggersProperty, TriggerDefinitionPropertyNames.TypeName, true);
             listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Description, triggersProperty, TriggerDefinitionPropertyNames.Description);
 
             void Refresh()
