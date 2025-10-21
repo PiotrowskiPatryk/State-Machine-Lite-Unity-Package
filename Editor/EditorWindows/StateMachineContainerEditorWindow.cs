@@ -1,4 +1,4 @@
-using Dev.Cortez.StateMachines.StateMachineEditor.Data;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,10 +10,10 @@ namespace Dev.Cortez.StateMachines.Editor.EditorWindows
     {
         [SerializeField]
         private VisualTreeAsset _visualTreeAsset;
-        
+
         public override VisualElement CreateInspectorGUI()
         {
-           return _visualTreeAsset.CloneTree();
+            return _visualTreeAsset.CloneTree();
         }
     }
 }

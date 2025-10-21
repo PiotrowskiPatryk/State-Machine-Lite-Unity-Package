@@ -1,48 +1,31 @@
 using System;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
 {
     /// <summary>
-    /// Lightweight, reusable base for small editor "form" windows built with UI Toolkit.
-    /// Encapsulates common window setup, UXML cloning, button wiring, and submit lifecycle.
-    /// Derived classes should focus only on binding data, validation, and gathering results.
+    ///     Lightweight, reusable base for small editor "form" windows built with UI Toolkit.
+    ///     Encapsulates common window setup, UXML cloning, button wiring, and submit lifecycle.
+    ///     Derived classes should focus only on binding data, validation, and gathering results.
     /// </summary>
     public abstract class BaseEditorFormWindow<TResult> : EditorWindow
     {
-        [SerializeField] protected VisualTreeAsset _visualTreeAsset;
+        [SerializeField]
+        protected VisualTreeAsset _visualTreeAsset;
 
         protected Button _submitButton;
         protected Button _cancelButton;
         protected VisualElement _rootContainer;
 
-        protected abstract string SubmitButtonLabel { get; }
-        protected abstract string CancelButtonLabel { get; }
-
         /// <summary>
-        /// Called during CreateGUI after the UXML has been cloned and the base layout is ready.
-        /// Implementors should build the view (bind data, create property fields, etc.).
-        /// </summary>
-        protected abstract void BuildView();
-
-        /// <summary>
-        /// Validate the form before submitting.
-        /// Return true if valid; otherwise false and set error message.
-        /// </summary>
-        protected abstract bool Validate(out string errorMessage);
-
-        /// <summary>
-        /// Gather result payload for the form.
-        /// </summary>
-        protected abstract TResult GatherResult();
-
-        /// <summary>
-        /// External submit callback set by implementors.
+        ///     External submit callback set by implementors.
         /// </summary>
         protected Action<TResult> OnSubmit;
+
+        protected abstract string SubmitButtonLabel { get; }
+        protected abstract string CancelButtonLabel { get; }
 
         public void CreateGUI()
         {
@@ -107,8 +90,34 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             {
                 _submitButton.clicked += OnSubmitClicked;
             }
-            
+
             BuildView();
+        }
+
+        /// <summary>
+        ///     Called during CreateGUI after the UXML has been cloned and the base layout is ready.
+        ///     Implementors should build the view (bind data, create property fields, etc.).
+        /// </summary>
+        protected abstract void BuildView();
+
+        /// <summary>
+        ///     Validate the form before submitting.
+        ///     Return true if valid; otherwise false and set error message.
+        /// </summary>
+        protected abstract bool Validate(out string errorMessage);
+
+        /// <summary>
+        ///     Gather result payload for the form.
+        /// </summary>
+        protected abstract TResult GatherResult();
+
+        protected static Rect GetCenteredPosition(Vector2 size)
+        {
+            var main = EditorGUIUtility.GetMainWindowPosition();
+            var x = main.x + (main.width - size.x) * 0.5f;
+            var y = main.y + (main.height - size.y) * 0.5f;
+
+            return new Rect(x, y, size.x, size.y);
         }
 
         private void OnSubmitClicked()
@@ -116,21 +125,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             if (!Validate(out var error))
             {
                 if (!string.IsNullOrEmpty(error))
+                {
                     EditorUtility.DisplayDialog("Validation", error, "OK");
+                }
+
                 return;
             }
 
             var result = GatherResult();
             OnSubmit?.Invoke(result);
             Close();
-        }
-
-        protected static Rect GetCenteredPosition(Vector2 size)
-        {
-            var main = EditorGUIUtility.GetMainWindowPosition();
-            var x = main.x + (main.width - size.x) * 0.5f;
-            var y = main.y + (main.height - size.y) * 0.5f;
-            return new Rect(x, y, size.x, size.y);
         }
     }
 }

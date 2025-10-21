@@ -2,33 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
 {
     /// <summary>
-    /// Generic utility for creating a Type picker VisualElement for UIToolkit.
-    /// It lists all non-abstract, non-generic, concrete types assignable to the provided base type.
+    ///     Generic utility for creating a Type picker VisualElement for UIToolkit.
+    ///     It lists all non-abstract, non-generic, concrete types assignable to the provided base type.
     /// </summary>
     public static class TypePickerUtility
     {
-        public sealed class TypeItem
-        {
-            public string DisplayName { get; }
-            public Type Type { get; }
-            public override string ToString() => DisplayName;
-
-            public TypeItem(string displayName, Type type)
-            {
-                DisplayName = displayName;
-                Type = type;
-            }
-        }
-
         /// <summary>
-        /// Creates a dropdown field that allows picking a concrete type assignable to TBase.
+        ///     Creates a dropdown field that allows picking a concrete type assignable to TBase.
         /// </summary>
         /// <typeparam name="TBase">The base type or interface to filter by.</typeparam>
         /// <param name="current">Currently selected type (can be null).</param>
@@ -41,9 +26,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             Func<Type, bool> additionalFilter = null,
             Comparison<TypeItem> sorter = null)
         {
-            var items = GetAssignableConcreteTypes<TBase>(additionalFilter)
-                .Select(t => new TypeItem(GetNiceDisplayName(t), t))
-                .ToList();
+            var items = GetAssignableConcreteTypes<TBase>(additionalFilter).
+                Select(t => new TypeItem(GetNiceDisplayName(t), t)).ToList();
 
             // Add None option at the top
             items.Insert(0, new TypeItem("None", null));
@@ -70,72 +54,114 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
 
             // Set initial value
             var selectedIndex = 0;
+
             if (current != null)
             {
                 var found = items.FindIndex(i => i.Type == current);
+
                 if (found >= 0)
+                {
                     selectedIndex = found;
+                }
             }
+
             dropdown.index = selectedIndex;
 
             dropdown.RegisterValueChangedCallback(evt =>
             {
                 var idx = dropdown.index;
-                if (idx < 0 || idx >= items.Count) return;
+
+                if (idx < 0 || idx >= items.Count)
+                {
+                    return;
+                }
+
                 onChanged?.Invoke(items[idx].Type);
             });
 
             // Store items in userData for optional external inspection
             dropdown.userData = items;
+
             return dropdown;
         }
 
         /// <summary>
-        /// Retrieves all concrete types assignable to TBase using UnityEditor.TypeCache for performance.
+        ///     Retrieves all concrete types assignable to TBase using UnityEditor.TypeCache for performance.
         /// </summary>
         public static List<Type> GetAssignableConcreteTypes<TBase>(Func<Type, bool> additionalFilter = null)
         {
             var all = TypeCache.GetTypesDerivedFrom(typeof(TBase));
             var list = new List<Type>(all.Count);
+
             foreach (var t in all)
             {
-                if (t.IsAbstract) continue;
-                if (t.IsInterface) continue;
-                if (t.IsGenericTypeDefinition) continue;
-                if (additionalFilter != null && !additionalFilter(t)) continue;
+                if (t.IsAbstract)
+                {
+                    continue;
+                }
+
+                if (t.IsInterface)
+                {
+                    continue;
+                }
+
+                if (t.IsGenericTypeDefinition)
+                {
+                    continue;
+                }
+
+                if (additionalFilter != null && !additionalFilter(t))
+                {
+                    continue;
+                }
+
                 list.Add(t);
             }
+
             // Also consider the base type itself if it is concrete and assignable (rare for interfaces)
             var baseType = typeof(TBase);
+
             if (!baseType.IsInterface && !baseType.IsAbstract && !baseType.IsGenericTypeDefinition)
+            {
                 list.Add(baseType);
+            }
 
             // Sort by namespace then name for consistency
             list.Sort((a, b) => string.CompareOrdinal(GetNiceDisplayName(a), GetNiceDisplayName(b)));
+
             return list;
         }
 
         public static string GetNiceDisplayName(Type type)
         {
-            if (type == null) return "None";
+            if (type == null)
+            {
+                return "None";
+            }
+
             var ns = type.Namespace;
             var name = type.Name;
+
             return string.IsNullOrEmpty(ns) ? name : $"{ns}.{name}";
         }
 
         /// <summary>
-        /// Tries to set a SerializedProperty that stores a System.Type value.
-        /// Prefers boxedValue when supported; otherwise falls back to storing AssemblyQualifiedName in a string field.
+        ///     Tries to set a SerializedProperty that stores a System.Type value.
+        ///     Prefers boxedValue when supported; otherwise falls back to storing AssemblyQualifiedName in a string field.
         /// </summary>
         public static bool TrySetTypeOnProperty(SerializedProperty typeProp, Type selectedType)
         {
-            if (typeProp == null) return false;
+            if (typeProp == null)
+            {
+                return false;
+            }
 
             // Prefer explicit handling for string-backed fields (most common in Unity, since System.Type isn't serializable)
             if (typeProp.propertyType == SerializedPropertyType.String)
             {
                 typeProp.stringValue = selectedType != null ? selectedType.AssemblyQualifiedName : string.Empty;
                 typeProp.serializedObject.ApplyModifiedProperties();
+
                 return true;
             }
 
@@ -144,6 +170,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             {
                 typeProp.boxedValue = selectedType;
                 typeProp.serializedObject.ApplyModifiedProperties();
+
                 return true;
             }
             catch (Exception)
@@ -153,52 +180,80 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
         }
 
         /// <summary>
-        /// Tries to get a System.Type from a SerializedProperty prioritizing string-backed storage; otherwise
-        /// falls back to boxedValue when supported. Includes robust resolution across loaded assemblies.
+        ///     Tries to get a System.Type from a SerializedProperty prioritizing string-backed storage; otherwise
+        ///     falls back to boxedValue when supported. Includes robust resolution across loaded assemblies.
         /// </summary>
         public static Type TryGetTypeFromProperty(SerializedProperty typeProp)
         {
-            if (typeProp == null) return null;
+            if (typeProp == null)
+            {
+                return null;
+            }
 
             // Prefer string-backed retrieval first to avoid boxedValue pitfalls on string properties
             if (typeProp.propertyType == SerializedPropertyType.String)
             {
                 var aqn = typeProp.stringValue;
-                if (string.IsNullOrWhiteSpace(aqn)) return null;
+
+                if (string.IsNullOrWhiteSpace(aqn))
+                {
+                    return null;
+                }
 
                 // 1) Direct AQN lookup
                 var resolved = Type.GetType(aqn);
-                if (resolved != null) return resolved;
+
+                if (resolved != null)
+                {
+                    return resolved;
+                }
 
                 // 2) Try without assembly part (FullName only)
                 var nameOnly = aqn;
                 var commaIdx = aqn.IndexOf(',');
+
                 if (commaIdx > 0)
+                {
                     nameOnly = aqn.Substring(0, commaIdx).Trim();
+                }
 
                 resolved = Type.GetType(nameOnly);
-                if (resolved != null) return resolved;
+
+                if (resolved != null)
+                {
+                    return resolved;
+                }
 
                 // 3) Scan loaded assemblies for matches by AQN or FullName
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
                 foreach (var asm in assemblies)
                 {
                     try
                     {
                         // Fast path: assembly-local lookup by full name
-                        var t = asm.GetType(nameOnly, throwOnError: false, ignoreCase: false);
-                        if (t != null) return t;
+                        var t = asm.GetType(nameOnly, false, false);
+
+                        if (t != null)
+                        {
+                            return t;
+                        }
 
                         // Fallback: enumerate types and match more strictly
                         foreach (var candidate in asm.GetTypes())
                         {
                             var candAqn = candidate.AssemblyQualifiedName;
+
                             if (!string.IsNullOrEmpty(candAqn) && string.Equals(candAqn, aqn, StringComparison.Ordinal))
+                            {
                                 return candidate;
+                            }
 
                             if (string.Equals(candidate.FullName, aqn, StringComparison.Ordinal) ||
                                 string.Equals(candidate.FullName, nameOnly, StringComparison.Ordinal))
+                            {
                                 return candidate;
+                            }
                         }
                     }
                     catch
@@ -215,11 +270,29 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             try
             {
                 var obj = typeProp.boxedValue;
+
                 return obj as Type;
             }
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        public sealed class TypeItem
+        {
+            public string DisplayName { get; }
+            public Type Type { get; }
+
+            public TypeItem(string displayName, Type type)
+            {
+                DisplayName = displayName;
+                Type = type;
+            }
+
+            public override string ToString()
+            {
+                return DisplayName;
             }
         }
     }

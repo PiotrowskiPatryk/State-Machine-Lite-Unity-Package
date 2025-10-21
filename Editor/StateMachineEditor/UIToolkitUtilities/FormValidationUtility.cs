@@ -1,11 +1,9 @@
 using Dev.Cortez.StateMachines.Core.Interfaces;
-using UnityEditor;
-using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
 {
     /// <summary>
-    /// Simple validators for editor forms.
+    ///     Simple validators for editor forms.
     /// </summary>
     public static class FormValidationUtility
     {
@@ -14,9 +12,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             if (string.IsNullOrWhiteSpace(value))
             {
                 message = fieldName + " is required.";
+
                 return false;
             }
+
             message = null;
+
             return true;
         }
 
@@ -25,9 +26,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             if (string.IsNullOrWhiteSpace(typeName))
             {
                 message = "Type is required.";
+
                 return false;
             }
+
             message = null;
+
             return true;
         }
 
@@ -36,6 +40,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             if (payload == null)
             {
                 message = null; // Payload is optional unless trigger type demands it; drawer ensures presence when needed.
+
                 return true;
             }
 
@@ -44,6 +49,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
                 if (!payload.IsValid())
                 {
                     message = "Payload is invalid.";
+
                     return false;
                 }
             }
@@ -53,6 +59,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
             }
 
             message = null;
+
             return true;
         }
     }

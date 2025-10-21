@@ -12,7 +12,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
     {
         [SerializeField]
         private VisualTreeAsset _visualTreeAsset;
-        
+
         private SerializedObject _serializedObject;
 
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
@@ -21,48 +21,51 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             var listView = root.Q<MultiColumnListView>("ListView");
             var newStateMachineButton = root.Q<Button>("NewStateMachineButton");
             var stateMachinesProperty = property.FindPropertyRelative("_stateMachines");
-            
-            listView.BindColumnWithProperty(StateMachineDefinition.ID_PROPERTY_NAME, stateMachinesProperty, StateMachineDefinition.ID_PROPERTY_NAME);
-            listView.BindColumnWithProperty(StateMachineDefinition.NAME_PROPERTY_NAME, stateMachinesProperty, StateMachineDefinition.NAME_PROPERTY_NAME);
-            listView.BindColumnWithProperty(StateMachineDefinition.DESCRIPTION_PROPERTY_NAME, stateMachinesProperty, StateMachineDefinition.DESCRIPTION_PROPERTY_NAME);
-            listView.BindColumnWithProperty(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, stateMachinesProperty, StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, true);
-            listView.BindColumnWithProperty(StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME,  stateMachinesProperty, StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME, true);
-            
+
+            _serializedObject = property.serializedObject;
+
+            listView.BindColumnWithProperty(StateMachineDefinition.ID_PROPERTY_NAME, stateMachinesProperty,
+                StateMachineDefinition.ID_PROPERTY_NAME);
+            listView.BindColumnWithProperty(StateMachineDefinition.NAME_PROPERTY_NAME, stateMachinesProperty,
+                StateMachineDefinition.NAME_PROPERTY_NAME);
+            listView.BindColumnWithProperty(StateMachineDefinition.DESCRIPTION_PROPERTY_NAME, stateMachinesProperty,
+                StateMachineDefinition.DESCRIPTION_PROPERTY_NAME);
+            listView.BindColumnWithProperty(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME,
+                stateMachinesProperty, StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, true);
+            listView.BindColumnWithProperty(StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME,
+                stateMachinesProperty, StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME, true);
+
             void Refresh()
             {
                 listView.ResetAndRefreshFromArray(stateMachinesProperty);
             }
-            
+
             RowActionButtonsUtility.WireLastColumnEditDelete(listView, stateMachinesProperty,
-                onEdit: index =>
-                {
-                   Debug.Log($"Pressed button to edit state machine with index {index}");
-                },
-                onDelete: index =>
-                {
-                    Debug.Log($"Pressed button to remove state machine with index {index}");
-                });
-            
+                index => { Debug.Log($"Pressed button to edit state machine with index {index}"); },
+                index => { Debug.Log($"Pressed button to remove state machine with index {index}"); });
+
             newStateMachineButton.clicked += () =>
             {
                 var so = stateMachinesProperty.serializedObject;
                 so.Update();
-                
+
                 var index = stateMachinesProperty.arraySize;
                 stateMachinesProperty.InsertArrayElementAtIndex(index);
                 so.ApplyModifiedProperties();
-                
+
                 Refresh();
-                
-                Debug.Log($"Pressed button to create new state machine");
+
+                Debug.Log("Pressed button to create new state machine");
             };
-            
+
             listView.onItemsChosen += _ =>
             {
+                var stateMachineDefinition = _serializedObject;
+
                 var index = listView.selectedIndex;
-                Debug.Log($"Selected state machine with index {index}");
+                // StateMachineMenuWindow.Show(_serializedObject.targetObject);
             };
-            
+
             return root;
         }
     }

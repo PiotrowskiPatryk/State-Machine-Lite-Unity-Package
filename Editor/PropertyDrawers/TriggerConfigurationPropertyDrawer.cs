@@ -1,10 +1,10 @@
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
-using UnityEditor;
-using UnityEngine.UIElements;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
 {
@@ -13,7 +13,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
     {
         [SerializeField]
         private VisualTreeAsset _visualTreeAsset;
-        
+
         private SerializedObject _serializedObject;
 
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
@@ -24,10 +24,14 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             var triggersProperty = property.FindPropertyRelative("_triggers");
 
             // Bind columns (keeps nice type name rendering via extension)
-            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Id, triggersProperty, TriggerDefinitionPropertyNames.Id);
-            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Name, triggersProperty, TriggerDefinitionPropertyNames.Name);
-            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.TypeName, triggersProperty, TriggerDefinitionPropertyNames.TypeName, true);
-            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Description, triggersProperty, TriggerDefinitionPropertyNames.Description);
+            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Id, triggersProperty,
+                TriggerDefinitionPropertyNames.Id);
+            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Name, triggersProperty,
+                TriggerDefinitionPropertyNames.Name);
+            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.TypeName, triggersProperty,
+                TriggerDefinitionPropertyNames.TypeName, true);
+            listView.BindColumnWithProperty(TriggerDefinitionPropertyNames.Description, triggersProperty,
+                TriggerDefinitionPropertyNames.Description);
 
             void Refresh()
             {
@@ -36,7 +40,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
 
             // Wire Edit/Delete buttons via reusable utility
             RowActionButtonsUtility.WireLastColumnEditDelete(listView, triggersProperty,
-                onEdit: index =>
+                index =>
                 {
                     TriggerDefinitionEditorUtility.OpenEditForm(triggersProperty, index, result =>
                     {
@@ -48,7 +52,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
                         Refresh();
                     });
                 },
-                onDelete: index =>
+                index =>
                 {
                     var element = triggersProperty.GetArrayElementAtIndex(index);
                     var nameProp = element.FindPropertyRelative(TriggerDefinitionPropertyNames.Name);
@@ -59,7 +63,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
                         : $"Are you sure you want to delete '{name}'?";
 
                     var confirm = EditorUtility.DisplayDialog(title, message, "Delete", "Cancel");
-                    
+
                     if (!confirm)
                     {
                         return;
@@ -94,7 +98,11 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             listView.onItemsChosen += _ =>
             {
                 var index = listView.selectedIndex;
-                if (index < 0 || index >= triggersProperty.arraySize) return;
+
+                if (index < 0 || index >= triggersProperty.arraySize)
+                {
+                    return;
+                }
 
                 TriggerDefinitionEditorUtility.OpenEditForm(triggersProperty, index, result =>
                 {
