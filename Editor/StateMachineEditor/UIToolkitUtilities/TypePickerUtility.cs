@@ -22,7 +22,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities
         /// <param name="additionalFilter">Optional additional filter for types.</param>
         /// <param name="sorter">Optional custom sorter for items.</param>
         /// <returns>DropdownField bound to the provided values.</returns>
-        public static DropdownField CreateForBase<TBase>(Type current, Action<Type> onChanged, string label = null,
+        public static DropdownField CreateTypePicker<TBase>(Type current, Action<Type> onChanged, string label = null,
             Func<Type, bool> additionalFilter = null,
             Comparison<TypeItem> sorter = null)
         {

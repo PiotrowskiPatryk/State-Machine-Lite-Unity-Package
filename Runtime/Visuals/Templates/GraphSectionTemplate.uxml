@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement name="GraphSection" style="flex-grow: 1;">
+        <ui:VisualElement name="NodesContainer" style="flex-grow: 1; right: 0; bottom: 0; top: 0; left: 0; position: relative;" />
+    </ui:VisualElement>
+</ui:UXML>

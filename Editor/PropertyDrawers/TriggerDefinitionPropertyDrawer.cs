@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core;
 using Dev.Cortez.StateMachines.Core.Interfaces;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Definition;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.UIToolkitUtilities;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -16,7 +16,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
     [CustomPropertyDrawer(typeof(TriggerDefinition))]
     public sealed class TriggerDefinitionPropertyDrawer : PropertyDrawer
     {
-        private static readonly Dictionary<string, IPayload> s_PayloadCache = new();
+        private static readonly Dictionary<string, IPayload> PAYLOAD_CACHE = new();
 
         [SerializeField]
         private VisualTreeAsset _visualTreeAsset;
@@ -36,7 +36,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             TryCacheCurrentPayload(property, typeProp, payloadProp);
 
             // Create a dropdown for types implementing ITrigger
-            var dropdown = TypePickerUtility.CreateForBase<ITrigger>(currentType, selected =>
+            var dropdown = TypePickerUtility.CreateTypePicker<ITrigger>(currentType, selected =>
             {
                 var so = property.serializedObject;
                 so.Update();
@@ -158,7 +158,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
                 if (value != null)
                 {
                     var key = BuildCacheKey(rootProperty, typeName);
-                    s_PayloadCache[key] = value;
+                    PAYLOAD_CACHE[key] = value;
                 }
             }
             catch
@@ -188,7 +188,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             var typeName = triggerType.AssemblyQualifiedName;
             var key = BuildCacheKey(rootProperty, typeName);
 
-            if (key != null && s_PayloadCache.TryGetValue(key, out var payload))
+            if (key != null && PAYLOAD_CACHE.TryGetValue(key, out var payload))
             {
                 return payload;
             }

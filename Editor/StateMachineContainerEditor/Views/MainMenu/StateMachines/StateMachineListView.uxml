@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:MultiColumnListView name="StateMachineListView" virtualization-method="DynamicHeight" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.StateMachineConfigurationViewModel, Dev.Cortez.StateMachines.Editor">
+        <Bindings>
+            <ui:DataBinding property="itemsSource" data-source-path="StateMachines" />
+        </Bindings>
+        <ui:Columns primary-column-name="Id">
+            <ui:Column name="Id" title="Id" stretchable="true" />
+            <ui:Column name="Name" title="Name" stretchable="true" />
+            <ui:Column name="Description" title="Description" stretchable="true" />
+            <ui:Column name="Type" title="Type" stretchable="true" />
+            <ui:Column cell-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineContainerEditor/CustomElements/TableItemButtons.uxml?fileID=9197481963319205126&amp;guid=d7807b0c1a28a9645889e99e42ab2369&amp;type=3#TableItemButtons" min-width="80px" max-width="80px" />
+        </ui:Columns>
+    </ui:MultiColumnListView>
+</ui:UXML>

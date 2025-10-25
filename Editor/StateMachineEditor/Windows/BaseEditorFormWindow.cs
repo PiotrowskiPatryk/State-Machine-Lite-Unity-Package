@@ -33,10 +33,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             root.Clear();
             root.style.flexGrow = 1f;
             root.StretchToParentSize();
-            root.style.paddingLeft = 0;
-            root.style.paddingRight = 0;
-            root.style.paddingTop = 0;
-            root.style.paddingBottom = 0;
 
             if (_visualTreeAsset != null)
             {
@@ -51,7 +47,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             }
             else
             {
-                // Minimal fallback UI if no UXML is provided
                 _rootContainer = new VisualElement { style = { flexGrow = 1f } };
                 root.Add(_rootContainer);
 
@@ -60,10 +55,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
                     style =
                     {
                         flexDirection = FlexDirection.Row,
-                        justifyContent = Justify.FlexEnd,
-                        marginTop = 6
+                        justifyContent = Justify.FlexEnd
                     }
                 };
+
                 root.Add(buttons);
                 _submitButton = new Button { text = SubmitButtonLabel };
                 _cancelButton = new Button { text = CancelButtonLabel };

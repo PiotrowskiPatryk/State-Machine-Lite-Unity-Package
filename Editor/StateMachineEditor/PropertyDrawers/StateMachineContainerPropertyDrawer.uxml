@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement class="background-main" style="flex-grow: 1; justify-content: center; align-items: stretch; align-content: flex-start; padding-top: 50px; padding-bottom: 50px; align-self: auto;">
+        <ui:Label tabindex="-1" text="State Machine Container" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header text" style="color: rgb(255, 255, 255); -unity-font: url(&apos;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&apos;); font-size: 30px; -unity-font-style: bold; align-items: center; align-self: center;" />
+        <ui:VisualElement name="Separator" style="flex-grow: 1; max-height: 80px; min-height: 80px;" />
+        <ui:Button text="Open Editor" name="OpenEditorButton" style="min-height: 50px; max-height: 50px;" />
+    </ui:VisualElement>
+</ui:UXML>

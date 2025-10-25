@@ -100,7 +100,7 @@
     padding-bottom: 5px;
 }
 
-.unity-text-field__label {
+.unity-base-field__label {
     margin-bottom: 5px;
     -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Medium.ttf?fileID=12800000&guid=7c9798c1e9b61304baf3ecef769b48f9&type=3#Inter_18pt-Medium");
     color: rgb(146, 173, 201);
@@ -118,13 +118,13 @@
     -unity-font-definition: url("project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Fonts/Inter_18pt-Bold.ttf?fileID=12800000&guid=2e1527e5f7d2b0546ba028b67a53d316&type=3#Inter_18pt-Bold");
     min-height: 25px;
     border-top-color: rgb(255, 255, 255);
-    border-left-color: rgba(255, 255, 255, 0);
-    border-right-color: rgba(255, 255, 255, 0);
+    border-left-color: rgb(50, 77, 103);
+    border-right-color: rgb(50, 77, 103);
     border-bottom-color: rgb(255, 255, 255);
     border-top-width: 0;
     border-bottom-width: 0;
-    border-right-width: 0;
-    border-left-width: 0;
+    border-right-width: 1px;
+    border-left-width: 1px;
 }
 
 .unity-collection-view {
@@ -140,4 +140,25 @@
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
     border-bottom-left-radius: 3px;
+    background-color: rgba(16, 25, 34, 0);
+}
+
+.unity-vector2-int-field .unity-base-field {
+    align-content: flex-start;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+}
+
+.unity-scroll-view__content-container {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.text-white {
+    color: rgb(255, 255, 255);
+}
+
+.unity-multi-column-view__cell > .unity-label {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
