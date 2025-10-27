@@ -1,4 +1,3 @@
-using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +30,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.PropertyDr
 
         private void OnOpenEditorButtonPressed()
         {
-            StateMachineContainerEditorCoordinator.Show(serializedObject);
+            Core.StateMachineContainerEditor.Show(serializedObject);
         }
     }
 }

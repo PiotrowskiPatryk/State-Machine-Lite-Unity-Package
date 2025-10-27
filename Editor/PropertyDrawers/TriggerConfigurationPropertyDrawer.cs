@@ -79,7 +79,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             // Add new trigger
             newTriggerButton.clicked += () =>
             {
-                TriggerForm.Show(result =>
+                LegacyTriggerForm.Show(result =>
                 {
                     var so = triggersProperty.serializedObject;
                     so.Update();

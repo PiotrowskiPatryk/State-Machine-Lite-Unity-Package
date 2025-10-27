@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78f6bcb542fa476b9083edffdb3f868a, type: 3}
+  m_Name: StateMachineContainer
+  m_EditorClassIdentifier: 
+  _triggerConfiguration:
+    _triggers:
+    - _id: 5f372774d3d74edabe732ecdba4c8ab0
+      _name: Test
+      _description: Description
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.OneFrameTrigger, Dev.Cortez.StateMachines,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: -2
+    - _id: e60e5365f31741949d849350c46ec006
+      _name: Time delayed
+      _description: 12
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.TimeDelayedTrigger, Dev.Cortez.StateMachines,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: 7485648386469920870
+    - _id: 6913605b7d6c48a7a0df0835417a06cb
+      _name: Player attacked
+      _description: Test
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.UserInputActionBasedTrigger,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: 7485648386469920872
+    - _id: a5a7e6c06e0544e4ba142c19d9ef9eb7
+      _name: New trigger
+      _description: Test
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.TimeDelayedTrigger, Dev.Cortez.StateMachines,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: 7485648389690097756
+  _stateMachineConfiguration:
+    _stateMachines: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 7485648386469920870
+      type: {class: TimeDelayTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+      data:
+        delayInSeconds: 15
+    - rid: 7485648386469920872
+      type: {class: UserInputActionBasedTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+      data:
+        inputActionReference: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        actionType: 1
+    - rid: 7485648389690097756
+      type: {class: TimeDelayTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+      data:
+        delayInSeconds: 2137

@@ -7,10 +7,9 @@ namespace Dev.Cortez.StateMachines.Core
 {
     public interface ITrigger : IIdentifiable, IAsyncDisposable
     {
-        bool IsTriggered { get; }
-        
         event Action<ITrigger, bool> TriggeredValueChanged;
-    
+        bool IsTriggered { get; }
+
         UniTask<bool> TriggerValueAsync(bool targetValue, CancellationToken cancellationToken);
     }
 

@@ -22,7 +22,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
 
         public TypePickerDropdownField()
         {
-            RegisterCallback<AttachToPanelEvent>(_ => TryPopulateFromUxml());
+            RegisterCallback<AttachToPanelEvent>(_ => TryPopulate());
+        }
+
+        public void ChangeType(Type newType, Type initialSelection = null)
+        {
+            BaseTypeName = newType?.AssemblyQualifiedName;
+            TryPopulate(initialSelection);
         }
 
         public void SetTypes(IEnumerable<Type> types, Type initialSelection = null)
@@ -32,13 +38,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
             _typeToDisplay.Clear();
             choices.Clear();
 
-            var concrete = types.Where(t => t != null && !t.IsAbstract && !t.IsGenericTypeDefinition).Distinct().
+            var concrete = types.Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false }).Distinct().
                 ToList();
 
             _types.AddRange(concrete);
 
             // Build labels: short names, disambiguate duplicates with namespace in parentheses.
-            var byShort = _types.GroupBy(t => t.Name);
+            var byShort = _types.GroupBy(type => type.Name);
 
             foreach (var group in byShort)
             {
@@ -47,8 +53,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
                 foreach (var t in group)
                 {
                     var label = hasCollision
-                        ? $"{t.Name} ({(string.IsNullOrEmpty(t.Namespace) ? "global" : t.Namespace)})"
-                        : t.Name;
+                        ? $"{t.AssemblyQualifiedName} ({(string.IsNullOrEmpty(t.Namespace) ? "global" : t.Namespace)})"
+                        : t.AssemblyQualifiedName;
 
                     _typeToDisplay[t] = label;
                     _displayToType[label] = t;
@@ -74,7 +80,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
             }
         }
 
-        private void TryPopulateFromUxml()
+        private void TryPopulate(Type initialSelection = null)
         {
             if (string.IsNullOrEmpty(BaseTypeName))
             {
@@ -95,7 +101,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
                 assignables = assignables.Append(baseType);
             }
 
-            SetTypes(assignables);
+            SetTypes(assignables, initialSelection);
         }
     }
 }

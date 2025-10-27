@@ -12,7 +12,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
     /// </summary>
     public static class TriggerDefinitionEditorUtility
     {
-        public static void WriteFromResult(SerializedProperty elementProp, TriggerForm.Result result)
+        public static void WriteFromResult(SerializedProperty elementProp, LegacyTriggerForm.Result result)
         {
             if (elementProp == null || result == null)
             {
@@ -108,7 +108,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             }
         }
 
-        public static void OpenEditForm(SerializedProperty arrayProp, int index, Action<TriggerForm.Result> onSaved)
+        public static void OpenEditForm(SerializedProperty arrayProp, int index,
+            Action<LegacyTriggerForm.Result> onSaved)
         {
             if (arrayProp == null || index < 0 || index >= arrayProp.arraySize)
             {
@@ -117,7 +118,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
 
             var element = arrayProp.GetArrayElementAtIndex(index);
             ReadToArgs(element, out var id, out var name, out var description, out var typeName, out var payload);
-            TriggerForm.ShowEdit(id, name, description, typeName, payload, onSaved);
+            LegacyTriggerForm.ShowEdit(id, name, description, typeName, payload, onSaved);
         }
     }
 }

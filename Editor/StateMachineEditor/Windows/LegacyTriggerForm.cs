@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
 {
-    public class TriggerForm : BaseEditorFormWindow<TriggerForm.Result>
+    public class LegacyTriggerForm : BaseEditorFormWindow<LegacyTriggerForm.Result>
     {
         private Mode _mode = Mode.Create;
         private string _initialId;
@@ -28,7 +28,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
 
         public static void Show(Action<Result> onCreate)
         {
-            var window = CreateInstance<TriggerForm>();
+            var window = CreateInstance<LegacyTriggerForm>();
             window._mode = Mode.Create;
             window.OnSubmit = onCreate;
             window.titleContent = new GUIContent("New Trigger");
@@ -40,7 +40,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
         public static void ShowEdit(string id, string name, string description, string typeName, IPayload payload,
             Action<Result> onSave)
         {
-            var window = CreateInstance<TriggerForm>();
+            var window = CreateInstance<LegacyTriggerForm>();
             window._mode = Mode.Edit;
             window.OnSubmit = onSave;
             window._initialId = id;

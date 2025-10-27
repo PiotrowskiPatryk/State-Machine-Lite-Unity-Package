@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data;
 using Unity.Properties;
 using UnityEditor;
+using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 {
@@ -77,8 +78,26 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             Notify(nameof(StateMachinesCount));
         }
 
-        public void RemoveStateMachine(int index)
+        public void RemoveStateMachineAtIndex(int index)
         {
+            if (index < 0 || index >= StateMachinesCount)
+            {
+                Debug.LogError($"Invalid index {index} for state machine count {StateMachinesCount}");
+
+                return;
+            }
+
+            var stateMachinesProperty =
+                SerializedProperty.FindPropertyRelative(StateMachineConfiguration.STATE_MACHINES_PROPERTY_NAME);
+
+            Undo.RecordObject(stateMachinesProperty.serializedObject.targetObject, "Remove state machine");
+
+            stateMachinesProperty.serializedObject.Update();
+            stateMachinesProperty.DeleteArrayElementAtIndex(index);
+            stateMachinesProperty.serializedObject.ApplyModifiedProperties();
+
+            Notify(nameof(StateMachines));
+            Notify(nameof(StateMachinesCount));
         }
     }
 }

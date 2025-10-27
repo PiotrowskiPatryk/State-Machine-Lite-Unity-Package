@@ -1,11 +1,17 @@
-﻿using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Definition;
+﻿using System;
+using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Definition;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Utilities;
 using Unity.Properties;
 using UnityEditor;
+using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 {
     public sealed class TriggerDefinitionViewModel : ViewModelBase
     {
+        private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
+
         [CreateProperty]
         public string Id
         {
@@ -31,14 +37,61 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         public string TypeName
         {
             get => SerializedProperty.FindPropertyRelative(TriggerDefinition.TYPE_NAME_PROPERTY_NAME).stringValue;
-            set => ApplyPropertyValueString(TriggerDefinition.TYPE_NAME_PROPERTY_NAME, value);
+            set
+            {
+                if (TypeName.Equals(value))
+                {
+                    return;
+                }
+
+                var triggerPayloadType = StateMachineReflectionUtilities.GetTriggerPayloadType(value);
+
+                ApplyPropertyValueString(TriggerDefinition.TYPE_NAME_PROPERTY_NAME, value);
+
+                _payloadSwitcher.SwitchTo(triggerPayloadType);
+
+                Debug.Log($"Setting type name to {value}");
+            }
         }
+
+        [CreateProperty]
+        public SerializedProperty Payload =>
+            SerializedProperty.FindPropertyRelative(TriggerDefinition.PAYLOAD_PROPERTY_NAME);
 
         protected override SerializedProperty SerializedProperty { get; }
 
         public TriggerDefinitionViewModel(SerializedProperty serializedProperty)
         {
             SerializedProperty = serializedProperty;
+            _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
+        }
+
+        public TriggerDefinitionViewModel()
+        {
+            // TODO - Handle disposal
+            var definitionWrapper = ScriptableObject.CreateInstance<TriggerDefinitionWrapper>();
+            SerializedProperty = new SerializedObject(definitionWrapper).FindProperty("Data");
+            Id = Guid.NewGuid().ToString("N");
+            _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
+        }
+
+        public TriggerDefinitionViewModel(TriggerDefinitionViewModel triggerDefinitionViewModel)
+        {
+            SerializedProperty = triggerDefinitionViewModel.SerializedProperty.Copy();
+            _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
+        }
+
+        public void CopyFrom(TriggerDefinitionViewModel other)
+        {
+            Id = other.Id;
+            Name = other.Name;
+            Description = other.Description;
+            TypeName = other.TypeName;
+            Payload.managedReferenceValue = other.Payload.managedReferenceValue;
+        }
+
+        internal class TriggerDefinitionWrapper : DefinitionWrapper<TriggerDefinition>
+        {
         }
     }
 }

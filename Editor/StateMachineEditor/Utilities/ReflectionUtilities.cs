@@ -11,20 +11,17 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
         public static List<TypePickerUtility.TypeItem> GetAssignableConcreteTypes<TBase>()
         {
             return ListAssignableConcreteTypes<TBase>().
-                Select(t => new TypePickerUtility.TypeItem(GetNiceDisplayName(t), t)).ToList();
+                Select(t => new TypePickerUtility.TypeItem(GetDisplayName(t), t)).ToList();
         }
 
-        private static string GetNiceDisplayName(Type type)
+        private static string GetDisplayName(Type type)
         {
             if (type == null)
             {
                 return "None";
             }
 
-            var ns = type.Namespace;
-            var name = type.Name;
-
-            return string.IsNullOrEmpty(ns) ? name : $"{ns}.{name}";
+            return type.AssemblyQualifiedName;
         }
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             }
 
             // Sort by namespace then name for consistency
-            list.Sort((a, b) => string.CompareOrdinal(GetNiceDisplayName(a), GetNiceDisplayName(b)));
+            list.Sort((a, b) => string.CompareOrdinal(GetDisplayName(a), GetDisplayName(b)));
 
             return list;
         }
