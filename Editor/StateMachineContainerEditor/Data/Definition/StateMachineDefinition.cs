@@ -34,7 +34,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         [SerializeField]
         private List<StateDefinition> _states;
 
-        [SerializeField]
+        [SerializeReference]
         private IPayload _payload;
 
         public string Id => _id;

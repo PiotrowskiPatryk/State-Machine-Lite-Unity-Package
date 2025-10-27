@@ -29,7 +29,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         [SerializeField]
         private string _typeName;
 
-        [SerializeField]
+        [SerializeReference]
         private IPayload _payload;
 
         public Vector2 NodePosition => _nodePosition;

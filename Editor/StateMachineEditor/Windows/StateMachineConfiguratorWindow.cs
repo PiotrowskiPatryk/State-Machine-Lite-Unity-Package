@@ -49,9 +49,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
             root.dataSource = _stateMachineDefinitionViewModel;
 
             root.Q<DropdownField>("StateMachineTypeDropdown").RegisterValueChangedCallback(newValue =>
-                _stateMachineDefinitionViewModel.StateMachineType = newValue.newValue);
+                _stateMachineDefinitionViewModel.TypeName = newValue.newValue);
             root.Q<DropdownField>("TransitionSolverTypeDropdown").RegisterValueChangedCallback(newValue =>
-                _stateMachineDefinitionViewModel.TransitionSolverType = newValue.newValue);
+                _stateMachineDefinitionViewModel.TransitionSolverTypeName = newValue.newValue);
         }
 
         private void BindItem(VisualElement visualElement, int index)

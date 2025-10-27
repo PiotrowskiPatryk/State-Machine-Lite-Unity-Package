@@ -27,7 +27,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
             var stateMachinesProperty = property.FindPropertyRelative("_stateMachines");
 
             _stateMachineConfigurationViewModel = new StateMachineConfigurationViewModel(property);
-            _stateMachineConfigurationViewModel.OnStateMachineAdded += OnStateMachineAdded;
+            // _stateMachineConfigurationViewModel.OnStateMachineAdded += OnStateMachineAdded;
             _serializedObject = property.serializedObject;
 
             _listView.BindColumnWithProperty(StateMachineDefinition.ID_PROPERTY_NAME, stateMachinesProperty,
@@ -45,7 +45,7 @@ namespace Dev.Cortez.StateMachines.Editor.PropertyDrawers
                 index => { Debug.Log($"Pressed button to edit state machine with index {index}"); },
                 index => { Debug.Log($"Pressed button to remove state machine with index {index}"); });
 
-            newStateMachineButton.clicked += () => _stateMachineConfigurationViewModel.AddStateMachine();
+            // newStateMachineButton.clicked += () => _stateMachineConfigurationViewModel.AddStateMachine();
 
             _listView.selectedIndicesChanged += _ =>
             {

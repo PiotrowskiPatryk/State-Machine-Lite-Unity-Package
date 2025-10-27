@@ -22,7 +22,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
 
         public TypePickerDropdownField()
         {
-            RegisterCallback<AttachToPanelEvent>(_ => TryPopulate());
+            RegisterCallback<AttachToPanelEvent>(OnAttachedToPanel);
         }
 
         public void ChangeType(Type newType, Type initialSelection = null)
@@ -102,6 +102,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields
             }
 
             SetTypes(assignables, initialSelection);
+        }
+
+        private void OnAttachedToPanel(AttachToPanelEvent attachToPanelEvent)
+        {
+            if (BaseTypeName != null && SelectedType == null)
+            {
+                TryPopulate();
+            }
         }
     }
 }

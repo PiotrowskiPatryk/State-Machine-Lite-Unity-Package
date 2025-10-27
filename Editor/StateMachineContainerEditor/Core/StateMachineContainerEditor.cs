@@ -1,8 +1,10 @@
 ﻿using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.StateMachineForm;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Trigger;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.MainMenu;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.StateMachineMenu;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -55,6 +57,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             };
 
             root.Add(_mainMenuView);
+
+            ShowMainMenuView();
         }
 
         private void BindData()
@@ -101,7 +105,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
 
         private void OnPressedNewStateMachineButton()
         {
-            _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.AddStateMachine();
+            var stateMachineDefinitionViewModel = new StateMachineDefinitionViewModel();
+
+            FormBaseWindow<StateMachineDefinitionViewModel>.Show<StateMachineForm>(
+                stateMachineDefinitionViewModel,
+                _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.AddStateMachine);
         }
 
         private void OnPressedNewTriggerButton()
@@ -143,12 +151,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
 
         private void OnPressedEditStateMachineButton(int index)
         {
+            var stateMachineViewModel =
+                _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.StateMachines[index];
+
+            ShowStateMachineMenuView(stateMachineViewModel);
         }
 
         private void OnPressedDeleteStateMachineButton(int index)
         {
             var stateMachineName = _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.
-                GetStateMachineByIndex(index).StateMachineName;
+                GetStateMachineByIndex(index).Name;
             var confirmedAction = ShowDialogWindow("Delete state machine",
                 $"Are you sure you want to delete this state machine {stateMachineName}?", "Yes", "No");
 
@@ -158,6 +170,41 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
                     RemoveStateMachineAtIndex(index);
                 ShowDialogWindow("State machine deleted", "State machine deleted", "Ok");
             }
+        }
+
+        private void ShowStateMachineMenuView(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
+        {
+            _mainMenuView.ClearCustomContent();
+
+            var stateMachineMenuView = new StateMachineMenuView
+            {
+                style =
+                {
+                    // TODO - Do it properly
+                    flexGrow = 1,
+                    flexShrink = 0,
+                    flexBasis = 0
+                }
+            };
+
+            stateMachineMenuView.SaveButtonPressed += newData =>
+            {
+                _stateMachineContainerViewModelRegistry.
+                    StateMachineConfigurationViewModel.UpdateState(newData);
+
+                ShowMainMenuView();
+            };
+
+            stateMachineMenuView.ExitButtonPressed += ShowMainMenuView;
+
+            stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
+
+            _mainMenuView.DisplayCustomContent(stateMachineMenuView);
+        }
+
+        private void ShowMainMenuView()
+        {
+            _mainMenuView.ClearCustomContent();
         }
     }
 }

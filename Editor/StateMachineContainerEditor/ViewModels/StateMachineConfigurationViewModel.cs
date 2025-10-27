@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data;
 using Unity.Properties;
 using UnityEditor;
@@ -9,8 +9,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 {
     public sealed class StateMachineConfigurationViewModel : ViewModelBase
     {
-        public event Action<StateMachineDefinitionViewModel> OnStateMachineAdded;
-
         [CreateProperty]
         public int StateMachinesCount => SerializedProperty.
             FindPropertyRelative(StateMachineConfiguration.STATE_MACHINES_PROPERTY_NAME).arraySize;
@@ -50,29 +48,27 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
                     GetArrayElementAtIndex(index));
         }
 
-        public void AddStateMachine()
+        public void AddStateMachine(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
         {
             var stateMachinesProperty =
                 SerializedProperty.FindPropertyRelative(StateMachineConfiguration.STATE_MACHINES_PROPERTY_NAME);
 
             Undo.RecordObject(stateMachinesProperty.serializedObject.targetObject, "Create new state machine");
 
-            stateMachinesProperty.serializedObject.Update();
+            var so = stateMachinesProperty.serializedObject;
+            so.Update();
+
             stateMachinesProperty.InsertArrayElementAtIndex(stateMachinesProperty.arraySize);
-            stateMachinesProperty.serializedObject.ApplyModifiedProperties();
+
+            so.ApplyModifiedProperties();
 
             var newStateMachineProperty =
                 stateMachinesProperty.GetArrayElementAtIndex(stateMachinesProperty.arraySize - 1);
 
-            var stateMachineDefinitionViewModel = new StateMachineDefinitionViewModel(newStateMachineProperty)
-            {
-                StateMachineId = Guid.NewGuid().ToString("N"),
-                StateMachineName = "New State Machine"
-            };
+            var newStateMachine = new StateMachineDefinitionViewModel(newStateMachineProperty);
+            newStateMachine.CopyFrom(stateMachineDefinitionViewModel);
 
-            stateMachinesProperty.serializedObject.ApplyModifiedProperties();
-
-            OnStateMachineAdded?.Invoke(stateMachineDefinitionViewModel);
+            so.ApplyModifiedProperties();
 
             Notify(nameof(StateMachines));
             Notify(nameof(StateMachinesCount));
@@ -95,6 +91,17 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             stateMachinesProperty.serializedObject.Update();
             stateMachinesProperty.DeleteArrayElementAtIndex(index);
             stateMachinesProperty.serializedObject.ApplyModifiedProperties();
+
+            Notify(nameof(StateMachines));
+            Notify(nameof(StateMachinesCount));
+        }
+
+        public void UpdateState(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
+        {
+            var oldStateMachine = StateMachines.FirstOrDefault(stateMachine =>
+                stateMachine.Id.Equals(stateMachineDefinitionViewModel.Id));
+
+            oldStateMachine?.CopyFrom(stateMachineDefinitionViewModel);
 
             Notify(nameof(StateMachines));
             Notify(nameof(StateMachinesCount));

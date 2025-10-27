@@ -38,7 +38,7 @@
                     </ui:VisualElement>
                 </ui:Tab>
             </ui:TabView>
+            <ui:VisualElement name="CustomContentContainer" enabled="true" picking-mode="Ignore" style="flex-grow: 1; position: absolute; flex-shrink: 0; right: 0; left: 0; bottom: 0; top: 0; background-color: rgba(0, 0, 0, 0);" />
         </ui:VisualElement>
-        <ui:VisualElement name="Footer" style="flex-grow: 1; max-height: 32px; height: 64px; border-top-color: rgba(17, 115, 212, 0.5); border-top-width: 1px; align-items: flex-end; justify-content: center;" />
     </ui:VisualElement>
 </ui:UXML>

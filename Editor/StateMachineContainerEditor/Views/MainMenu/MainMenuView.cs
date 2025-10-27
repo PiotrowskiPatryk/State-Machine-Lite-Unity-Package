@@ -14,6 +14,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Main
         private const string UxmlPath =
             "Packages/dev.cortez.state-machines/Editor/StateMachineContainerEditor/Views/MainMenu/MainMenuView.uxml";
 
+        private readonly VisualElement _customContentContainer;
+
         public event Action PressedNewStateMachineButton;
         public event Action PressedNewTriggerButton;
         public event Action<int> PressedEditStateMachineButton;
@@ -29,12 +31,27 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Main
             var visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
             visualTreeAsset.CloneTree(this);
 
+            _customContentContainer = this.Q<VisualElement>("CustomContentContainer");
+            _customContentContainer.pickingMode = PickingMode.Ignore;
+
             InitializeEventListeners();
             InitializeStateMachineListView();
             InitializeTriggerListView();
 
             Assert.NotNull(_stateMachineListView);
             Assert.NotNull(_triggerListView);
+        }
+
+        public void DisplayCustomContent(VisualElement visualElement)
+        {
+            _customContentContainer.pickingMode = PickingMode.Position;
+            _customContentContainer.Add(visualElement);
+        }
+
+        public void ClearCustomContent()
+        {
+            _customContentContainer.Clear();
+            _customContentContainer.pickingMode = PickingMode.Ignore;
         }
 
         public void Bind(StateMachineConfigurationViewModel stateMachineConfigurationViewModel,
@@ -167,25 +184,25 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Main
 
         private void DoBindStateMachineTypeCell(VisualElement visualElement, int index)
         {
-            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.StateMachineType),
+            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.TypeName),
                 index);
         }
 
         private void DoBindStateMachineDescriptionCell(VisualElement visualElement, int index)
         {
             BindStateMachineTablePropertyCell(visualElement,
-                nameof(StateMachineDefinitionViewModel.StateMachineDescription), index);
+                nameof(StateMachineDefinitionViewModel.Description), index);
         }
 
         private void DoBindStateMachineNameCell(VisualElement visualElement, int index)
         {
-            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.StateMachineName),
+            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.Name),
                 index);
         }
 
         private void DoBindStateMachineIdCell(VisualElement visualElement, int index)
         {
-            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.StateMachineId),
+            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.Id),
                 index);
         }
 

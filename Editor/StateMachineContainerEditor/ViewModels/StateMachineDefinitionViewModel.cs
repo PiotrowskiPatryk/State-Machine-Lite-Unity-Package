@@ -1,22 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Definition;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Utilities;
 using Unity.Properties;
 using UnityEditor;
+using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 {
     public sealed class StateMachineDefinitionViewModel : ViewModelBase
     {
+        private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
+
         [CreateProperty]
-        public string StateMachineId
+        public string Id
         {
             get => SerializedProperty.FindPropertyRelative(StateMachineDefinition.ID_PROPERTY_NAME).stringValue;
             set => ApplyPropertyValueString(StateMachineDefinition.ID_PROPERTY_NAME, value);
         }
 
         [CreateProperty]
-        public string StateMachineName
+        public string Name
         {
             get => SerializedProperty.
                 FindPropertyRelative(StateMachineDefinition.NAME_PROPERTY_NAME).stringValue;
@@ -24,7 +29,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         }
 
         [CreateProperty]
-        public string StateMachineDescription
+        public string Description
         {
             get => SerializedProperty.
                 FindPropertyRelative(StateMachineDefinition.DESCRIPTION_PROPERTY_NAME).stringValue;
@@ -32,15 +37,27 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         }
 
         [CreateProperty]
-        public string StateMachineType
+        public string TypeName
         {
             get => SerializedProperty.
                 FindPropertyRelative(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME).stringValue;
-            set => ApplyPropertyValueString(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, value);
+            set
+            {
+                if (TypeName.Equals(value))
+                {
+                    return;
+                }
+
+                var stateMachinePayload = StateMachineReflectionUtilities.GetStateMachinePayloadType(value);
+
+                ApplyPropertyValueString(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, value);
+
+                _payloadSwitcher.SwitchTo(stateMachinePayload);
+            }
         }
 
         [CreateProperty]
-        public string TransitionSolverType
+        public string TransitionSolverTypeName
         {
             get => SerializedProperty.
                 FindPropertyRelative(StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME).stringValue;
@@ -48,12 +65,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         }
 
         [CreateProperty]
-        public string StateMachinePayloadTypeName
-        {
-            get => SerializedProperty.
-                FindPropertyRelative(StateMachineDefinition.PAYLOAD_PROPERTY_NAME).stringValue;
-            set => ApplyPropertyValueString(StateMachineDefinition.PAYLOAD_PROPERTY_NAME, value);
-        }
+        public SerializedProperty Payload =>
+            SerializedProperty.FindPropertyRelative(StateMachineDefinition.PAYLOAD_PROPERTY_NAME);
 
         [CreateProperty]
         public List<StateDefinitionViewModel> States
@@ -76,9 +89,30 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 
         protected override SerializedProperty SerializedProperty { get; }
 
+        public StateMachineDefinitionViewModel()
+        {
+            // TODO - Handle disposal
+            var definitionWrapper = ScriptableObject.CreateInstance<StateMachineDefinitionWrapper>();
+            SerializedProperty =
+                new SerializedObject(definitionWrapper).FindProperty(StateMachineDefinitionWrapper.DATA_PROPERTY_NAME);
+            Id = Guid.NewGuid().ToString("N");
+            _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
+        }
+
         public StateMachineDefinitionViewModel(SerializedProperty serializedProperty)
         {
             SerializedProperty = serializedProperty;
+            _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
+        }
+
+        public void CopyFrom(StateMachineDefinitionViewModel other)
+        {
+            Id = other.Id;
+            Name = other.Name;
+            Description = other.Description;
+            TypeName = other.TypeName;
+            TransitionSolverTypeName = other.TransitionSolverTypeName;
+            Payload.managedReferenceValue = other.Payload.managedReferenceValue;
         }
 
         public void CreateNewState()
@@ -104,6 +138,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         }
 
         public void RemoveState(StateDefinitionViewModel state)
+        {
+        }
+
+        internal class StateMachineDefinitionWrapper : DefinitionWrapper<StateMachineDefinition>
         {
         }
     }

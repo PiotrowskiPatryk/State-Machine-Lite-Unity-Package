@@ -49,8 +49,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
                 ApplyPropertyValueString(TriggerDefinition.TYPE_NAME_PROPERTY_NAME, value);
 
                 _payloadSwitcher.SwitchTo(triggerPayloadType);
-
-                Debug.Log($"Setting type name to {value}");
             }
         }
 
@@ -70,7 +68,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         {
             // TODO - Handle disposal
             var definitionWrapper = ScriptableObject.CreateInstance<TriggerDefinitionWrapper>();
-            SerializedProperty = new SerializedObject(definitionWrapper).FindProperty("Data");
+            SerializedProperty =
+                new SerializedObject(definitionWrapper).FindProperty(TriggerDefinitionWrapper.DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }

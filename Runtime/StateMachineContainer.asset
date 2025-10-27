@@ -14,51 +14,89 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerConfiguration:
     _triggers:
-    - _id: 5f372774d3d74edabe732ecdba4c8ab0
-      _name: Test
-      _description: Description
+    - _id: c43d8a92f34642e781a70e84a4326931
+      _name: New trigger
+      _description: This is a fancy new trigger
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.TimeDelayedTrigger, Dev.Cortez.StateMachines,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _payload:
+        rid: 7485648410316898306
+    - _id: 19872bb3c0c347b1b920c92b93f516e8
+      _name: One frame trigger
+      _description: 
       _typeName: Dev.Cortez.StateMachines.Core.Trigger.OneFrameTrigger, Dev.Cortez.StateMachines,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _payload:
         rid: -2
-    - _id: e60e5365f31741949d849350c46ec006
-      _name: Time delayed
-      _description: 12
-      _typeName: Dev.Cortez.StateMachines.Core.Trigger.TimeDelayedTrigger, Dev.Cortez.StateMachines,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      _payload:
-        rid: 7485648386469920870
-    - _id: 6913605b7d6c48a7a0df0835417a06cb
-      _name: Player attacked
-      _description: Test
-      _typeName: Dev.Cortez.StateMachines.Core.Trigger.UserInputActionBasedTrigger,
-        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      _payload:
-        rid: 7485648386469920872
-    - _id: a5a7e6c06e0544e4ba142c19d9ef9eb7
-      _name: New trigger
-      _description: Test
-      _typeName: Dev.Cortez.StateMachines.Core.Trigger.TimeDelayedTrigger, Dev.Cortez.StateMachines,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      _payload:
-        rid: 7485648389690097756
   _stateMachineConfiguration:
-    _stateMachines: []
+    _stateMachines:
+    - _id: 0946a29fe6ff4f6f9c8a923debd097fb
+      _name: Test state machine
+      _description: Test state machine description
+      _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+        Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _states: []
+      _payload:
+        rid: -2
+    - _id: d3568761968e44cab5fb85b53b6fed17
+      _name: New state machine
+      _description: 
+      _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+        Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _states: []
+      _payload:
+        rid: -2
+    - _id: 54ade76ea3e9477fa859c05f85faac58
+      _name: xD
+      _description: Xd
+      _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+        StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _states: []
+      _payload:
+        rid: 7485648410316898816
+    - _id: 404ba6824a2c453d9de6ff328760c670
+      _name: Test
+      _description: Test
+      _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+        Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _states: []
+      _payload:
+        rid: 7485648410316899056
+    - _id: 92f0e650a76f44808de86c77d1bd5e1d
+      _name: Test
+      _description: Test
+      _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+        StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _states: []
+      _payload:
+        rid: 7485648410316899117
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 7485648386469920870
+    - rid: 7485648410316898306
       type: {class: TimeDelayTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
       data:
-        delayInSeconds: 15
-    - rid: 7485648386469920872
-      type: {class: UserInputActionBasedTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+        delayInSeconds: 2
+    - rid: 7485648410316898816
+      type: {class: StateMachinePayload, ns: StateMachineImplementation.Runtime.SimpleStateMachine, asm: StateMachineImplementation}
       data:
-        inputActionReference: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-        actionType: 1
-    - rid: 7485648389690097756
-      type: {class: TimeDelayTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+        instance: {fileID: 0}
+    - rid: 7485648410316899056
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 7485648410316899117
+      type: {class: StateMachinePayload, ns: StateMachineImplementation.Runtime.SimpleStateMachine, asm: StateMachineImplementation}
       data:
-        delayInSeconds: 2137
+        instance: {fileID: 7056924425997353155, guid: 0eb40c0e62835ca4897e91f032552103, type: 3}
