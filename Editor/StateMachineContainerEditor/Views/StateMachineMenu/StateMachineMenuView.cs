@@ -1,10 +1,13 @@
 ﻿using System;
 using Dev.Cortez.StateMachines.Core;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.VisualElements;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields;
 using NUnit.Framework;
+using Unity.Properties;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.StateMachineMenu
@@ -15,21 +18,26 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             "Packages/dev.cortez.state-machines/Editor/StateMachineContainerEditor/Views/StateMachineMenu/StateMachineMenu.uxml";
 
         public event Action<StateMachineDefinitionViewModel> SaveButtonPressed;
+        public event Action<StateMachineDefinitionViewModel> AddNewStateButtonPressed;
+        public event Action<StateMachineDefinitionViewModel, StateDefinitionViewModel> EditStateButtonPressed;
+        public event Action<StateMachineDefinitionViewModel, int> DeleteStateButtonPressed;
         public event Action ExitButtonPressed;
 
         private StateMachineDefinitionViewModel _stateMachineDefinitionViewModel;
-
         private TypePickerDropdownField _stateMachineTypeDropdown;
         private TypePickerDropdownField _transitionSolverTypeDropdown;
         private PropertyField _payloadPropertyField;
         private Button _saveButton;
         private Button _exitButton;
+        private Button _addStateButton;
+        private MultiColumnListView _statesListView;
 
         public StateMachineMenuView()
         {
             var visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
             visualTreeAsset.CloneTree(this);
             Initialize();
+            BindStatesList();
 
             RegisterCallback<DetachFromPanelEvent>(OnDetached);
         }
@@ -49,6 +57,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         {
             SaveButtonPressed = null;
             ExitButtonPressed = null;
+            EditStateButtonPressed = null;
+            DeleteStateButtonPressed = null;
+            AddNewStateButtonPressed = null;
         }
 
         private void Initialize()
@@ -58,8 +69,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _payloadPropertyField = this.Q<PropertyField>("PayloadPropertyField");
             _saveButton = this.Q<Button>("SaveButton");
             _exitButton = this.Q<Button>("ExitButton");
+            _addStateButton = this.Q<Button>("AddStateButton");
+            _statesListView = this.Q<MultiColumnListView>("StatesListView");
+
             _saveButton.clicked += OnSaveButtonPressed;
             _exitButton.clicked += OnExitButtonPressed;
+            _addStateButton.clicked += OnAddStateButtonPressed;
 
             _stateMachineTypeDropdown.RegisterValueChangedCallback(OnChangedStateMachineTypeDropdown);
             _transitionSolverTypeDropdown.RegisterValueChangedCallback(OnChangedTransitionSolverTypeDropdown);
@@ -68,11 +83,31 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             Assert.NotNull(_transitionSolverTypeDropdown);
             Assert.NotNull(_payloadPropertyField);
             Assert.NotNull(_saveButton);
+            Assert.NotNull(_exitButton);
+            Assert.NotNull(_addStateButton);
+            Assert.NotNull(_statesListView);
+        }
+
+        private void BindStatesList()
+        {
+            _statesListView.columns[0].bindCell = DoBindStateNameCell;
+            _statesListView.columns[1].bindCell = DoBindStateMenuCell;
+            _statesListView.columns[1].unbindCell = DoUnbindStateMenuCell;
+        }
+
+        private void DoBindStateNameCell(VisualElement visualElement, int index)
+        {
+            BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Name), index);
         }
 
         private void OnSaveButtonPressed()
         {
             SaveButtonPressed?.Invoke(_stateMachineDefinitionViewModel);
+        }
+
+        private void OnAddStateButtonPressed()
+        {
+            AddNewStateButtonPressed?.Invoke(_stateMachineDefinitionViewModel);
         }
 
         private void OnExitButtonPressed()
@@ -88,6 +123,54 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private void OnChangedStateMachineTypeDropdown(ChangeEvent<string> changeEvent)
         {
             _stateMachineDefinitionViewModel.TypeName = changeEvent.newValue;
+        }
+
+        private static void BindStateTablePropertyCell(VisualElement visualElement, string propertyName,
+            int index)
+        {
+            var label = visualElement.Q<Label>();
+            label.SetBinding("value", new DataBinding
+            {
+                dataSourcePath =
+                    new PropertyPath(
+                        $"{nameof(StateMachineDefinitionViewModel.States)}[{index}].{propertyName}"),
+                bindingMode = BindingMode.ToTarget
+            });
+        }
+
+        private void DoUnbindStateMenuCell(VisualElement visualElement, int index)
+        {
+            var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
+
+            itemOptionsMenu?.UnsubscribeFromEvents();
+        }
+
+        private void DoBindStateMenuCell(VisualElement visualElement, int index)
+        {
+            var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
+
+            // TODO - Handle unsubscribing
+            if (itemOptionsMenu != null)
+            {
+                itemOptionsMenu.SubscribeToEvents(PressedEditStateButton, PressedDeleteStateButton);
+            }
+            else
+            {
+                Debug.LogError("Unable to bind menu item.");
+            }
+
+            return;
+
+            void PressedDeleteStateButton()
+            {
+                DeleteStateButtonPressed?.Invoke(_stateMachineDefinitionViewModel, index);
+            }
+
+            void PressedEditStateButton()
+            {
+                EditStateButtonPressed?.Invoke(_stateMachineDefinitionViewModel,
+                    _stateMachineDefinitionViewModel.States[index]);
+            }
         }
     }
 }

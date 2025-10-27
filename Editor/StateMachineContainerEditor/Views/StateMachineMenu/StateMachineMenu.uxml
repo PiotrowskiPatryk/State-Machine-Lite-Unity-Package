@@ -31,12 +31,20 @@
                     <UnityEditor.UIElements.PropertyField name="PayloadPropertyField" />
                 </ui:Foldout>
                 <ui:Foldout text="States configuration" name="StatesConfigurationFoldout">
-                    <ui:ListView name="States" item-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/Labels/Label-StateItem.uxml?fileID=9197481963319205126&amp;guid=0d653ee804365f94c8e3a99657729418&amp;type=3#Label-StateItem" show-add-remove-footer="false" reorderable="true" virtualization-method="DynamicHeight" allow-remove="false" allow-add="false" show-bound-collection-size="false" binding-source-selection-mode="AutoAssign">
+                    <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false" virtualization-method="DynamicHeight">
                         <Bindings>
-                            <ui:DataBinding property="itemsSource" data-source-path="States" binding-mode="TwoWay" />
+                            <ui:DataBinding property="itemsSource" data-source-path="States" />
                         </Bindings>
-                    </ui:ListView>
-                    <ui:Button text="Add new state" name="AddNewStateButton" style="align-self: flex-end; min-height: 32px; max-height: 32px;" />
+                        <ui:Columns primary-column-name="Id">
+                            <ui:Column name="Name" title="Name" stretchable="true" />
+                            <ui:Column cell-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineContainerEditor/CustomElements/TableItemButtons.uxml?fileID=9197481963319205126&amp;guid=d7807b0c1a28a9645889e99e42ab2369&amp;type=3#TableItemButtons" min-width="100px" max-width="100px" />
+                        </ui:Columns>
+                        <ui:SortColumnDescriptions />
+                    </ui:MultiColumnListView>
+                    <ui:Button text="Add new state" name="AddStateButton" style="align-self: flex-end; min-height: 32px; max-height: 32px;" />
+                </ui:Foldout>
+                <ui:Foldout text="Transition rules" name="TransitionsFoldout" style="top: 10px;">
+                    <ui:DropdownField label="Origin state" />
                 </ui:Foldout>
             </ui:VisualElement>
             <ui:Instance template="GraphSectionTemplate" name="GraphSectionTemplate" style="flex-grow: 1;" />

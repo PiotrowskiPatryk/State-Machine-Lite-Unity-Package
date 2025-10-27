@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Definition;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Utilities;
@@ -12,6 +13,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
     public sealed class StateMachineDefinitionViewModel : ViewModelBase
     {
         private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
+
+        [CreateProperty]
+        public int StatesCount =>
+            SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME).arraySize;
 
         [CreateProperty]
         public string Id
@@ -51,6 +56,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
                 var stateMachinePayload = StateMachineReflectionUtilities.GetStateMachinePayloadType(value);
 
                 ApplyPropertyValueString(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, value);
+
+                foreach (var state in States)
+                {
+                    state.StateMachineTypeName = value;
+                }
 
                 _payloadSwitcher.SwitchTo(stateMachinePayload);
             }
@@ -115,30 +125,57 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             Payload.managedReferenceValue = other.Payload.managedReferenceValue;
         }
 
-        public void CreateNewState()
+        public void AddState(StateDefinitionViewModel stateDefinitionViewModel)
         {
             var statesProperty = SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
 
             Undo.RecordObject(statesProperty.serializedObject.targetObject, "Create new state");
 
-            statesProperty.serializedObject.Update();
+            var so = statesProperty.serializedObject;
+            so.Update();
 
             statesProperty.InsertArrayElementAtIndex(statesProperty.arraySize);
-            statesProperty.serializedObject.ApplyModifiedProperties();
+            so.ApplyModifiedProperties();
 
             var newStateProperty = statesProperty.GetArrayElementAtIndex(statesProperty.arraySize - 1);
+            var newState = new StateDefinitionViewModel(newStateProperty);
+            newState.CopyFrom(stateDefinitionViewModel);
 
-            var stateDefinitionViewModel = new StateDefinitionViewModel(newStateProperty)
-            {
-                Id = Guid.NewGuid().ToString(),
-                StateName = "New State"
-            };
+            so.ApplyModifiedProperties();
 
-            statesProperty.serializedObject.ApplyModifiedProperties();
+            Notify(nameof(States));
+            Notify(nameof(StatesCount));
         }
 
-        public void RemoveState(StateDefinitionViewModel state)
+        public void UpdateState(StateDefinitionViewModel updatedState)
         {
+            var oldState = States.FirstOrDefault(trigger => trigger.Id.Equals(updatedState.Id));
+
+            oldState?.CopyFrom(updatedState);
+
+            Notify(nameof(States));
+        }
+
+        public void RemoveStateAtIndex(int index)
+        {
+            if (index < 0 || index >= StatesCount)
+            {
+                Debug.LogError($"Invalid index {index} for states count {StatesCount}");
+
+                return;
+            }
+
+            var statesProperty =
+                SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
+
+            Undo.RecordObject(statesProperty.serializedObject.targetObject, "Remove state");
+
+            statesProperty.serializedObject.Update();
+            statesProperty.DeleteArrayElementAtIndex(index);
+            statesProperty.serializedObject.ApplyModifiedProperties();
+
+            Notify(nameof(States));
+            Notify(nameof(StatesCount));
         }
 
         internal class StateMachineDefinitionWrapper : DefinitionWrapper<StateMachineDefinition>

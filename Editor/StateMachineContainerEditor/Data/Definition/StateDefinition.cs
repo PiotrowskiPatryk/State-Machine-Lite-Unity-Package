@@ -13,12 +13,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         public static string DESCRIPTION_PROPERTY_NAME = nameof(_description);
         public static string PAYLOAD_PROPERTY_NAME = nameof(_payload);
         public static string TYPE_NAME_PROPERTY_NAME = nameof(_typeName);
+        public static string STATE_MACHINE_TYPE_NAME_PROPERTY_NAME = nameof(_stateMachineTypeName);
 
         [SerializeField]
         private string _id;
 
         [SerializeField]
-        private Vector2 _nodePosition;
+        private Vector2Int _nodePosition;
 
         [SerializeField]
         private string _name;
@@ -29,14 +30,18 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         [SerializeField]
         private string _typeName;
 
+        [SerializeField]
+        private string _stateMachineTypeName;
+
         [SerializeReference]
         private IPayload _payload;
 
-        public Vector2 NodePosition => _nodePosition;
+        public Vector2Int NodePosition => _nodePosition;
         public string Id => _id;
         public string Name => _name;
         public string Description => _description;
         public string TypeName => _typeName;
+        public string StateMachineTypeName => _stateMachineTypeName;
         public IPayload Payload => _payload;
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
-using Dev.Cortez.StateMachines.Core;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Utilities;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.StateMachineForm
+namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.State
 {
-    public class StateMachineForm : FormBaseWindow<StateMachineDefinitionViewModel>
+    public class StateForm : FormBaseWindow<StateDefinitionViewModel>
     {
         private Button _submitButton;
         private Button _cancelButton;
@@ -15,7 +15,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Stat
 
         protected override bool IsInputDataValid()
         {
-            return !string.IsNullOrWhiteSpace(Data.Name) && !string.IsNullOrWhiteSpace(Data.TypeName);
+            return !string.IsNullOrWhiteSpace(Data.Name) && !string.IsNullOrWhiteSpace(Data.TypeName) &&
+                   !string.IsNullOrWhiteSpace(Data.StateMachineTypeName);
         }
 
         protected override void OnCreatedGUI()
@@ -26,21 +27,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Stat
             _propertyField.BindProperty(Data.Payload);
 
             var typePicker = rootVisualElement.Q<TypePickerDropdownField>("TypePicker");
-            typePicker.ChangeType(typeof(IStateMachine), Type.GetType(Data.TypeName));
+            var baseStateFromStateMachine =
+                StateMachineReflectionUtilities.GetBaseStateFromStateMachine(Data.StateMachineTypeName);
 
-            var transitionSolverPicker = rootVisualElement.Q<TypePickerDropdownField>("TransitionSolverPicker");
-            transitionSolverPicker.ChangeType(typeof(ITransitionSolver), Type.GetType(Data.TransitionSolverTypeName));
-
+            typePicker.ChangeType(baseStateFromStateMachine, Type.GetType(Data.TypeName));
             typePicker.RegisterValueChangedCallback(OnTypeValueChanged);
-            transitionSolverPicker.RegisterValueChangedCallback(OnTransitionSolverTypeValueChanged);
 
             _submitButton.clicked += Submit;
             _cancelButton.clicked += Cancel;
-        }
-
-        private void OnTransitionSolverTypeValueChanged(ChangeEvent<string> transitionSolverTypeValue)
-        {
-            Data.TransitionSolverTypeName = transitionSolverTypeValue.newValue;
         }
 
         private void OnTypeValueChanged(ChangeEvent<string> stateMachineTypeValue)

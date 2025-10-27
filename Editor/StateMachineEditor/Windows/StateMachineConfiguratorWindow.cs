@@ -88,7 +88,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Windows
 
         private void AddNewState()
         {
-            _stateMachineDefinitionViewModel.CreateNewState();
+            // _stateMachineDefinitionViewModel.AddState();
         }
 
         private void OnSave()

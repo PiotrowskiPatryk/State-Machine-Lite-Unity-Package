@@ -1,6 +1,7 @@
 ﻿using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms;
-using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.StateMachineForm;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.State;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.StateMachine;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Trigger;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.MainMenu;
@@ -196,10 +197,35 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             };
 
             stateMachineMenuView.ExitButtonPressed += ShowMainMenuView;
+            stateMachineMenuView.AddNewStateButtonPressed += OnAddNewStateButtonPressed;
+            stateMachineMenuView.EditStateButtonPressed += OnEditStateButtonPressed;
+            stateMachineMenuView.DeleteStateButtonPressed += OnDeleteStateButtonPressed;
 
             stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
 
             _mainMenuView.DisplayCustomContent(stateMachineMenuView);
+        }
+
+        private void OnDeleteStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+            int index)
+        {
+            stateMachineDefinitionViewModel.RemoveStateAtIndex(index);
+        }
+
+        private void OnEditStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+            StateDefinitionViewModel stateDefinitionViewModel)
+        {
+            FormBaseWindow<StateDefinitionViewModel>.Show<StateForm>(stateDefinitionViewModel,
+                stateMachineDefinitionViewModel.UpdateState);
+        }
+
+        private void OnAddNewStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
+        {
+            var stateDefinitionViewModel = new StateDefinitionViewModel(stateMachineDefinitionViewModel.TypeName);
+
+            FormBaseWindow<StateDefinitionViewModel>.Show<StateForm>(
+                stateDefinitionViewModel,
+                stateMachineDefinitionViewModel.AddState);
         }
 
         private void ShowMainMenuView()

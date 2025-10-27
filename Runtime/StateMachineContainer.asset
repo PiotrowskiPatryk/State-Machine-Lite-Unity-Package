@@ -77,9 +77,49 @@ MonoBehaviour:
         StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      _states: []
+      _states:
+      - _id: 879e2e0f59014264b58ec4c765b092b4
+        _nodePosition: {x: 0, y: 0}
+        _name: First state :D
+        _description: First state
+        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.FirstState,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: e8459eb0d3a047b890747f13a2ae7bc2
+        _nodePosition: {x: 0, y: 0}
+        _name: Second state
+        _description: 
+        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: 7c6b1136a91749d4b4efff88fd9c268e
+        _nodePosition: {x: 0, y: 0}
+        _name: Third state
+        _description: This is my third state
+        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: 568818cb26054d5a8f20a3396f3beefa
+        _nodePosition: {x: 0, y: 0}
+        _name: Last state
+        _description: 
+        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.FirstState,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _payload:
+          rid: -2
       _payload:
-        rid: 7485648410316899117
+        rid: 7485648413799481501
   references:
     version: 2
     RefIds:
@@ -96,7 +136,7 @@ MonoBehaviour:
     - rid: 7485648410316899056
       type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
       data: 
-    - rid: 7485648410316899117
+    - rid: 7485648413799481501
       type: {class: StateMachinePayload, ns: StateMachineImplementation.Runtime.SimpleStateMachine, asm: StateMachineImplementation}
       data:
-        instance: {fileID: 7056924425997353155, guid: 0eb40c0e62835ca4897e91f032552103, type: 3}
+        instance: {fileID: 0}
