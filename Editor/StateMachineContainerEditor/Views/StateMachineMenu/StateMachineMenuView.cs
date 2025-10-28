@@ -90,14 +90,32 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
         private void BindStatesList()
         {
-            _statesListView.columns[0].bindCell = DoBindStateNameCell;
-            _statesListView.columns[1].bindCell = DoBindStateMenuCell;
-            _statesListView.columns[1].unbindCell = DoUnbindStateMenuCell;
+            _statesListView.columns[0].bindCell = DoBindStateIdCell;
+            _statesListView.columns[1].bindCell = DoBindStateNameCell;
+            _statesListView.columns[2].bindCell = DoBindStateDescriptionCell;
+            _statesListView.columns[3].bindCell = DoBindStateTypeCell;
+            _statesListView.columns[4].bindCell = DoBindStateMenuCell;
+            _statesListView.columns[4].unbindCell = DoUnbindStateMenuCell;
+        }
+
+        private void DoBindStateIdCell(VisualElement visualElement, int index)
+        {
+            BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Id), index);
         }
 
         private void DoBindStateNameCell(VisualElement visualElement, int index)
         {
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Name), index);
+        }
+
+        private void DoBindStateDescriptionCell(VisualElement visualElement, int index)
+        {
+            BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Description), index);
+        }
+
+        private void DoBindStateTypeCell(VisualElement visualElement, int index)
+        {
+            BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.TypeNameShort), index);
         }
 
         private void OnSaveButtonPressed()

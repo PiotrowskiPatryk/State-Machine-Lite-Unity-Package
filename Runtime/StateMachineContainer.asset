@@ -91,7 +91,7 @@ MonoBehaviour:
       - _id: e8459eb0d3a047b890747f13a2ae7bc2
         _nodePosition: {x: 0, y: 0}
         _name: Second state
-        _description: 
+        _description: Essa
         _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
           StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
@@ -112,6 +112,16 @@ MonoBehaviour:
         _nodePosition: {x: 0, y: 0}
         _name: Last state
         _description: 
+        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
+          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: 80b4c16a919041ca921fa827ec894a3d
+        _nodePosition: {x: 0, y: 0}
+        _name: Test2
+        _description: Test2
         _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.FirstState,
           StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,

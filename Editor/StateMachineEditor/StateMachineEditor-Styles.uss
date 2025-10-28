@@ -162,3 +162,26 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.unity-tab {
+    border-left-color: rgb(50, 77, 103);
+    border-right-color: rgb(50, 77, 103);
+    border-top-color: rgb(50, 77, 103);
+    border-bottom-color: rgb(50, 77, 103);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
