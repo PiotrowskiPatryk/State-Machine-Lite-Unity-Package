@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement name="Graph" class="background-main" style="flex-grow: 1; flex-shrink: 0; background-color: rgb(167, 211, 255); position: relative; left: 0; bottom: 0; right: 0; top: 0;">
+        <ui:VisualElement name="StatesContainer" style="flex-grow: 1; position: absolute; right: 0; bottom: 0; left: 0; top: 0;" />
+        <ui:VisualElement name="TransitionsContainer" style="flex-grow: 1; right: 0; top: 0; left: 0; bottom: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

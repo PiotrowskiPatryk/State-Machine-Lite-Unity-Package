@@ -97,6 +97,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             }
         }
 
+        public SerializedProperty StatesSerializedProperty =>
+            SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
+
         protected override SerializedProperty SerializedProperty { get; }
 
         public StateMachineDefinitionViewModel()

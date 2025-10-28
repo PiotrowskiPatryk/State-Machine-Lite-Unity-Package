@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="True">
+    <Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.StateMachineGraphView.GraphNode
+            data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.StateDefinitionViewModel, Dev.Cortez.StateMachines.Editor">
+        <Bindings>
+            <ui:DataBinding property="value" data-source-path="NodePosition" binding-mode="TwoWay"/>
+        </Bindings>
+
+        <ui:VisualElement name="NodeElement"
+                          data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.StateDefinitionViewModel, Dev.Cortez.StateMachines.Editor"
+                          style="flex-grow: 1; position: relative; min-width: 200px; max-width: 400px; min-height: 100px; max-height: 100px; background-color: rgb(26,36,47); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; align-items: center; justify-content: center;">
+            <ui:Label class="text-bold"
+                      style="color: white; font-size: 24px; text-overflow: ellipsis; white-space: nowrap;">
+                <Bindings>
+                    <ui:DataBinding property="text" data-source-path="Name" binding-mode="ToTarget"/>
+                </Bindings>
+            </ui:Label>
+        </ui:VisualElement>
+    </Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.StateMachineGraphView.GraphNode>
+</ui:UXML>

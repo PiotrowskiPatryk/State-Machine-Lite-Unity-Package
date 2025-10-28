@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
     <ui:VisualElement name="Form" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" class="background-main" style="flex-grow: 1;">
-        <ui:TabView>
+        <ui:TabView style="flex-grow: 1;">
             <ui:Tab label="General" name="GeneralInformationTab">
                 <ui:TextField label="Id" placeholder-text="Id" readonly="true" name="StateMachineId">
                     <Bindings>
@@ -38,12 +38,8 @@
                 </ui:MultiColumnListView>
                 <ui:Button text="Add new state" name="AddStateButton" style="align-self: flex-end; min-height: 32px; max-height: 32px;" />
             </ui:Tab>
-            <ui:Tab label="Node editor" name="GraphEditor">
-                <ui:VisualElement name="MenuSection" style="width: 400px; border-right-color: rgba(17, 115, 212, 0.14); border-right-width: 2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; visibility: visible; display: flex; overflow: visible; background-color: rgb(26, 36, 47);">
-                    <ui:Foldout text="Transition rules" name="TransitionsFoldout" style="top: 10px;">
-                        <ui:DropdownField label="Origin state" />
-                    </ui:Foldout>
-                </ui:VisualElement>
+            <ui:Tab label="Node editor" name="GraphEditor" style="flex-shrink: 0; flex-grow: 1; position: relative; height: 80%;">
+                <ui:VisualElement name="StateMachineGraphContainer" style="flex-grow: 1; flex-shrink: 0;" />
             </ui:Tab>
         </ui:TabView>
     </ui:VisualElement>

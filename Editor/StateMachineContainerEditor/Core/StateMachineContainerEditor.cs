@@ -177,16 +177,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
         {
             _mainMenuView.ClearCustomContent();
 
-            var stateMachineMenuView = new StateMachineMenuView
-            {
-                style =
-                {
-                    // TODO - Do it properly
-                    flexGrow = 1,
-                    flexShrink = 0,
-                    flexBasis = 0
-                }
-            };
+            var stateMachineMenuView = new StateMachineMenuView();
 
             stateMachineMenuView.SaveButtonPressed += newData =>
             {

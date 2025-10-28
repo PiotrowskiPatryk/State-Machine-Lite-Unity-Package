@@ -79,7 +79,7 @@ MonoBehaviour:
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _states:
       - _id: 879e2e0f59014264b58ec4c765b092b4
-        _nodePosition: {x: 0, y: 0}
+        _nodePosition: {x: 740, y: 426}
         _name: First state :D
         _description: First state
         _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.FirstState,
@@ -88,40 +88,10 @@ MonoBehaviour:
           StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _payload:
           rid: -2
-      - _id: e8459eb0d3a047b890747f13a2ae7bc2
-        _nodePosition: {x: 0, y: 0}
-        _name: Second state
-        _description: Essa
-        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
-          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
-          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _payload:
-          rid: -2
-      - _id: 7c6b1136a91749d4b4efff88fd9c268e
-        _nodePosition: {x: 0, y: 0}
-        _name: Third state
-        _description: This is my third state
-        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
-          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
-          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _payload:
-          rid: -2
-      - _id: 568818cb26054d5a8f20a3396f3beefa
-        _nodePosition: {x: 0, y: 0}
-        _name: Last state
-        _description: 
-        _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.SecondState,
-          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,
-          StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _payload:
-          rid: -2
-      - _id: 80b4c16a919041ca921fa827ec894a3d
-        _nodePosition: {x: 0, y: 0}
-        _name: Test2
-        _description: Test2
+      - _id: 15e9358e3847403eb4a6d0cd34c017e5
+        _nodePosition: {x: 120, y: 160}
+        _name: State2
+        _description: State2
         _typeName: StateMachineImplementation.Runtime.SimpleStateMachine.States.FirstState,
           StateMachineImplementation, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _stateMachineTypeName: StateMachineImplementation.Runtime.SimpleStateMachine.StateMachineWithPayload,

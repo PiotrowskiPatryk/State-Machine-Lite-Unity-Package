@@ -31,6 +31,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private Button _exitButton;
         private Button _addStateButton;
         private MultiColumnListView _statesListView;
+        private VisualElement _stateMachineGraphContainer;
+        private StateMachineGraphView.StateMachineGraphView _stateMachineGraphView;
 
         public StateMachineMenuView()
         {
@@ -38,6 +40,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             visualTreeAsset.CloneTree(this);
             Initialize();
             BindStatesList();
+
+            style.flexGrow = 1;
+            style.flexShrink = 0;
+            style.flexBasis = 0;
 
             RegisterCallback<DetachFromPanelEvent>(OnDetached);
         }
@@ -51,6 +57,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _stateMachineTypeDropdown.ChangeType(typeof(IStateMachine),
                 Type.GetType(stateMachineDefinitionViewModel.TypeName));
             _payloadPropertyField.BindProperty(stateMachineDefinitionViewModel.Payload);
+            _stateMachineGraphView.Bind(stateMachineDefinitionViewModel);
         }
 
         private void OnDetached(DetachFromPanelEvent detachFromPanelEvent)
@@ -71,6 +78,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _exitButton = this.Q<Button>("ExitButton");
             _addStateButton = this.Q<Button>("AddStateButton");
             _statesListView = this.Q<MultiColumnListView>("StatesListView");
+            _stateMachineGraphContainer = this.Q<VisualElement>("StateMachineGraphContainer");
+            _stateMachineGraphView = new StateMachineGraphView.StateMachineGraphView();
+            _stateMachineGraphContainer.Add(_stateMachineGraphView);
 
             _saveButton.clicked += OnSaveButtonPressed;
             _exitButton.clicked += OnExitButtonPressed;
