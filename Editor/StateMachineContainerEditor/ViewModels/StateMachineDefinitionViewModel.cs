@@ -97,10 +97,29 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             }
         }
 
+        [CreateProperty]
+        public List<TransitionRuleDefinitionViewModel> Transitions
+        {
+            get
+            {
+                var transitions = new List<TransitionRuleDefinitionViewModel>();
+                var transitionsProperty =
+                    SerializedProperty.FindPropertyRelative(StateMachineDefinition.TRANSITION_RULES_PROPERTY_NAME);
+
+                for (var i = 0; i < transitionsProperty.arraySize; ++i)
+                {
+                    var transition = transitionsProperty.GetArrayElementAtIndex(i);
+                    transitions.Add(new TransitionRuleDefinitionViewModel(transition));
+                }
+
+                return transitions;
+            }
+        }
+
         public SerializedProperty StatesSerializedProperty =>
             SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
 
-        protected override SerializedProperty SerializedProperty { get; }
+        public override SerializedProperty SerializedProperty { get; }
 
         public StateMachineDefinitionViewModel()
         {
@@ -179,6 +198,29 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 
             Notify(nameof(States));
             Notify(nameof(StatesCount));
+        }
+
+        public void AddTransition(TransitionRuleDefinitionViewModel dataTransitionRuleDefinitionViewModel)
+        {
+            var transitionsProperty =
+                SerializedProperty.FindPropertyRelative(StateMachineDefinition.TRANSITION_RULES_PROPERTY_NAME);
+
+            Undo.RecordObject(transitionsProperty.serializedObject.targetObject, "Create new transition");
+
+            var so = transitionsProperty.serializedObject;
+            so.Update();
+
+            transitionsProperty.InsertArrayElementAtIndex(transitionsProperty.arraySize);
+            so.ApplyModifiedProperties();
+
+            var newTransitionSerializedProperty =
+                transitionsProperty.GetArrayElementAtIndex(transitionsProperty.arraySize - 1);
+            var newTransition = new TransitionRuleDefinitionViewModel(newTransitionSerializedProperty);
+            newTransition.CopyFrom(dataTransitionRuleDefinitionViewModel);
+
+            so.ApplyModifiedProperties();
+
+            Notify(nameof(Transitions));
         }
 
         internal class StateMachineDefinitionWrapper : DefinitionWrapper<StateMachineDefinition>

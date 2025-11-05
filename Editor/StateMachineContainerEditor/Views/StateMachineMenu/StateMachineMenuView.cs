@@ -21,6 +21,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         public event Action<StateMachineDefinitionViewModel> AddNewStateButtonPressed;
         public event Action<StateMachineDefinitionViewModel, StateDefinitionViewModel> EditStateButtonPressed;
         public event Action<StateMachineDefinitionViewModel, int> DeleteStateButtonPressed;
+        public event Action<StateMachineDefinitionViewModel> AddTransitionButtonPressed;
+
         public event Action ExitButtonPressed;
 
         private StateMachineDefinitionViewModel _stateMachineDefinitionViewModel;
@@ -29,6 +31,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private PropertyField _payloadPropertyField;
         private Button _saveButton;
         private Button _exitButton;
+        private Button _addTransitionButton;
         private Button _addStateButton;
         private MultiColumnListView _statesListView;
         private VisualElement _stateMachineGraphContainer;
@@ -67,6 +70,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             EditStateButtonPressed = null;
             DeleteStateButtonPressed = null;
             AddNewStateButtonPressed = null;
+            AddTransitionButtonPressed = null;
         }
 
         private void Initialize()
@@ -76,6 +80,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _payloadPropertyField = this.Q<PropertyField>("PayloadPropertyField");
             _saveButton = this.Q<Button>("SaveButton");
             _exitButton = this.Q<Button>("ExitButton");
+            _addTransitionButton = this.Q<Button>("AddTransitionButton");
             _addStateButton = this.Q<Button>("AddStateButton");
             _statesListView = this.Q<MultiColumnListView>("StatesListView");
             _stateMachineGraphContainer = this.Q<VisualElement>("StateMachineGraphContainer");
@@ -85,6 +90,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _saveButton.clicked += OnSaveButtonPressed;
             _exitButton.clicked += OnExitButtonPressed;
             _addStateButton.clicked += OnAddStateButtonPressed;
+            _addTransitionButton.clicked += OnAddTransitionButtonPressed;
 
             _stateMachineTypeDropdown.RegisterValueChangedCallback(OnChangedStateMachineTypeDropdown);
             _transitionSolverTypeDropdown.RegisterValueChangedCallback(OnChangedTransitionSolverTypeDropdown);
@@ -94,6 +100,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             Assert.NotNull(_payloadPropertyField);
             Assert.NotNull(_saveButton);
             Assert.NotNull(_exitButton);
+            Assert.NotNull(_addTransitionButton);
             Assert.NotNull(_addStateButton);
             Assert.NotNull(_statesListView);
         }
@@ -171,6 +178,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
 
             itemOptionsMenu?.UnsubscribeFromEvents();
+        }
+
+        private void OnAddTransitionButtonPressed()
+        {
+            AddTransitionButtonPressed?.Invoke(_stateMachineDefinitionViewModel);
         }
 
         private void DoBindStateMenuCell(VisualElement visualElement, int index)

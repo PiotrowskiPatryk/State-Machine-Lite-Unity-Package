@@ -66,7 +66,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             set => ApplyPropertyValueVector2Int(StateDefinition.NODE_POSITION_PROPERTY_NAME, value);
         }
 
-        protected override SerializedProperty SerializedProperty { get; }
+        public override SerializedProperty SerializedProperty { get; }
 
         public StateDefinitionViewModel(SerializedProperty serializedProperty)
         {

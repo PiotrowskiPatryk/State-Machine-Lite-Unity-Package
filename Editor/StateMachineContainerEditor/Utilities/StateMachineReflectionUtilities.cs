@@ -102,6 +102,40 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Utilities
             return typeof(EmptyPayload);
         }
 
+        public static Type GetConditionPayloadType(string conditionTypeName)
+        {
+            var conditionType = Type.GetType(conditionTypeName);
+
+            if (conditionType == null)
+            {
+                Debug.LogError($"Failed to find condition payload type for '{conditionTypeName}'");
+
+                return null;
+            }
+
+            if (conditionType.IsAbstract || conditionType.IsInterface)
+            {
+                Debug.LogError($"Provided condition type '{conditionTypeName}' is abstract or interface.");
+
+                return null;
+            }
+
+            // Find ICondition<TPayload> implemented by the condition
+            var conditionInterface = conditionType.GetInterfaces().FirstOrDefault(i =>
+                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICondition<>));
+
+            var payloadArg = conditionInterface?.GenericTypeArguments.FirstOrDefault();
+
+            if (payloadArg != null && typeof(IPayload).IsAssignableFrom(payloadArg))
+            {
+                return payloadArg;
+            }
+
+            Debug.LogWarning("Provided condition type does not define an IPayload. Using EmptyPayload.");
+
+            return typeof(EmptyPayload);
+        }
+
         public static string ToClassNameOnly(string typeName)
         {
             if (string.IsNullOrEmpty(typeName))

@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
-    <ui:VisualElement name="Form" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" class="background-main" style="flex-grow: 1;">
-        <ui:TabView style="flex-grow: 1;">
+    <ui:VisualElement name="Form" class="background-main" style="flex-grow: 1; min-height: 0; min-width: 0;">
+        <ui:TabView style="flex-grow: 1; min-height: 0; min-width: 0;">
             <ui:Tab label="General" name="GeneralInformationTab">
                 <ui:TextField label="Id" placeholder-text="Id" readonly="true" name="StateMachineId">
                     <Bindings>
@@ -38,13 +38,14 @@
                 </ui:MultiColumnListView>
                 <ui:Button text="Add new state" name="AddStateButton" style="align-self: flex-end; min-height: 32px; max-height: 32px;" />
             </ui:Tab>
-            <ui:Tab label="Node editor" name="GraphEditor" style="flex-shrink: 0; flex-grow: 1; position: relative; height: 80%;">
-                <ui:VisualElement name="StateMachineGraphContainer" style="flex-grow: 1; flex-shrink: 0;" />
+            <ui:Tab label="Node editor" name="GraphEditor" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; position: relative; padding: 0;">
+                <ui:VisualElement name="StateMachineGraphContainer" style="position: relative; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; flex-grow: 1; flex-shrink: 0; height: 600px;" />
             </ui:Tab>
         </ui:TabView>
     </ui:VisualElement>
-    <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; right: 0; flex-direction: row; top: 2px;">
-        <ui:Button text="Save" icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Save.png?fileID=2800000&amp;guid=7532d6b95cc030e4c9081e3d9830ca63&amp;type=3#Icon_Save" name="SaveButton" style="position: relative; right: 10px; top: auto; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px; flex-shrink: 1; flex-direction: row; max-height: 32px; min-height: 32px; bottom: auto;" />
-        <ui:Button text="Exit" icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Exit.png?fileID=2800000&amp;guid=b277c29947dc7124bb50efd0bb362127&amp;type=3#Icon_Exit" name="ExitButton" style="position: relative; right: 10px; top: auto; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px; flex-shrink: 1; flex-direction: row; max-height: 32px; min-height: 32px; bottom: auto;" />
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; right: 0; top: 2px; flex-direction: row;">
+        <ui:Button text="Add transition" name="AddTransitionButton" style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;" />
+        <ui:Button text="Save" icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Save.png?fileID=2800000&amp;guid=7532d6b95cc030e4c9081e3d9830ca63&amp;type=3#Icon_Save" name="SaveButton" style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;" />
+        <ui:Button text="Exit" icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Exit.png?fileID=2800000&amp;guid=b277c29947dc7124bb50efd0bb362127&amp;type=3#Icon_Exit" name="ExitButton" style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;" />
     </ui:VisualElement>
 </ui:UXML>

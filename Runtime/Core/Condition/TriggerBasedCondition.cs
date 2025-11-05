@@ -7,10 +7,9 @@ namespace Dev.Cortez.StateMachines.Core.Condition
 {
     public sealed class TriggerBasedCondition : ICondition<ITrigger>
     {
+        public event Action<ICondition, bool> SatisfiedChanged;
         private ITrigger _trigger;
         private bool _isSatisfied;
-        
-        public event Action<ICondition, bool> SatisfiedChanged;
 
         public bool IsSatisfied
         {
@@ -21,7 +20,7 @@ namespace Dev.Cortez.StateMachines.Core.Condition
                 {
                     return;
                 }
-                
+
                 _isSatisfied = value;
                 SatisfiedChanged?.Invoke(this, _isSatisfied);
             }
@@ -32,17 +31,18 @@ namespace Dev.Cortez.StateMachines.Core.Condition
             _trigger = payload;
             _trigger.TriggeredValueChanged += OnTriggeredValueChanged;
             IsSatisfied = _trigger.IsTriggered;
-            
+
             return UniTask.FromResult(true);
         }
-        
+
         public ValueTask DisposeAsync()
         {
             _trigger.TriggeredValueChanged -= OnTriggeredValueChanged;
             _trigger = null;
+
             return UniTask.CompletedTask;
         }
-        
+
         private void OnTriggeredValueChanged(ITrigger trigger, bool value)
         {
             IsSatisfied = value;

@@ -2,6 +2,7 @@
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.State;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.StateMachine;
+using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.TransitionRule;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Trigger;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.MainMenu;
@@ -191,10 +192,28 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             stateMachineMenuView.AddNewStateButtonPressed += OnAddNewStateButtonPressed;
             stateMachineMenuView.EditStateButtonPressed += OnEditStateButtonPressed;
             stateMachineMenuView.DeleteStateButtonPressed += OnDeleteStateButtonPressed;
+            stateMachineMenuView.AddTransitionButtonPressed += OnAddTransitionButtonPressed;
 
             stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
 
             _mainMenuView.DisplayCustomContent(stateMachineMenuView);
+        }
+
+        private void OnAddTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
+        {
+            // Todo - apply initial state
+            var transitionRuleDefinitionViewModel =
+                new TransitionRuleDefinitionViewModel();
+
+            var transitionRuleFormData = new TransitionRuleFormData
+            {
+                StateMachineDefinitionViewModel = stateMachineDefinitionViewModel,
+                TransitionRuleDefinitionViewModel = transitionRuleDefinitionViewModel
+            };
+
+            FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
+                transitionRuleFormData,
+                data => stateMachineDefinitionViewModel.AddTransition(data.TransitionRuleDefinitionViewModel));
         }
 
         private void OnDeleteStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,

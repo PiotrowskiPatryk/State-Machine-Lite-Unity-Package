@@ -56,7 +56,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         public SerializedProperty Payload =>
             SerializedProperty.FindPropertyRelative(TriggerDefinition.PAYLOAD_PROPERTY_NAME);
 
-        protected override SerializedProperty SerializedProperty { get; }
+        public override SerializedProperty SerializedProperty { get; }
 
         public TriggerDefinitionViewModel(SerializedProperty serializedProperty)
         {

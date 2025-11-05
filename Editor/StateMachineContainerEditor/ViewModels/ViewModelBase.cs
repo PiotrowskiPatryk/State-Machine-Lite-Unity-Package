@@ -10,7 +10,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
     public abstract class ViewModelBase : INotifyBindablePropertyChanged
     {
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
-        protected abstract SerializedProperty SerializedProperty { get; }
+        public abstract SerializedProperty SerializedProperty { get; }
 
         protected void ApplyPropertyValueString(string relativePropertyPath, string value,
             [CallerMemberName] string property = "")

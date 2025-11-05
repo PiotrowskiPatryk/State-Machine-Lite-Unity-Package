@@ -29,7 +29,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
             }
         }
 
-        protected override SerializedProperty SerializedProperty { get; }
+        public override SerializedProperty SerializedProperty { get; }
 
         public StateMachineConfigurationViewModel(SerializedProperty serializedProperty)
         {
