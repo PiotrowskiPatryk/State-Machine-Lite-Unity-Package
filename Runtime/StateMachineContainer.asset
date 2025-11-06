@@ -15,7 +15,87 @@ MonoBehaviour:
   _triggerConfiguration:
     _triggers: []
   _stateMachineConfiguration:
-    _stateMachines: []
+    _stateMachines:
+    - _id: b522ada7df1b44e3ad205c25a9a08e27
+      _name: New state machine
+      _description: 
+      _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+        Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _states:
+      - _id: afdf320e26c04e7ebd0347ebb49aaf40
+        _nodePosition: {x: -400, y: -300}
+        _name: First state
+        _description: 
+        _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: 2178204f016c4f599d70718f85997bb8
+        _nodePosition: {x: 0, y: -200}
+        _name: Second state
+        _description: 
+        _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: 41b66113249b4e72bc09fd58ddbfa4ab
+        _nodePosition: {x: 490, y: -100}
+        _name: Third state
+        _description: 
+        _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _payload:
+          rid: -2
+      - _id: 9b6e80e4eee741b0b2f0a61402ba39d8
+        _nodePosition: {x: 1000, y: 0}
+        _name: Fourth state
+        _description: 
+        _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _payload:
+          rid: -2
+      _payload:
+        rid: 6566690390584328194
+      _transitionRules:
+      - _initialStateId: afdf320e26c04e7ebd0347ebb49aaf40
+        _targetStateId: 2178204f016c4f599d70718f85997bb8
+        _priority: 0
+        _conditionDefinitions:
+        - _id: 567c2c66d23c405189a246af2a89351b
+          _name: Move to second state
+          _description: 
+          _typeName: Dev.Cortez.StateMachines.Core.Condition.TestCondition, Dev.Cortez.StateMachines,
+            Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _payload:
+            rid: 6566690390584328221
+        _conditionFilterType: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 6566690390584328194
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 6566690390584328221
+      type: {class: TestConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition, asm: Dev.Cortez.StateMachines}
+      data:
+        instance: {fileID: 0}

@@ -36,6 +36,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private MultiColumnListView _statesListView;
         private VisualElement _stateMachineGraphContainer;
         private StateMachineGraphView.StateMachineGraphView _stateMachineGraphView;
+        private ListView _transitionableStatesListView;
 
         public StateMachineMenuView()
         {
@@ -61,6 +62,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 Type.GetType(stateMachineDefinitionViewModel.TypeName));
             _payloadPropertyField.BindProperty(stateMachineDefinitionViewModel.Payload);
             _stateMachineGraphView.Bind(stateMachineDefinitionViewModel);
+            _transitionableStatesListView.dataSource = _stateMachineDefinitionViewModel.Transitions;
         }
 
         private void OnDetached(DetachFromPanelEvent detachFromPanelEvent)
@@ -86,6 +88,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _stateMachineGraphContainer = this.Q<VisualElement>("StateMachineGraphContainer");
             _stateMachineGraphView = new StateMachineGraphView.StateMachineGraphView();
             _stateMachineGraphContainer.Add(_stateMachineGraphView);
+            _transitionableStatesListView = this.Q<ListView>("TransitionableStatesListView");
 
             _saveButton.clicked += OnSaveButtonPressed;
             _exitButton.clicked += OnExitButtonPressed;
