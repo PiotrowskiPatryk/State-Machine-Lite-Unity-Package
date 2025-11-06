@@ -193,13 +193,39 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             stateMachineMenuView.EditStateButtonPressed += OnEditStateButtonPressed;
             stateMachineMenuView.DeleteStateButtonPressed += OnDeleteStateButtonPressed;
             stateMachineMenuView.AddTransitionButtonPressed += OnAddTransitionButtonPressed;
+            stateMachineMenuView.RemoveTransitionButtonPressed += OnRemoveTransitionButtonPressed;
+            stateMachineMenuView.EditTransitionButtonPressed += OnEditTransitionButtonPressed;
 
             stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
 
             _mainMenuView.DisplayCustomContent(stateMachineMenuView);
         }
 
-        private void OnAddTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
+        private void OnEditTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+            StateDefinitionViewModel stateDefinitionViewModel,
+            TransitionRuleDefinitionViewModel transitionRuleDefinitionViewModel)
+        {
+            var transitionRuleFormData = new TransitionRuleFormData
+            {
+                StateMachineDefinitionViewModel = stateMachineDefinitionViewModel,
+                TransitionRuleDefinitionViewModel = transitionRuleDefinitionViewModel,
+                SourceStateDefinitionViewModel = stateDefinitionViewModel
+            };
+
+            FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
+                transitionRuleFormData,
+                data => stateDefinitionViewModel.EditTransition(data.TransitionRuleDefinitionViewModel));
+        }
+
+        private void OnRemoveTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+            StateDefinitionViewModel stateDefinitionViewModel,
+            TransitionRuleDefinitionViewModel transitionRuleDefinitionViewModel)
+        {
+            stateDefinitionViewModel.RemoveTransition(transitionRuleDefinitionViewModel);
+        }
+
+        private void OnAddTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+            StateDefinitionViewModel stateDefinitionViewModel)
         {
             // Todo - apply initial state
             var transitionRuleDefinitionViewModel =
@@ -208,12 +234,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             var transitionRuleFormData = new TransitionRuleFormData
             {
                 StateMachineDefinitionViewModel = stateMachineDefinitionViewModel,
-                TransitionRuleDefinitionViewModel = transitionRuleDefinitionViewModel
+                TransitionRuleDefinitionViewModel = transitionRuleDefinitionViewModel,
+                SourceStateDefinitionViewModel = stateDefinitionViewModel
             };
 
             FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
                 transitionRuleFormData,
-                data => stateMachineDefinitionViewModel.AddTransition(data.TransitionRuleDefinitionViewModel));
+                data => stateDefinitionViewModel.AddTransition(data.TransitionRuleDefinitionViewModel));
         }
 
         private void OnDeleteStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,

@@ -54,12 +54,12 @@
                         <ui:Label text="Transition inspector" name="Header" class="text-header"/>
                         <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
                         <ui:Label text="States" name="States" class="text-header" style="font-size: 16px;"/>
-                        <ui:ListView
-                                binding-source-selection-mode="AutoAssign"
-                                item-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineContainerEditor/Views/StateMachineGraphView/Templates/TransitionableStateItemEntry.uxml?fileID=9197481963319205126&amp;guid=c18cae7364fe0a14da273377f0580bad&amp;type=3#TransitionableStateItemEntry"
-                                allow-remove="false" allow-add="false" name="TransitionableStatesListView">
+                        <ui:ListView binding-source-selection-mode="AutoAssign"
+                                     item-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineContainerEditor/Views/StateMachineGraphView/Templates/TransitionableStateItemEntry.uxml?fileID=9197481963319205126&amp;guid=c18cae7364fe0a14da273377f0580bad&amp;type=3#TransitionableStateItemEntry"
+                                     allow-remove="false" allow-add="false" name="TransitionableStatesListView"
+                                     virtualization-method="DynamicHeight">
                             <Bindings>
-                                <ui:DataBinding property="itemsSource" data-source-path="Transitions"/>
+                                <ui:DataBinding property="itemsSource" data-source-path="States"/>
                             </Bindings>
                         </ui:ListView>
                     </ui:VisualElement>
@@ -71,8 +71,6 @@
     </ui:VisualElement>
     <ui:VisualElement name="VisualElement"
                       style="flex-grow: 1; position: absolute; right: 0; top: 2px; flex-direction: row;">
-        <ui:Button text="Add transition" name="AddTransitionButton"
-                   style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;"/>
         <ui:Button text="Save"
                    icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Save.png?fileID=2800000&amp;guid=7532d6b95cc030e4c9081e3d9830ca63&amp;type=3#Icon_Save"
                    name="SaveButton"

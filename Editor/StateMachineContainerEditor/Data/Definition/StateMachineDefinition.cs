@@ -15,7 +15,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         public static string TRANSITION_SOLVER_TYPE_PROPERTY_NAME = nameof(_transitionSolverTypeName);
         public static string STATES_PROPERTY_NAME = nameof(_states);
         public static string PAYLOAD_PROPERTY_NAME = nameof(_payload);
-        public static string TRANSITION_RULES_PROPERTY_NAME = nameof(_transitionRules);
 
         [SerializeField]
         private string _id;
@@ -38,9 +37,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         [SerializeReference]
         private IPayload _payload;
 
-        [SerializeField]
-        private List<TransitionRuleDefinition> _transitionRules = new();
-
         public string Id => _id;
         public string Name => _name;
         public string Description => _description;
@@ -48,7 +44,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Data.Defin
         public string TransitionSolverTypeName => _transitionSolverTypeName;
         public List<StateDefinition> States => _states;
         public IPayload Payload => _payload;
-
-        public IReadOnlyList<TransitionRuleDefinition> TransitionRules => _transitionRules;
     }
 }

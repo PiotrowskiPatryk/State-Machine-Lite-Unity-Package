@@ -17,23 +17,45 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
         }
 
         [CreateProperty]
-        public string TargetStateId
-
-        {
-            get =>
-                SerializedProperty.FindPropertyRelative(
-                    TransitionRuleDefinition.TARGET_STATE_ID_PROPERTY_NAME).stringValue;
-            set =>
-                ApplyPropertyValueString(TransitionRuleDefinition.TARGET_STATE_ID_PROPERTY_NAME, value);
-        }
-
-        [CreateProperty]
         public ConditionFilterType ConditionFilterType
         {
             get =>
                 (ConditionFilterType)SerializedProperty.
                     FindPropertyRelative(TransitionRuleDefinition.CONDITION_FILTER_TYPE_PROPERTY_NAME).enumValueIndex;
             set => ApplyPropertyValueEnum(TransitionRuleDefinition.CONDITION_FILTER_TYPE_PROPERTY_NAME, (int)value);
+        }
+
+        [CreateProperty]
+        public StateDefinitionViewModel TargetState
+        {
+            get
+            {
+                var targetStateProperty =
+                    SerializedProperty.FindPropertyRelative(
+                        TransitionRuleDefinition.TARGET_STATE_PROPERTY_NAME);
+
+                return new StateDefinitionViewModel(targetStateProperty);
+            }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                var targetStateProperty = SerializedProperty.FindPropertyRelative(
+                    TransitionRuleDefinition.TARGET_STATE_PROPERTY_NAME);
+
+                var so = targetStateProperty.serializedObject;
+                so.Update();
+
+                var targetStateViewModel = new StateDefinitionViewModel(targetStateProperty);
+                targetStateViewModel.CopyFrom(value);
+
+                so.ApplyModifiedProperties();
+
+                Notify();
+            }
         }
 
         [CreateProperty]
@@ -54,16 +76,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 
                 return conditions;
             }
-        }
-
-        [CreateProperty]
-        public string InitialStateId
-        {
-            get =>
-                SerializedProperty.FindPropertyRelative(
-                    TransitionRuleDefinition.INITIAL_STATE_ID_PROPERTY_NAME).stringValue;
-            set =>
-                ApplyPropertyValueString(TransitionRuleDefinition.INITIAL_STATE_ID_PROPERTY_NAME, value);
         }
 
         public override SerializedProperty SerializedProperty { get; }
@@ -105,10 +117,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels
 
         public void CopyFrom(TransitionRuleDefinitionViewModel other)
         {
-            InitialStateId = other.InitialStateId;
-            TargetStateId = other.TargetStateId;
             Priority = other.Priority;
             ConditionFilterType = other.ConditionFilterType;
+            TargetState = other.TargetState;
 
             foreach (var condition in other.Conditions)
             {

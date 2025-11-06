@@ -10,6 +10,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Tran
     {
         public TransitionRuleDefinitionViewModel TransitionRuleDefinitionViewModel { get; set; }
         public StateMachineDefinitionViewModel StateMachineDefinitionViewModel { get; set; }
+        public StateDefinitionViewModel SourceStateDefinitionViewModel { get; set; }
     }
 
     public class TransitionRuleForm : FormBaseWindow<TransitionRuleFormData>
@@ -17,7 +18,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Tran
         private Button _submitButton;
         private Button _newConditionButton;
         private Button _cancelButton;
-        private DropdownField _initialStateDropdown;
+        private TextField _initialStateTextField;
         private DropdownField _targetStateDropdown;
         private MultiColumnListView _conditionsListView;
 
@@ -44,10 +45,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Tran
 
             _newConditionButton.clicked += OnNewConditionButtonPressed;
 
-            _initialStateDropdown = rootVisualElement.Q<DropdownField>("InitialStateDropdownField");
+            _initialStateTextField = rootVisualElement.Q<TextField>("InitialStateTextField");
+            _initialStateTextField.value = Data.SourceStateDefinitionViewModel.Name;
             _targetStateDropdown = rootVisualElement.Q<DropdownField>("TargetStateDropdownField");
 
-            _initialStateDropdown.RegisterValueChangedCallback(OnInitialStateChanged);
             _targetStateDropdown.RegisterValueChangedCallback(OnTargetStateChanged);
 
             PopulateDropdown();
@@ -89,15 +90,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Tran
         private void PopulateDropdown()
         {
             _targetStateDropdown.choices.Clear();
-            _initialStateDropdown.choices.Clear();
 
             foreach (var state in Data.StateMachineDefinitionViewModel.States)
             {
                 _targetStateDropdown.choices.Add(state.Name);
-                _initialStateDropdown.choices.Add(state.Name);
             }
 
-            var initialState = Data.TransitionRuleDefinitionViewModel.InitialStateId;
+            if (Data.TransitionRuleDefinitionViewModel.TargetState != null)
+            {
+                _targetStateDropdown.value = Data.TransitionRuleDefinitionViewModel.TargetState.Name;
+            }
         }
 
         private void OnNewConditionButtonPressed()
@@ -119,16 +121,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Forms.Tran
                 Data.StateMachineDefinitionViewModel.States.FirstOrDefault(state =>
                     state.Name.Equals(targetStateName.newValue));
 
-            Data.TransitionRuleDefinitionViewModel.TargetStateId = targetState?.Id;
-        }
-
-        private void OnInitialStateChanged(ChangeEvent<string> initialStateName)
-        {
-            var initialState =
-                Data.StateMachineDefinitionViewModel.States.FirstOrDefault(state =>
-                    state.Name.Equals(initialStateName.newValue));
-
-            Data.TransitionRuleDefinitionViewModel.InitialStateId = initialState?.Id;
+            Data.TransitionRuleDefinitionViewModel.TargetState = targetState;
         }
     }
 }
