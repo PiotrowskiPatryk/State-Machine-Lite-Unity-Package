@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Linq;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.StateMachineMenu
 {
@@ -32,6 +33,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             EditTransitionButtonPressed;
 
         public event Action ExitButtonPressed;
+        public event Action<StateMachineDefinitionViewModel, StateDefinitionViewModel, StateDefinitionViewModel> CreateTransitionBetweenStatesRequested;
 
         private StateMachineDefinitionViewModel _stateMachineDefinitionViewModel;
         private TypePickerDropdownField _stateMachineTypeDropdown;
@@ -44,6 +46,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private VisualElement _stateMachineGraphContainer;
         private StateMachineGraphView.StateMachineGraphView _stateMachineGraphView;
         private ListView _transitionableStatesListView;
+
+        // Inspector <-> Graph wiring helpers
+        private readonly System.Collections.Generic.Dictionary<string, Foldout> _foldoutByStateId = new();
+        private readonly System.Collections.Generic.Dictionary<string, ListView> _transitionsListByStateId = new();
+        private Foldout _lastHighlightedFoldout;
 
         public StateMachineMenuView()
         {
@@ -100,6 +107,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 _transitionSolverTypeDropdown.UnregisterValueChangedCallback(OnChangedTransitionSolverTypeDropdown);
             }
 
+            // Unwire graph events
+            if (_stateMachineGraphView != null)
+            {
+                _stateMachineGraphView.NodeClicked -= OnGraphNodeClicked;
+                _stateMachineGraphView.EdgeClicked -= OnGraphEdgeClicked;
+                _stateMachineGraphView.CreateTransitionRequested -= OnGraphCreateTransitionRequested;
+            }
+
             SaveButtonPressed = null;
             ExitButtonPressed = null;
             EditStateButtonPressed = null;
@@ -108,6 +123,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             AddTransitionButtonPressed = null;
             RemoveTransitionButtonPressed = null;
             EditTransitionButtonPressed = null;
+            CreateTransitionBetweenStatesRequested = null;
         }
 
         private void Initialize()
@@ -123,6 +139,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             _stateMachineGraphView = new StateMachineGraphView.StateMachineGraphView();
             _stateMachineGraphContainer.Add(_stateMachineGraphView);
             _transitionableStatesListView = this.Q<ListView>("TransitionableStatesListView");
+
+            // Wire graph <-> inspector events
+            _stateMachineGraphView.NodeClicked += OnGraphNodeClicked;
+            _stateMachineGraphView.EdgeClicked += OnGraphEdgeClicked;
+            _stateMachineGraphView.CreateTransitionRequested += OnGraphCreateTransitionRequested;
 
             _saveButton.clicked += OnSaveButtonPressed;
             _exitButton.clicked += OnExitButtonPressed;
@@ -163,6 +184,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         {
             var button = visualElement.Q<Button>();
             var listView = visualElement.Q<ListView>();
+            var foldout = visualElement.Q<Foldout>("TransitionableStateItemEntry");
+
+            var stateVm = _stateMachineDefinitionViewModel.States[index];
+
+            // Map state id to its UI parts for cross-highlighting
+            if (stateVm != null)
+            {
+                _transitionsListByStateId[stateVm.Id] = listView;
+                _foldoutByStateId[stateVm.Id] = foldout;
+            }
 
             // Ensure we don't accumulate multiple handlers on rebinds
             if (button != null)
@@ -172,15 +203,31 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                     button.clicked -= prevAddHandler;
                 }
 
-                Action addHandler = () => OnAddTransitionButtonPressed(_stateMachineDefinitionViewModel.States[index]);
+                Action addHandler = () => OnAddTransitionButtonPressed(stateVm);
                 button.userData = addHandler;
                 button.clicked += addHandler;
             }
 
+            // Clicking the foldout highlights and centers the corresponding node
+            if (foldout != null)
+            {
+                if (foldout.userData is EventCallback<PointerUpEvent> prevFoldoutCb)
+                {
+                    foldout.UnregisterCallback(prevFoldoutCb);
+                }
+
+                EventCallback<PointerUpEvent> foldoutCb = evt =>
+                {
+                    if (evt.button != 0) return;
+                    _stateMachineGraphView?.HighlightNodeById(stateVm.Id, true);
+                    evt.StopPropagation();
+                };
+                foldout.userData = foldoutCb;
+                foldout.RegisterCallback(foldoutCb);
+            }
+
             if (listView != null)
             {
-                var stateVm = _stateMachineDefinitionViewModel.States[index];
-
                 // Assign (not add) bind/unbind to avoid duplicate subscriptions per virtualization cycle
                 listView.bindItem = (element, itemIndex) => DoBindTransitionItemEntry(element, stateVm, itemIndex);
                 listView.unbindItem = (element, itemIndex) => DoUnbindTransitionItemEntry(element);
@@ -224,6 +271,26 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 };
                 editItemButton.userData = editHandler;
                 editItemButton.clicked += editHandler;
+            }
+
+            // Row click highlights edge in graph
+            if (visualElement != null)
+            {
+                if (visualElement.userData is EventCallback<PointerUpEvent> prev)
+                {
+                    visualElement.UnregisterCallback(prev);
+                }
+
+                EventCallback<PointerUpEvent> rowClick = evt =>
+                {
+                    if (evt.button != 0) return;
+                    var trVm = stateDefinitionViewModel.Transitions[index];
+                    _stateMachineGraphView?.HighlightTransitionByPath(trVm.SerializedProperty.propertyPath);
+                    // Do not highlight node when selecting a transition to keep selection exclusive to the edge
+                    evt.StopPropagation();
+                };
+                visualElement.userData = rowClick;
+                visualElement.RegisterCallback(rowClick);
             }
         }
 
@@ -292,6 +359,82 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             AddTransitionButtonPressed?.Invoke(_stateMachineDefinitionViewModel, stateDefinitionViewModel);
         }
 
+        // ---- Graph event handlers ----
+        private void OnGraphNodeClicked(string stateId)
+        {
+            if (string.IsNullOrEmpty(stateId)) return;
+            if (_foldoutByStateId.TryGetValue(stateId, out var foldout) && foldout != null)
+            {
+                foldout.value = true; // expand
+                HighlightFoldout(foldout);
+            }
+        }
+
+        private void OnGraphEdgeClicked(string sourceStateId, string transitionPropertyPath)
+        {
+            if (string.IsNullOrEmpty(sourceStateId) || string.IsNullOrEmpty(transitionPropertyPath))
+            {
+                return;
+            }
+
+            // expand correct state foldout
+            if (_foldoutByStateId.TryGetValue(sourceStateId, out var foldout) && foldout != null)
+            {
+                foldout.value = true;
+                HighlightFoldout(foldout);
+            }
+
+            // select transition row
+            if (_transitionsListByStateId.TryGetValue(sourceStateId, out var list) && list != null)
+            {
+                var stateVm = _stateMachineDefinitionViewModel?.States.FirstOrDefault(s => s.Id == sourceStateId);
+                if (stateVm != null)
+                {
+                    for (int i = 0; i < stateVm.Transitions.Count; i++)
+                    {
+                        if (stateVm.Transitions[i].SerializedProperty.propertyPath == transitionPropertyPath)
+                        {
+                            list.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnGraphCreateTransitionRequested(string sourceStateId, string targetStateId)
+        {
+            var source = _stateMachineDefinitionViewModel?.States.FirstOrDefault(s => s.Id == sourceStateId);
+            var target = _stateMachineDefinitionViewModel?.States.FirstOrDefault(s => s.Id == targetStateId);
+            if (source == null || target == null) return;
+            CreateTransitionBetweenStatesRequested?.Invoke(_stateMachineDefinitionViewModel, source, target);
+        }
+
+        private void HighlightFoldout(Foldout foldout)
+        {
+            if (_lastHighlightedFoldout != null && _lastHighlightedFoldout != foldout)
+            {
+                // reset styling
+                ResetFoldoutHighlight(_lastHighlightedFoldout);
+            }
+
+            _lastHighlightedFoldout = foldout;
+            var c = new Color(1f, 0.9f, 0.2f, 1f);
+            foldout.style.borderLeftColor = c;
+            foldout.style.borderRightColor = c;
+            foldout.style.borderTopColor = c;
+            foldout.style.borderBottomColor = c;
+        }
+
+        private static void ResetFoldoutHighlight(Foldout foldout)
+        {
+            var c = new Color(0.063f, 0.098f, 0.133f, 1f); // close to panel bg border
+            foldout.style.borderLeftColor = c;
+            foldout.style.borderRightColor = c;
+            foldout.style.borderTopColor = c;
+            foldout.style.borderBottomColor = c;
+        }
+
         private void DoBindStateMenuCell(VisualElement visualElement, int index)
         {
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
@@ -331,6 +474,24 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 button.userData = null;
             }
 
+            var foldout = visualElement.Q<Foldout>("TransitionableStateItemEntry");
+            if (foldout != null && foldout.userData is EventCallback<PointerUpEvent> prevFoldoutCb)
+            {
+                foldout.UnregisterCallback(prevFoldoutCb);
+                foldout.userData = null;
+            }
+
+            // Clean state lookup maps
+            if (_stateMachineDefinitionViewModel != null && index >= 0 && index < _stateMachineDefinitionViewModel.States.Count)
+            {
+                var stateVm = _stateMachineDefinitionViewModel.States[index];
+                if (stateVm != null)
+                {
+                    _foldoutByStateId.Remove(stateVm.Id);
+                    _transitionsListByStateId.Remove(stateVm.Id);
+                }
+            }
+
             // Unassign inner ListView bind/unbind and let UXML data binding manage itemsSource
             var listView = visualElement.Q<ListView>();
 
@@ -359,6 +520,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             {
                 editItemButton.clicked -= prevEdit;
                 editItemButton.userData = null;
+            }
+
+            // Unregister row click highlight handler
+            if (visualElement != null && visualElement.userData is EventCallback<PointerUpEvent> prevRow)
+            {
+                visualElement.UnregisterCallback(prevRow);
+                visualElement.userData = null;
             }
         }
     }

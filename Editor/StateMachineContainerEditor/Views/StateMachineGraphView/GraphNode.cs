@@ -88,6 +88,21 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                     return;
                 }
 
+                // Do not start node drag when interacting with port buttons (Output/Input)
+                if (evt.target is VisualElement ve)
+                {
+                    // Check the target and its ancestors up to this GraphNode
+                    var cur = ve;
+                    while (cur != null && cur != _owner)
+                    {
+                        if (cur.name == "OutputNode" || cur.name == "InputNode")
+                        {
+                            return; // let specialized handlers (e.g., edge create) process this
+                        }
+                        cur = cur.parent;
+                    }
+                }
+
                 _active = true;
                 _startValue = _owner.value;
 

@@ -25,7 +25,7 @@ MonoBehaviour:
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _states:
       - _id: afdf320e26c04e7ebd0347ebb49aaf40
-        _nodePosition: {x: -400, y: -300}
+        _nodePosition: {x: -400, y: -400}
         _name: First state
         _description: 
         _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
@@ -38,54 +38,48 @@ MonoBehaviour:
           rid: -2
         _transitionRules:
         - _targetState:
-            _id: 
-            _nodePosition: {x: 0, y: 0}
-            _name: 
+            _id: 2178204f016c4f599d70718f85997bb8
+            _nodePosition: {x: 0, y: -200}
+            _name: Second state
             _description: 
-            _typeName: 
-            _stateMachineTypeName: 
+            _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+              Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
+            _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+              Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _payload:
               rid: -2
             _transitionRules: []
-          _priority: 0
-          _conditionDefinitions:
-          - _id: a4a0593e4e1a432a81f5bfa0a46424a9
-            _name: Test condition
-            _description: 
-            _typeName: Dev.Cortez.StateMachines.Core.Condition.TestCondition, Dev.Cortez.StateMachines,
-              Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-            _payload:
-              rid: 6566690406905151949
+          _priority: 5
+          _conditionDefinitions: []
           _conditionFilterType: 0
         - _targetState:
-            _id: 
-            _nodePosition: {x: 0, y: 0}
-            _name: 
+            _id: 41b66113249b4e72bc09fd58ddbfa4ab
+            _nodePosition: {x: 400, y: -200}
+            _name: Third state
             _description: 
-            _typeName: 
-            _stateMachineTypeName: 
+            _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+              Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
+            _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+              Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _payload:
               rid: -2
             _transitionRules: []
           _priority: 0
           _conditionDefinitions:
-          - _id: a4a0593e4e1a432a81f5bfa0a46424a9
-            _name: Test condition
+          - _id: a91d960916a0480fa2851e36b8018663
+            _name: Test
             _description: 
             _typeName: Dev.Cortez.StateMachines.Core.Condition.TestCondition, Dev.Cortez.StateMachines,
               Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
             _payload:
-              rid: 6566690406905151949
-          - _id: 1a9f8f7905674fa5945a2e6b84ad2361
-            _name: Test
-            _description: Test
-            _typeName: Dev.Cortez.StateMachines.Core.Condition.TestCondition, Dev.Cortez.StateMachines,
-              Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-            _payload:
-              rid: 6566690406905152007
+              rid: 6566690408719974495
           _conditionFilterType: 0
       - _id: 2178204f016c4f599d70718f85997bb8
-        _nodePosition: {x: 0, y: -200}
+        _nodePosition: {x: -100, y: -100}
         _name: Second state
         _description: 
         _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
@@ -96,29 +90,9 @@ MonoBehaviour:
           PublicKeyToken=null
         _payload:
           rid: -2
-        _transitionRules:
-        - _targetState:
-            _id: 
-            _nodePosition: {x: 0, y: 0}
-            _name: 
-            _description: 
-            _typeName: 
-            _stateMachineTypeName: 
-            _payload:
-              rid: -2
-            _transitionRules: []
-          _priority: 0
-          _conditionDefinitions:
-          - _id: d651b837d02b42d5a6f764e72234ffa9
-            _name: Test
-            _description: Test
-            _typeName: Dev.Cortez.StateMachines.Core.Condition.TestCondition, Dev.Cortez.StateMachines,
-              Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-            _payload:
-              rid: 6566690406905152042
-          _conditionFilterType: 0
+        _transitionRules: []
       - _id: 41b66113249b4e72bc09fd58ddbfa4ab
-        _nodePosition: {x: 490, y: -100}
+        _nodePosition: {x: 400, y: -400}
         _name: Third state
         _description: 
         _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
@@ -131,8 +105,21 @@ MonoBehaviour:
           rid: -2
         _transitionRules: []
       - _id: 9b6e80e4eee741b0b2f0a61402ba39d8
-        _nodePosition: {x: 1000, y: 0}
+        _nodePosition: {x: 400, y: -200}
         _name: Fourth state
+        _description: 
+        _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _stateMachineTypeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestStateMachine,
+          Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _payload:
+          rid: -2
+        _transitionRules: []
+      - _id: ec4790002eb94ad98430beab27b5791e
+        _nodePosition: {x: 800, y: -400}
+        _name: Final state
         _description: 
         _typeName: Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine.TestState,
           Dev.Cortez.StateMachines.EditorTests, Version=0.0.0.0, Culture=neutral,
@@ -153,15 +140,7 @@ MonoBehaviour:
     - rid: 6566690390584328194
       type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
       data: 
-    - rid: 6566690406905151949
-      type: {class: TestConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition, asm: Dev.Cortez.StateMachines}
-      data:
-        instance: {fileID: 0}
-    - rid: 6566690406905152007
-      type: {class: TestConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition, asm: Dev.Cortez.StateMachines}
-      data:
-        instance: {fileID: 0}
-    - rid: 6566690406905152042
+    - rid: 6566690408719974495
       type: {class: TestConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition, asm: Dev.Cortez.StateMachines}
       data:
         instance: {fileID: 0}

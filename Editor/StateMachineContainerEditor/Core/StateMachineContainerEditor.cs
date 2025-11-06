@@ -195,6 +195,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             stateMachineMenuView.AddTransitionButtonPressed += OnAddTransitionButtonPressed;
             stateMachineMenuView.RemoveTransitionButtonPressed += OnRemoveTransitionButtonPressed;
             stateMachineMenuView.EditTransitionButtonPressed += OnEditTransitionButtonPressed;
+            stateMachineMenuView.CreateTransitionBetweenStatesRequested += OnCreateTransitionBetweenStatesRequested;
 
             stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
 
@@ -222,6 +223,26 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
             TransitionRuleDefinitionViewModel transitionRuleDefinitionViewModel)
         {
             stateDefinitionViewModel.RemoveTransition(transitionRuleDefinitionViewModel);
+        }
+
+        private void OnCreateTransitionBetweenStatesRequested(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+            StateDefinitionViewModel sourceState,
+            StateDefinitionViewModel targetState)
+        {
+            var transitionRuleDefinitionViewModel = new TransitionRuleDefinitionViewModel();
+            // Prefill target
+            transitionRuleDefinitionViewModel.TargetState = targetState;
+
+            var transitionRuleFormData = new TransitionRuleFormData
+            {
+                StateMachineDefinitionViewModel = stateMachineDefinitionViewModel,
+                TransitionRuleDefinitionViewModel = transitionRuleDefinitionViewModel,
+                SourceStateDefinitionViewModel = sourceState
+            };
+
+            FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
+                transitionRuleFormData,
+                data => sourceState.AddTransition(data.TransitionRuleDefinitionViewModel));
         }
 
         private void OnAddTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
