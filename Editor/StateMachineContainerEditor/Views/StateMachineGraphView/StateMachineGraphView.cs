@@ -24,19 +24,27 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private readonly VisualElement _transitionsContainer;
         private readonly VisualTreeAsset _stateNodeTemplate;
         private readonly List<TransitionEdgeElement> _edges = new();
-        private readonly Color _nodeBorderDefault = new Color(48/255f, 73/255f, 98/255f, 1f);
-        private readonly Color _nodeBorderSelected = new Color(1f, 0.9f, 0.2f, 1f);
-
-        private GraphNodeBackgroundVisualElement _background;
-        private GraphNode _selectedNode;
-        private TransitionEdgeElement _selectedEdge;
-
-        private StateMachineDefinitionViewModel _stateMachineDefinitionViewModel;
+        private readonly Color _nodeBorderDefault = new(48 / 255f, 73 / 255f, 98 / 255f, 1f);
+        private readonly Color _nodeBorderSelected = new(0.066f, 0.45f, 0.8313f, 1f);
 
         // Events
         public event Action<string> NodeClicked; // stateId
         public event Action<string, string> EdgeClicked; // sourceStateId, transitionPropertyPath
         public event Action<string, string> CreateTransitionRequested; // sourceStateId, targetStateId
+
+        private readonly GraphNodeBackgroundVisualElement _background;
+        private GraphNode _selectedNode;
+        private TransitionEdgeElement _selectedEdge;
+
+        private StateMachineDefinitionViewModel _stateMachineDefinitionViewModel;
+
+        // ---- Create edge drag ----
+        private VisualElement _cursorAnchor;
+        private TransitionEdgeElement _previewEdge;
+        private string _previewSourceId;
+        private int _dragPointerId = -1;
+
+        private bool _isCreatingEdge;
 
         public StateMachineGraphView()
         {
@@ -89,7 +97,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         // ---- Public API ----
         public void HighlightNodeById(string stateId, bool center = true)
         {
-            if (string.IsNullOrEmpty(stateId)) return;
+            if (string.IsNullOrEmpty(stateId))
+            {
+                return;
+            }
+
             if (_nodeById.TryGetValue(stateId, out var node))
             {
                 SelectNode(node, center);
@@ -98,8 +110,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
         public void HighlightTransitionByPath(string propertyPath)
         {
-            if (string.IsNullOrEmpty(propertyPath)) return;
+            if (string.IsNullOrEmpty(propertyPath))
+            {
+                return;
+            }
+
             var edge = _edges.FirstOrDefault(e => Equals(e.Tag, propertyPath));
+
             if (edge != null)
             {
                 SelectEdge(edge);
@@ -139,6 +156,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             }
 
             var states = _stateMachineDefinitionViewModel.States;
+
             foreach (var source in states)
             {
                 if (!_nodeById.TryGetValue(source.Id, out var sourceNode))
@@ -147,6 +165,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 }
 
                 var fromAnchor = sourceNode.Q<VisualElement>("OutputNode");
+
                 if (fromAnchor == null)
                 {
                     continue;
@@ -155,6 +174,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 foreach (var tr in source.Transitions)
                 {
                     var targetId = tr.TargetState?.Id;
+
                     if (string.IsNullOrEmpty(targetId))
                     {
                         continue;
@@ -166,6 +186,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                     }
 
                     var toAnchor = targetNode.Q<VisualElement>("InputNode");
+
                     if (toAnchor == null)
                     {
                         continue;
@@ -194,6 +215,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             node.RegisterValueChangedCallback(e =>
             {
                 state.NodePosition = e.newValue;
+
                 // Invalidate all edges so they redraw while dragging
                 foreach (var edge in _edges)
                 {
@@ -205,25 +227,35 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             // even if the drag manipulator stops propagation at target phase.
             node.RegisterCallback<PointerUpEvent>(evt =>
             {
-                if (evt.button != 0) return;
+                if (evt.button != 0)
+                {
+                    return;
+                }
+
                 // From GraphView clicks we should NOT center; centering is driven by inspector interactions
-                SelectNode(node, center: false);
+                SelectNode(node, false);
                 NodeClicked?.Invoke(state.Id);
                 // Do not StopPropagation here to not interfere with other systems; selection is idempotent
             }, TrickleDown.TrickleDown);
 
             // Drag-create transition from Output to another Input
             var output = instance.Q<Button>("OutputNode");
+
             if (output != null)
             {
                 // Listen on the node in capture (TrickleDown) phase to avoid Button's internal handlers swallowing the event
                 node.RegisterCallback<PointerDownEvent>(evt =>
                 {
-                    if (evt.button != 0) return;
+                    if (evt.button != 0)
+                    {
+                        return;
+                    }
+
                     // Start only if the press originated on the Output port (or its children)
                     if (evt.target is VisualElement ve)
                     {
                         var cur = ve;
+
                         while (cur != null && cur != node)
                         {
                             if (cur == output)
@@ -231,8 +263,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                                 StartCreateEdgeDrag(evt, output, state.Id);
                                 // Prevent the GraphNode drag manipulator and others from reacting
                                 evt.StopImmediatePropagation();
+
                                 break;
                             }
+
                             cur = cur.parent;
                         }
                     }
@@ -267,6 +301,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             if (_selectedNode != null)
             {
                 var prev = _selectedNode.Q<VisualElement>("NodeElement");
+
                 if (prev != null)
                 {
                     prev.style.borderLeftColor = _nodeBorderDefault;
@@ -278,6 +313,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
             _selectedNode = node;
             var cur = _selectedNode?.Q<VisualElement>("NodeElement");
+
             if (cur != null)
             {
                 cur.style.borderLeftColor = _nodeBorderSelected;
@@ -299,7 +335,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             if (_selectedNode != null)
             {
                 var prev = _selectedNode.Q<VisualElement>("NodeElement");
-            
+
                 if (prev != null)
                 {
                     prev.style.borderLeftColor = _nodeBorderDefault;
@@ -307,6 +343,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                     prev.style.borderTopColor = _nodeBorderDefault;
                     prev.style.borderBottomColor = _nodeBorderDefault;
                 }
+
                 _selectedNode = null;
             }
 
@@ -328,19 +365,18 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             EdgeClicked?.Invoke(edge.SourceStateId, edge.Tag as string);
         }
 
-        // ---- Create edge drag ----
-        private VisualElement _cursorAnchor;
-        private TransitionEdgeElement _previewEdge;
-        private string _previewSourceId;
-        private int _dragPointerId = -1;
-
-        private bool _isCreatingEdge;
-
         private void StartCreateEdgeDrag(PointerDownEvent evt, VisualElement fromAnchor, string sourceStateId)
         {
-            if (evt.button != 0) return;
+            if (evt.button != 0)
+            {
+                return;
+            }
+
             // Prevent re-entrancy if a drag is already active
-            if (_previewEdge != null) return;
+            if (_previewEdge != null)
+            {
+                return;
+            }
 
             _previewSourceId = sourceStateId;
 
@@ -358,7 +394,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
             _transitionsContainer.Add(_cursorAnchor);
 
-            _previewEdge = new TransitionEdgeElement(fromAnchor, _cursorAnchor, sourceStateId, null);
+            _previewEdge = new TransitionEdgeElement(fromAnchor, _cursorAnchor, sourceStateId);
             _transitionsContainer.Add(_previewEdge);
 
             // Initial position
@@ -369,9 +405,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             this.CapturePointer(_dragPointerId);
 
             // Listen in trickle-down to avoid collisions and ensure early handling
-            this.RegisterCallback<PointerMoveEvent>(OnCreateEdgePointerMove, TrickleDown.TrickleDown);
-            this.RegisterCallback<PointerUpEvent>(OnCreateEdgePointerUp, TrickleDown.TrickleDown);
-            this.RegisterCallback<PointerCaptureOutEvent>(OnCreateEdgePointerCaptureOut);
+            RegisterCallback<PointerMoveEvent>(OnCreateEdgePointerMove, TrickleDown.TrickleDown);
+            RegisterCallback<PointerUpEvent>(OnCreateEdgePointerUp, TrickleDown.TrickleDown);
+            RegisterCallback<PointerCaptureOutEvent>(OnCreateEdgePointerCaptureOut);
 
             _isCreatingEdge = true;
             evt.StopImmediatePropagation();
@@ -392,20 +428,28 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             if (panel != null)
             {
                 // Pick top-most element and walk up to find an InputNode
-                var picked = panel.Pick(evt.position) as VisualElement;
+                var picked = panel.Pick(evt.position);
                 var cur = picked;
+
                 while (cur != null)
                 {
                     if (cur.name == "InputNode")
                     {
                         var node = cur.GetFirstOfType<GraphNode>();
+
                         if (node != null)
                         {
                             targetId = _nodeById.FirstOrDefault(p => ReferenceEquals(p.Value, node)).Key;
                         }
+
                         break;
                     }
-                    if (ReferenceEquals(cur, this)) break;
+
+                    if (ReferenceEquals(cur, this))
+                    {
+                        break;
+                    }
+
                     cur = cur.parent;
                 }
             }
@@ -414,15 +458,26 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             if (string.IsNullOrEmpty(targetId))
             {
                 const float pad = 8f;
+
                 foreach (var kv in _nodeById)
                 {
                     var input = kv.Value.Q<VisualElement>("InputNode");
-                    if (input == null) continue;
+
+                    if (input == null)
+                    {
+                        continue;
+                    }
+
                     var r = input.worldBound;
-                    r.xMin -= pad; r.xMax += pad; r.yMin -= pad; r.yMax += pad;
+                    r.xMin -= pad;
+                    r.xMax += pad;
+                    r.yMin -= pad;
+                    r.yMax += pad;
+
                     if (r.Contains(evt.position))
                     {
                         targetId = kv.Key;
+
                         break;
                     }
                 }
@@ -440,7 +495,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
         private void UpdateCursorAnchorPosition(Vector2 worldPos)
         {
-            if (_cursorAnchor == null) return;
+            if (_cursorAnchor == null)
+            {
+                return;
+            }
+
             var local = _transitionsContainer.WorldToLocal(worldPos);
             _cursorAnchor.style.left = local.x;
             _cursorAnchor.style.top = local.y;
@@ -453,6 +512,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 _previewEdge.RemoveFromHierarchy();
                 _previewEdge = null;
             }
+
             if (_cursorAnchor != null)
             {
                 _cursorAnchor.RemoveFromHierarchy();
@@ -464,11 +524,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             {
                 this.ReleasePointer(_dragPointerId);
             }
+
             _dragPointerId = -1;
 
-            this.UnregisterCallback<PointerMoveEvent>(OnCreateEdgePointerMove);
-            this.UnregisterCallback<PointerUpEvent>(OnCreateEdgePointerUp);
-            this.UnregisterCallback<PointerCaptureOutEvent>(OnCreateEdgePointerCaptureOut);
+            UnregisterCallback<PointerMoveEvent>(OnCreateEdgePointerMove);
+            UnregisterCallback<PointerUpEvent>(OnCreateEdgePointerUp);
+            UnregisterCallback<PointerCaptureOutEvent>(OnCreateEdgePointerCaptureOut);
         }
 
         private void OnCreateEdgePointerCaptureOut(PointerCaptureOutEvent evt)

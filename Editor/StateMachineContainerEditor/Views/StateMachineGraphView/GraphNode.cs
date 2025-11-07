@@ -93,12 +93,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
                 {
                     // Check the target and its ancestors up to this GraphNode
                     var cur = ve;
+
                     while (cur != null && cur != _owner)
                     {
-                        if (cur.name == "OutputNode" || cur.name == "InputNode")
+                        if (cur.name is "OutputNode" or "InputNode")
                         {
                             return; // let specialized handlers (e.g., edge create) process this
                         }
+
                         cur = cur.parent;
                     }
                 }
