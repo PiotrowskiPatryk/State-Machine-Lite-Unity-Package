@@ -1,5 +1,4 @@
 ﻿using System;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.State;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.StateMachine;
@@ -21,14 +20,17 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
 
         public static void Show(SerializedObject serializedObject)
         {
-            if (serializedObject.targetObject.GetType() != typeof(StateMachineContainer))
+            if (StateMachineContainerSingleton.instance.TryApply(serializedObject))
+            {
+                var window = CreateInstance<StateMachineContainerEditor>();
+                var working = StateMachineContainerSingleton.instance.WorkingSerializedObject;
+                window.Initialize(working);
+                window.Show();
+            }
+            else
             {
                 Debug.LogError("Serialized object is not a StateMachineContainer");
             }
-
-            var window = CreateInstance<StateMachineContainerEditor>();
-            window.Initialize(serializedObject);
-            window.Show();
         }
 
         private void OnDestroy()
@@ -40,7 +42,20 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
         {
             CreateMainMenuView();
             InitializeEventListeners();
-            BindData();
+
+            // Rehydrate from singleton after domain reload or when window is created without Show(serializedObject)
+            var working = StateMachineContainerSingleton.instance.WorkingSerializedObject;
+
+            if (working != null)
+            {
+                Initialize(working);
+            }
+
+            // If Initialize was not called (working is null), BindData will no-op if registry is null
+            if (_stateMachineContainerViewModelRegistry != null)
+            {
+                BindData();
+            }
         }
 
         private void CreateMainMenuView()
@@ -71,6 +86,21 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
             rootVisualElement.dataSource = _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel;
             _mainMenuView.Bind(_stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel,
                 _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel);
+        }
+
+        private void RebindFromWorking()
+        {
+            var working = StateMachineContainerSingleton.instance.WorkingSerializedObject;
+
+            if (working == null)
+            {
+                Debug.LogError("Working SerializedObject is null. Cannot bind UI.");
+
+                return;
+            }
+
+            _stateMachineContainerViewModelRegistry = new StateMachineContainerViewModelRegistry(working);
+            BindData();
         }
 
         private void InitializeEventListeners()

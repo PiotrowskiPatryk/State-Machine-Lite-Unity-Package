@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Abstraction
@@ -34,6 +35,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// </remarks>
     public abstract class StateBase<TStateContext> : StateBase<TStateContext, EmptyPayload>
     {
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload statePayload,
+            CancellationToken cancellationToken)
+        {
+            return UniTask.FromResult(true);
+        }
     }
 
     /// <summary>
@@ -53,7 +59,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     It allows external systems to react to state transitions dynamically.
         /// </remarks>
         public event Action<StateStatus> StatusChanged;
-        
+
         private StateStatus _stateStatus;
 
         /// <summary>
@@ -98,6 +104,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// </summary>
         [NotNull]
         public string Id { get; private set; }
+
         public string Name { get; private set; }
         public string Description { get; private set; }
 
@@ -111,7 +118,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     canceled.
         /// </param>
         /// <returns>A task that resolves to a boolean indicating whether the initialization was successful or failed.</returns>
-        public UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload, CancellationToken cancellationToken)
+        public UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload,
+            CancellationToken cancellationToken)
         {
             if (payload is TStatePayload statePayload)
             {
@@ -120,8 +128,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
             InitializationStatus = InitializationStatus.Failed;
 
-            Logging.LoggerService.Logger.LogError($"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {payload.GetType().Name}.");
-            
+            LoggerService.Logger.LogError(
+                $"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {payload.GetType().Name}.");
+
             return UniTask.FromResult(false);
         }
 
@@ -277,7 +286,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             Id = stateSettings.Id;
             Name = stateSettings.Name;
             Description = stateSettings.Description;
-            
+
             switch (InitializationStatus)
             {
                 case InitializationStatus.Initialized:
