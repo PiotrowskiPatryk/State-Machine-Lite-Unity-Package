@@ -18,8 +18,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         private readonly VisualElement _to;
 
         private readonly Color _selectedColor = new(0.066f, 0.45f, 0.8313f, 1f);
-        private readonly float _selectedWidth = 3.5f;
+        private readonly float _selectedWidth = 5.0f;
         private readonly float _baseHitTolerance = 12f;
+
+        private static readonly string HOVER_CLASS_NAME = "hovered";
 
         public event Action<TransitionEdgeElement> Clicked;
         public event Action<TransitionEdgeElement, bool> HoverChanged;
@@ -35,7 +37,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
         public string TargetStateId { get; }
         public object Tag { get; set; }
 
-        public Color LineColor { get; set; } = new(0.45f, 0.70f, 1f, 0.95f);
+        public Color LineColor { get; set; } = new(0.45f, 0.70f, 1f, 0.75f);
         public float LineWidth { get; set; } = 2.0f;
         public float ArrowLength { get; set; } = 10.0f;
         public float ArrowAngleDeg { get; set; } = 26.0f;
@@ -84,6 +86,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             if (IsSelected)
             {
                 AddToClassList("selected");
+
                 //
                 // if (BringToFrontOnSelect)
                 // {
@@ -109,8 +112,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
             return IsNearCurve(localPoint, tol);
         }
-
-        // ---------------- Panel-level input ----------------
 
         private void OnAttachToPanel(AttachToPanelEvent _)
         {
@@ -153,11 +154,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
                 if (_hovered)
                 {
-                    AddToClassList("hovered");
+                    AddToClassList(HOVER_CLASS_NAME);
                 }
                 else
                 {
-                    RemoveFromClassList("hovered");
+                    RemoveFromClassList(HOVER_CLASS_NAME);
                 }
 
                 HoverChanged?.Invoke(this, _hovered);
@@ -173,7 +174,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
             }
 
             _hovered = false;
-            RemoveFromClassList("hovered");
+            RemoveFromClassList(HOVER_CLASS_NAME);
             HoverChanged?.Invoke(this, false);
             MarkDirtyRepaint();
         }
@@ -228,16 +229,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Views.Stat
 
                 SelectionChanged?.Invoke(this, IsSelected, additive);
                 Clicked?.Invoke(this);
-
-                // If you don't want the graph background to also react:
-                // evt.StopPropagation();
             }
 
             _pressedNearCurve = false;
             _pressedPointerId = -1;
         }
-
-        // ---------------- Drawing & hit test ----------------
 
         private float GetLocalHitTolerance()
         {
