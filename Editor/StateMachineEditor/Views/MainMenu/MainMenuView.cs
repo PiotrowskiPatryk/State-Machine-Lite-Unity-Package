@@ -1,18 +1,19 @@
 ﻿using System;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements;
 using NUnit.Framework;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using ItemOptionsMenu = Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.ItemOptionsMenu;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 {
     public class MainMenuView : VisualElement
     {
         private readonly VisualElement _customContentContainer;
+        private readonly VisualElement _formContainer;
 
         public event Action PressedNewStateMachineButton;
         public event Action PressedNewTriggerButton;
@@ -32,6 +33,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 
             _customContentContainer = this.Q<VisualElement>("CustomContentContainer");
             _customContentContainer.pickingMode = PickingMode.Ignore;
+            _formContainer = this.Q<VisualElement>("FormContainer");
 
             InitializeEventListeners();
             InitializeStateMachineListView();
@@ -39,6 +41,21 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 
             Assert.NotNull(_stateMachineListView);
             Assert.NotNull(_triggerListView);
+            Assert.NotNull(_formContainer);
+        }
+
+        public void DisplayForm(VisualElement visualElement)
+        {
+            _formContainer.style.display = DisplayStyle.Flex;
+            _formContainer.visible = true;
+            _formContainer.Add(visualElement);
+        }
+
+        public void HideForm()
+        {
+            _formContainer.style.display = DisplayStyle.None;
+            _formContainer.visible = false;
+            _formContainer.Clear();
         }
 
         public void DisplayCustomContent(VisualElement visualElement)
@@ -49,8 +66,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 
         public void ClearCustomContent()
         {
-            _customContentContainer.Clear();
             _customContentContainer.pickingMode = PickingMode.Ignore;
+            _customContentContainer.Clear();
         }
 
         public void Bind(StateMachineConfigurationViewModel stateMachineConfigurationViewModel,
@@ -145,8 +162,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             {
                 Debug.LogError("Unable to bind menu item.");
             }
-
-            Action test = PressedDeleteTriggerButton;
 
             return;
 

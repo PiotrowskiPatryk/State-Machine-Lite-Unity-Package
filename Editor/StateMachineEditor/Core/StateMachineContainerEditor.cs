@@ -1,4 +1,5 @@
-﻿using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration;
+﻿using System;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.State;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.StateMachine;
@@ -111,8 +112,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
         {
             var stateMachineDefinitionViewModel = new StateMachineDefinitionViewModel();
 
-            FormBaseWindow<StateMachineDefinitionViewModel>.Show<StateMachineForm>(
-                stateMachineDefinitionViewModel,
+            DisplayForm<StateMachineForm, StateMachineDefinitionViewModel>(stateMachineDefinitionViewModel,
                 _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.AddStateMachine);
         }
 
@@ -120,9 +120,63 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
         {
             var triggerDefinitionViewModel = new TriggerDefinitionViewModel();
 
-            FormBaseWindow<TriggerDefinitionViewModel>.Show<TriggerForm>(
-                triggerDefinitionViewModel,
+            DisplayForm<TriggerForm, TriggerDefinitionViewModel>(triggerDefinitionViewModel,
                 _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel.AddTrigger);
+        }
+
+        private void DisplayForm<TForm, TData>(TData data, Action<TData> addedCallback)
+            where TForm : FormBaseWindow<TData>, new() where TData : class
+        {
+            var form = new TForm();
+            var formVisualElement = form.Show(data, OnSubmittedDataInternal, OnCancelledDataInternal);
+
+            _mainMenuView.DisplayForm(formVisualElement);
+
+            return;
+
+            void OnCancelledDataInternal(TData newData)
+            {
+                _mainMenuView.HideForm();
+            }
+
+            void OnSubmittedDataInternal(TData newData)
+            {
+                addedCallback?.Invoke(newData);
+                _mainMenuView.HideForm();
+            }
+        }
+
+        private void ShowMainMenuView()
+        {
+            _mainMenuView.ClearCustomContent();
+        }
+
+        private void ShowStateMachineMenuView(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
+        {
+            _mainMenuView.ClearCustomContent();
+
+            var stateMachineMenuView = new StateMachineMenuView();
+
+            stateMachineMenuView.SaveButtonPressed += newData =>
+            {
+                _stateMachineContainerViewModelRegistry.
+                    StateMachineConfigurationViewModel.UpdateState(newData);
+
+                ShowMainMenuView();
+            };
+
+            stateMachineMenuView.ExitButtonPressed += ShowMainMenuView;
+            stateMachineMenuView.AddNewStateButtonPressed += OnAddNewStateButtonPressed;
+            stateMachineMenuView.EditStateButtonPressed += OnEditStateButtonPressed;
+            stateMachineMenuView.DeleteStateButtonPressed += OnDeleteStateButtonPressed;
+            stateMachineMenuView.AddTransitionButtonPressed += OnAddTransitionButtonPressed;
+            stateMachineMenuView.RemoveTransitionButtonPressed += OnRemoveTransitionButtonPressed;
+            stateMachineMenuView.EditTransitionButtonPressed += OnEditTransitionButtonPressed;
+            stateMachineMenuView.CreateTransitionBetweenStatesRequested += OnCreateTransitionBetweenStatesRequested;
+
+            stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
+
+            _mainMenuView.DisplayCustomContent(stateMachineMenuView);
         }
 
         private void OnPressedEditTriggerButton(int index)
@@ -133,8 +187,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
             if (triggerDefinitionViewModel != null)
             {
                 var copyTriggerDefinitionViewModel = new TriggerDefinitionViewModel(triggerDefinitionViewModel);
-                FormBaseWindow<TriggerDefinitionViewModel>.Show<TriggerForm>(
-                    copyTriggerDefinitionViewModel,
+
+                DisplayForm<TriggerForm, TriggerDefinitionViewModel>(copyTriggerDefinitionViewModel,
                     _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel.UpdateTrigger);
             }
         }
@@ -176,34 +230,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
             }
         }
 
-        private void ShowStateMachineMenuView(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
-        {
-            _mainMenuView.ClearCustomContent();
-
-            var stateMachineMenuView = new StateMachineMenuView();
-
-            stateMachineMenuView.SaveButtonPressed += newData =>
-            {
-                _stateMachineContainerViewModelRegistry.
-                    StateMachineConfigurationViewModel.UpdateState(newData);
-
-                ShowMainMenuView();
-            };
-
-            stateMachineMenuView.ExitButtonPressed += ShowMainMenuView;
-            stateMachineMenuView.AddNewStateButtonPressed += OnAddNewStateButtonPressed;
-            stateMachineMenuView.EditStateButtonPressed += OnEditStateButtonPressed;
-            stateMachineMenuView.DeleteStateButtonPressed += OnDeleteStateButtonPressed;
-            stateMachineMenuView.AddTransitionButtonPressed += OnAddTransitionButtonPressed;
-            stateMachineMenuView.RemoveTransitionButtonPressed += OnRemoveTransitionButtonPressed;
-            stateMachineMenuView.EditTransitionButtonPressed += OnEditTransitionButtonPressed;
-            stateMachineMenuView.CreateTransitionBetweenStatesRequested += OnCreateTransitionBetweenStatesRequested;
-
-            stateMachineMenuView.Bind(stateMachineDefinitionViewModel);
-
-            _mainMenuView.DisplayCustomContent(stateMachineMenuView);
-        }
-
         private void OnEditTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
             StateDefinitionViewModel stateDefinitionViewModel,
             TransitionRuleDefinitionViewModel transitionRuleDefinitionViewModel)
@@ -215,8 +241,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
                 SourceStateDefinitionViewModel = stateDefinitionViewModel
             };
 
-            FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
-                transitionRuleFormData,
+            DisplayForm<TransitionRuleForm, TransitionRuleFormData>(transitionRuleFormData,
                 data => stateDefinitionViewModel.EditTransition(data.TransitionRuleDefinitionViewModel));
         }
 
@@ -243,8 +268,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
                 SourceStateDefinitionViewModel = sourceState
             };
 
-            FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
-                transitionRuleFormData,
+            DisplayForm<TransitionRuleForm, TransitionRuleFormData>(transitionRuleFormData,
                 data => sourceState.AddTransition(data.TransitionRuleDefinitionViewModel));
         }
 
@@ -262,8 +286,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
                 SourceStateDefinitionViewModel = stateDefinitionViewModel
             };
 
-            FormBaseWindow<TransitionRuleFormData>.Show<TransitionRuleForm>(
-                transitionRuleFormData,
+            DisplayForm<TransitionRuleForm, TransitionRuleFormData>(transitionRuleFormData,
                 data => stateDefinitionViewModel.AddTransition(data.TransitionRuleDefinitionViewModel));
         }
 
@@ -276,7 +299,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
         private void OnEditStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
             StateDefinitionViewModel stateDefinitionViewModel)
         {
-            FormBaseWindow<StateDefinitionViewModel>.Show<StateForm>(stateDefinitionViewModel,
+            DisplayForm<StateForm, StateDefinitionViewModel>(stateDefinitionViewModel,
                 stateMachineDefinitionViewModel.UpdateState);
         }
 
@@ -284,14 +307,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
         {
             var stateDefinitionViewModel = new StateDefinitionViewModel(stateMachineDefinitionViewModel.TypeName);
 
-            FormBaseWindow<StateDefinitionViewModel>.Show<StateForm>(
-                stateDefinitionViewModel,
+            DisplayForm<StateForm, StateDefinitionViewModel>(stateDefinitionViewModel,
                 stateMachineDefinitionViewModel.AddState);
-        }
-
-        private void ShowMainMenuView()
-        {
-            _mainMenuView.ClearCustomContent();
         }
     }
 }

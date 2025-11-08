@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Condition;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -22,32 +22,34 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
         private DropdownField _targetStateDropdown;
         private MultiColumnListView _conditionsListView;
 
+        protected override string FORM_PATH => StateMachineEditorViewRepository.TRANSITION_RULE_FORM_PATH;
+
         protected override bool IsInputDataValid()
         {
             // TODO implement validation
             return true;
         }
 
-        protected override void OnCreatedGUI()
+        protected override void OnShown()
         {
-            _submitButton = rootVisualElement.Q<Button>("SubmitButton");
-            _cancelButton = rootVisualElement.Q<Button>("CancelButton");
+            _submitButton = RootVisualElement.Q<Button>("SubmitButton");
+            _cancelButton = RootVisualElement.Q<Button>("CancelButton");
             _submitButton.clicked += Submit;
             _cancelButton.clicked += Cancel;
 
-            _newConditionButton = rootVisualElement.Q<Button>("NewConditionButton");
-            _conditionsListView = rootVisualElement.Q<MultiColumnListView>("ConditionsListView");
+            _newConditionButton = RootVisualElement.Q<Button>("NewConditionButton");
+            _conditionsListView = RootVisualElement.Q<MultiColumnListView>("ConditionsListView");
             _conditionsListView.columns[0].bindCell = DoBindConditionNameValue;
             _conditionsListView.columns[1].bindCell = DoBindConditionDescriptionValue;
             _conditionsListView.columns[2].bindCell = DoBindConditionTypeValue;
             _conditionsListView.columns[3].bindCell = DoBindConditionRuleValue;
-            rootVisualElement.dataSource = Data.TransitionRuleDefinitionViewModel;
+            RootVisualElement.dataSource = Data.TransitionRuleDefinitionViewModel;
 
             _newConditionButton.clicked += OnNewConditionButtonPressed;
 
-            _initialStateTextField = rootVisualElement.Q<TextField>("InitialStateTextField");
+            _initialStateTextField = RootVisualElement.Q<TextField>("InitialStateTextField");
             _initialStateTextField.value = Data.SourceStateDefinitionViewModel.Name;
-            _targetStateDropdown = rootVisualElement.Q<DropdownField>("TargetStateDropdownField");
+            _targetStateDropdown = RootVisualElement.Q<DropdownField>("TargetStateDropdownField");
 
             _targetStateDropdown.RegisterValueChangedCallback(OnTargetStateChanged);
 
@@ -106,8 +108,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
         {
             var conditionDefinitionViewModel = new ConditionDefinitionViewModel();
 
-            FormBaseWindow<ConditionDefinitionViewModel>.Show<ConditionForm>(conditionDefinitionViewModel,
-                OnAddedCondition);
+            // FormBaseWindow<ConditionDefinitionViewModel>.Show<ConditionForm>(conditionDefinitionViewModel,
+            //     OnAddedCondition);
         }
 
         private void OnAddedCondition(ConditionDefinitionViewModel conditionDefinitionViewModel)
