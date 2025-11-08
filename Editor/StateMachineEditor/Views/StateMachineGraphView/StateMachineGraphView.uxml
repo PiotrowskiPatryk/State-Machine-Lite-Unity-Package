@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+         editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles"/>
+    <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineGraphView.VisualElements.GraphNodeBackgroundVisualElement
+            zoom-step="3" max-zoom="3" min-zoom="0.5" limit-pan="true" bounds-x="-5000" bounds-y="-5000"
+            bounds-width="10000" bounds-height="10000"
+            style="flex-shrink: 1; flex-grow: 1; position: relative; left: auto; top: auto; right: auto; bottom: auto; min-height: 0;">
+        <ui:VisualElement name="StatesContainer" picking-mode="Ignore"
+                          style="flex-grow: 1; position: absolute; right: 0; bottom: 0; left: 0; top: 0;"/>
+        <ui:VisualElement name="TransitionsContainer" picking-mode="Ignore"
+                          style="flex-grow: 1; right: 0; top: 0; left: 0; bottom: 0;"/>
+    </Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineGraphView.VisualElements.GraphNodeBackgroundVisualElement>
+</ui:UXML>
