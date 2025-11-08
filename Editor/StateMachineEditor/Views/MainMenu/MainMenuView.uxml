@@ -16,7 +16,7 @@
             <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggersCountLabel" text="Triggers:" class="header text" style="color: rgb(138, 138, 138); -unity-font: url(&apos;row&apos;); font-size: 14px; -unity-font-style: normal;" />
             <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggersCountValue" text="0" class="header text" style="color: rgb(138, 138, 138); -unity-font: url(&apos;row&apos;); font-size: 14px; -unity-font-style: normal;">
                 <Bindings>
-                    <ui:DataBinding property="text" data-source-path="TriggersCount" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.TriggerConfigurationViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="ToTarget" />
+                    <ui:DataBinding property="text" data-source-path="TriggersCount" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.TriggerConfigurationViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="ToTarget" />
                 </Bindings>
             </ui:Label>
         </ui:VisualElement>
