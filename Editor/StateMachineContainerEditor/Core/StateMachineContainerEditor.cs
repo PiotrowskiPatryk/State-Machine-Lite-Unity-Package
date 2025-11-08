@@ -46,6 +46,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
         {
             var root = rootVisualElement;
             root.style.flexDirection = FlexDirection.Column;
+            root.style.flexGrow = 1;
+            root.style.minHeight = 0;
 
             _mainMenuView = new MainMenuView
             {
@@ -53,7 +55,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.Core
                 {
                     // TODO - Do it properly
                     flexGrow = 1,
-                    flexShrink = 0,
+                    flexShrink = 1,
                     flexBasis = 0
                 }
             };
