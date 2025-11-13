@@ -12,5 +12,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration
 
         [SerializeField]
         private List<TriggerDefinition> _triggers = new();
+
+        public IReadOnlyList<TriggerDefinition> Triggers => _triggers;
     }
 }

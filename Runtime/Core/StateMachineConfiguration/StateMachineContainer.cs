@@ -13,5 +13,8 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration
 
         [SerializeField]
         private StateMachineConfiguration _stateMachineConfiguration;
+
+        public TriggerConfiguration TriggerConfiguration => _triggerConfiguration;
+        public StateMachineConfiguration StateMachineConfiguration => _stateMachineConfiguration;
     }
 }

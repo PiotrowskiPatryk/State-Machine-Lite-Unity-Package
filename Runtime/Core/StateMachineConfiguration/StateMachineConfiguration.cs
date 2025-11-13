@@ -12,5 +12,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration
 
         [SerializeField]
         private List<StateMachineDefinition> _stateMachines = new();
+
+        public IReadOnlyList<StateMachineDefinition> StateMachines => _stateMachines;
     }
 }

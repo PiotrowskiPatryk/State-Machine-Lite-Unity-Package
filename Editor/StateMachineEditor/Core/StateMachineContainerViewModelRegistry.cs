@@ -1,4 +1,4 @@
-﻿using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration;
+﻿using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using NUnit.Framework;
 using UnityEditor;

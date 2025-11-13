@@ -1,4 +1,6 @@
-﻿using Dev.Cortez.StateMachines.Core.ReferencePicker;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Dev.Cortez.StateMachines.Core.ReferencePicker;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using JetBrains.Annotations;
@@ -10,8 +12,32 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
 {
     public abstract class ReferencePickerPropertyDrawerBase : UnityEditor.PropertyDrawer
     {
+        private DropdownField _referenceDropdownField;
+
+        private Dictionary<string, string> _referenceDropdownOptions;
+
         protected SerializedProperty SerializedProperty { get; private set; }
         protected StateMachineContainer SelectedStateMachineContainer { get; private set; }
+
+        [ItemCanBeNull]
+        private string SelectedItemReferenceId
+        {
+            get => SerializedProperty.FindPropertyRelative(ReferencePickerBase.SELECTED_ITEM_ID_PROPERTY_NAME).
+                stringValue;
+
+            set
+            {
+                if (value == SelectedItemReferenceId)
+                {
+                    return;
+                }
+
+                SerializedProperty.serializedObject.Update();
+                SerializedProperty.FindPropertyRelative(ReferencePickerBase.SELECTED_ITEM_ID_PROPERTY_NAME).
+                    stringValue = value;
+                SerializedProperty.serializedObject.ApplyModifiedProperties();
+            }
+        }
 
         [ItemCanBeNull]
         private string SelectedStateMachineContainerGuid
@@ -44,11 +70,27 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
                 REFERENCE_PICKER_PROPERTY_DRAWER_PATH).Instantiate();
             var contentContainer = propertyDrawer.contentContainer;
 
+            InitializeReferenceDropdown(contentContainer);
             InitializeStateMachineContainerDropdown(contentContainer);
 
-            propertyDrawer.contentContainer.Q<Foldout>("Foldout").text = property.displayName;
+            contentContainer.Q<Foldout>("Foldout").text = property.displayName;
 
             return propertyDrawer;
+        }
+
+        protected abstract Dictionary<string, string> GetOptions(StateMachineContainer stateMachineContainer);
+
+        private void InitializeReferenceDropdown(VisualElement visualElement)
+        {
+            _referenceDropdownField = visualElement.Q<DropdownField>("ReferenceDropdownField");
+            _referenceDropdownField.choices.Clear();
+
+            _referenceDropdownField.RegisterValueChangedCallback(valueChangedCallback =>
+            {
+                var referenceName = valueChangedCallback.newValue;
+                var referenceEntry = _referenceDropdownOptions.FirstOrDefault(kvp => kvp.Value.Equals(referenceName));
+                SelectedItemReferenceId = referenceEntry.Key;
+            });
         }
 
         private void LoadStateMachineContainerData(string guid)
@@ -57,7 +99,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
 
             SelectedStateMachineContainer =
                 AssetDatabase.LoadAssetAtPath<StateMachineContainer>(assetPath);
-            OnStateMachineContainerChanged();
+            OnStateMachineContainerChanged(SelectedStateMachineContainer);
         }
 
         private void InitializeStateMachineContainerDropdown(VisualElement visualElement)
@@ -89,9 +131,37 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
             });
         }
 
-        private void OnStateMachineContainerChanged()
+        private void OnStateMachineContainerChanged(StateMachineContainer stateMachineContainer)
         {
-            Debug.Log("State Machine Container changed");
+            if (stateMachineContainer == null)
+            {
+                Debug.LogWarning("Selected state machine container is null. Select state machine container first");
+
+                return;
+            }
+
+            UpdateReferencesDropdown(stateMachineContainer);
+        }
+
+        private void UpdateReferencesDropdown(StateMachineContainer stateMachineContainer)
+        {
+            _referenceDropdownField.choices.Clear();
+            _referenceDropdownOptions = GetOptions(stateMachineContainer);
+
+            foreach (var option in _referenceDropdownOptions)
+            {
+                _referenceDropdownField.choices.Add(option.Value);
+            }
+
+            if (_referenceDropdownOptions.TryGetValue(SelectedItemReferenceId, out var dropdownValue))
+            {
+                _referenceDropdownField.value = dropdownValue;
+            }
+            else
+            {
+                SelectedItemReferenceId = null;
+                _referenceDropdownField.value = null;
+            }
         }
     }
 }
