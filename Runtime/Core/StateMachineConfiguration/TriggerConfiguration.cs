@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using UnityEngine;
 
-namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration
+namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration
 {
     [Serializable]
     public class TriggerConfiguration

@@ -1,5 +1,5 @@
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -26,7 +26,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
 
         private void OnDestroy()
         {
-            _openEditorButton.clicked -= OnOpenEditorButtonPressed;
+            if (_openEditorButton != null)
+            {
+                _openEditorButton.clicked -= OnOpenEditorButtonPressed;
+            }
         }
 
         private void OnOpenEditorButtonPressed()

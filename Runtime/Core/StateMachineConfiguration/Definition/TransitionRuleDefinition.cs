@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Condition;
 using UnityEngine;
 
-namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition
+namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     [Serializable]
     public sealed class TransitionRuleDefinition

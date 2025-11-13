@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Condition;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;

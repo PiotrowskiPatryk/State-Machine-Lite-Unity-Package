@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition
+namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     public class DefinitionWrapper<TData> : ScriptableObject
         where TData : class, new()

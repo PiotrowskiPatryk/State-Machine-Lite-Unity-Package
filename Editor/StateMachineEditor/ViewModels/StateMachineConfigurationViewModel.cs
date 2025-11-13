@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Configuration;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;

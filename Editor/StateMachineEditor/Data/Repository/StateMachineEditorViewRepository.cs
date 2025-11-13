@@ -4,6 +4,9 @@
     {
         public static string PARENT_PATH = "Packages/dev.cortez.state-machines/Editor/StateMachineEditor/";
 
+        public static string REFERENCE_PICKER_PROPERTY_DRAWER_PATH =
+            PARENT_PATH + "Views/ReferencePicker/ReferencePickerView.uxml";
+
         public static string STATE_MACHINE_GRAPH_VIEW_PATH =>
             PARENT_PATH + "Views/StateMachineGraphView/StateMachineGraphView.uxml";
 

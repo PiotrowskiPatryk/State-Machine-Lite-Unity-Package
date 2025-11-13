@@ -1,6 +1,6 @@
 ﻿using System;
 using Dev.Cortez.StateMachines.Core.Interfaces;
-using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Definition;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using Unity.Properties;
 using UnityEditor;
