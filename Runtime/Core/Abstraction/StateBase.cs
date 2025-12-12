@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
@@ -111,25 +112,24 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// <summary>
         ///     Asynchronously initializes the state using the provided payload instance and cancellation token.
         /// </summary>
-        /// <param name="stateSettings">State settings</param>
-        /// <param name="payload">The payload containing initialization data required for the state.</param>
+        /// <param name="stateDefinition"></param>
         /// <param name="cancellationToken">
         ///     The cancellation token used to propagate notifications if the operation should be
         ///     canceled.
         /// </param>
         /// <returns>A task that resolves to a boolean indicating whether the initialization was successful or failed.</returns>
-        public UniTask<bool> InitializeAsync(StateSettings stateSettings, IPayload payload,
+        public UniTask<bool> InitializeAsync(StateDefinition stateDefinition,
             CancellationToken cancellationToken)
         {
-            if (payload is TStatePayload statePayload)
+            if (stateDefinition.Payload is TStatePayload statePayload)
             {
-                return InitializeAsyncInternal(stateSettings, statePayload, cancellationToken);
+                return InitializeAsyncInternal(stateDefinition, statePayload, cancellationToken);
             }
 
             InitializationStatus = InitializationStatus.Failed;
 
             LoggerService.Logger.LogError(
-                $"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {payload.GetType().Name}.");
+                $"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {stateDefinition.Payload?.GetType().Name}.");
 
             return UniTask.FromResult(false);
         }
@@ -277,15 +277,15 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         protected abstract UniTask<bool> DoInitializeAsync(TStatePayload statePayload,
             CancellationToken cancellationToken);
 
-        private async UniTask<bool> InitializeAsyncInternal(StateSettings stateSettings, TStatePayload payload,
+        private async UniTask<bool> InitializeAsyncInternal(StateDefinition stateDefinition, TStatePayload payload,
             CancellationToken cancellationToken)
         {
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            Id = stateSettings.Id;
-            Name = stateSettings.Name;
-            Description = stateSettings.Description;
+            Id = stateDefinition.Id;
+            Name = stateDefinition.Name;
+            Description = stateDefinition.Description;
 
             switch (InitializationStatus)
             {

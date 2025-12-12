@@ -44,7 +44,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public string TypeName
         {
             get => SerializedProperty.FindPropertyRelative(StateDefinition.TYPE_NAME_PROPERTY_NAME).stringValue;
-            set => ApplyPropertyValueString(StateDefinition.TYPE_NAME_PROPERTY_NAME, value);
+            set
+            {
+                if (TypeName.Equals(value))
+                {
+                    return;
+                }
+
+                var statePayloadType = StateMachineReflectionUtilities.GetStatePayloadType(value);
+
+                ApplyPropertyValueString(StateDefinition.TYPE_NAME_PROPERTY_NAME, value);
+
+                _payloadSwitcher.SwitchTo(statePayloadType);
+            }
         }
 
         [CreateProperty]
@@ -91,6 +103,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public StateDefinitionViewModel(SerializedProperty serializedProperty)
         {
             SerializedProperty = serializedProperty;
+            _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }
 
         public StateDefinitionViewModel(string stateMachineType)
@@ -135,6 +148,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             TypeName = other.TypeName;
             StateMachineTypeName = other.StateMachineTypeName;
             NodePosition = other.NodePosition;
+            Payload.managedReferenceValue = other.Payload.managedReferenceValue;
         }
 
         public void RemoveTransition(TransitionRuleDefinitionViewModel transitionRuleDefinitionViewModel)
@@ -287,38 +301,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 return;
             }
 
-            // Apply the edits to the found element
             var targetElement = transitionsProperty.GetArrayElementAtIndex(indexToEdit);
-            var targetVm = new TransitionRuleDefinitionViewModel(targetElement);
-
-            // Update primitive/enum fields
-            targetVm.Priority = dataTransitionRuleDefinitionViewModel.Priority;
-            targetVm.ConditionFilterType = dataTransitionRuleDefinitionViewModel.ConditionFilterType;
-
-            // Update nested TargetState (copies fields into nested struct/class)
-            targetVm.TargetState = dataTransitionRuleDefinitionViewModel.TargetState;
-
-            // Sync conditions list: clear and re-add from source data
-            var conditionsProp = targetElement.FindPropertyRelative(
-                TransitionRuleDefinition.CONDITION_DEFINITIONS_PROPERTY_NAME);
-
-            if (conditionsProp != null)
+            var targetVm = new TransitionRuleDefinitionViewModel(targetElement)
             {
-                // Clear existing
-                for (var i = conditionsProp.arraySize - 1; i >= 0; i--)
-                {
-                    conditionsProp.DeleteArrayElementAtIndex(i);
-                }
-
-                // Re-create from source
-                foreach (var conditionVm in dataTransitionRuleDefinitionViewModel.Conditions)
-                {
-                    conditionsProp.InsertArrayElementAtIndex(conditionsProp.arraySize);
-                    var newCondProp = conditionsProp.GetArrayElementAtIndex(conditionsProp.arraySize - 1);
-                    var newCondVm = new ConditionDefinitionViewModel(newCondProp);
-                    newCondVm.CopyFrom(conditionVm);
-                }
-            }
+                Priority = dataTransitionRuleDefinitionViewModel.Priority,
+                ConditionFilterType = dataTransitionRuleDefinitionViewModel.ConditionFilterType,
+                TargetState = dataTransitionRuleDefinitionViewModel.TargetState
+            };
 
             so.ApplyModifiedProperties();
             Notify(nameof(Transitions));

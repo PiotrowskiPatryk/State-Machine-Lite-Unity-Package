@@ -23,6 +23,13 @@
                 <UnityEditor.UIElements.PropertyField name="PayloadPropertyField" />
             </ui:Tab>
             <ui:Tab label="States" name="StatesTab" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; flex-direction: column;">
+                <ui:DropdownField label="Initial state" name="InitialStateDropdownField">
+                    <Bindings>
+                        <ui:DataBinding property="choices" data-source-path="AvailableStates" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="ToTarget" />
+                        <ui:DataBinding property="index" data-source-path="InitialStateIndex" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="TwoWay" />
+                    </Bindings>
+                </ui:DropdownField>
+                <ui:VisualElement name="Spacer" style="flex-grow: 1; min-height: 20px;" />
                 <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false" virtualization-method="DynamicHeight" style="flex-grow: 1; min-height: 0;">
                     <Bindings>
                         <ui:DataBinding property="itemsSource" data-source-path="States" />

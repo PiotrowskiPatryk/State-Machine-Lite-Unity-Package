@@ -11,57 +11,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
     {
         public static Type GetTriggerPayloadType(string triggerTypeName)
         {
-            var triggerType = Type.GetType(triggerTypeName);
-
-            if (triggerType == null)
-            {
-                Debug.LogError($"Failed to find trigger payload type for '{triggerTypeName}'");
-
-                return null;
-            }
-
-            var baseTrigger = triggerType.GetInterfaces().FirstOrDefault(interfaceInstance =>
-                interfaceInstance.GenericTypeArguments.Length > 0);
-
-            return baseTrigger?.GenericTypeArguments[0];
+            return ResolvePayloadType(triggerTypeName);
         }
 
-        public static Type GetBaseStateFromStateMachine(string stateMachineTypeName)
+        public static Type GetConditionPayloadType(string conditionTypeName)
         {
-            var stateMachineType = Type.GetType(stateMachineTypeName);
-
-            if (stateMachineType == null)
-            {
-                Debug.LogError($"Failed to find state type for '{stateMachineTypeName}'");
-
-                return null;
-            }
-
-            if (stateMachineType.IsAbstract || stateMachineType.IsInterface)
-            {
-                Debug.LogError($"Provided state machine type '{stateMachineTypeName}' is abstract or interface.");
-
-                return null;
-            }
-
-            var baseType = stateMachineType;
-
-            while (baseType is { IsInterface: false })
-            {
-                var payloadArg =
-                    baseType.GenericTypeArguments.FirstOrDefault(type => typeof(IState).IsAssignableFrom(type));
-
-                if (payloadArg != null)
-                {
-                    return payloadArg;
-                }
-
-                baseType = baseType.BaseType;
-            }
-
-            Debug.LogError("Provided state machine type does not have generic arguments.");
-
-            return null;
+            return ResolvePayloadType(conditionTypeName);
         }
 
         public static Type GetStateMachinePayloadType(string stateMachineTypeName)
@@ -102,38 +57,47 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             return typeof(EmptyPayload);
         }
 
-        public static Type GetConditionPayloadType(string conditionTypeName)
+        public static Type GetBaseStateFromStateMachine(string stateMachineTypeName)
         {
-            var conditionType = Type.GetType(conditionTypeName);
+            var stateMachineType = Type.GetType(stateMachineTypeName);
 
-            if (conditionType == null)
+            if (stateMachineType == null)
             {
-                Debug.LogError($"Failed to find condition payload type for '{conditionTypeName}'");
+                Debug.LogError($"Failed to find state type for '{stateMachineTypeName}'");
 
                 return null;
             }
 
-            if (conditionType.IsAbstract || conditionType.IsInterface)
+            if (stateMachineType.IsAbstract || stateMachineType.IsInterface)
             {
-                Debug.LogError($"Provided condition type '{conditionTypeName}' is abstract or interface.");
+                Debug.LogError($"Provided state machine type '{stateMachineTypeName}' is abstract or interface.");
 
                 return null;
             }
 
-            // Find ICondition<TPayload> implemented by the condition
-            var conditionInterface = conditionType.GetInterfaces().FirstOrDefault(i =>
-                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICondition<>));
+            var baseType = stateMachineType;
 
-            var payloadArg = conditionInterface?.GenericTypeArguments.FirstOrDefault();
-
-            if (payloadArg != null && typeof(IPayload).IsAssignableFrom(payloadArg))
+            while (baseType is { IsInterface: false })
             {
-                return payloadArg;
+                var payloadArg =
+                    baseType.GenericTypeArguments.FirstOrDefault(type => typeof(IState).IsAssignableFrom(type));
+
+                if (payloadArg != null)
+                {
+                    return payloadArg;
+                }
+
+                baseType = baseType.BaseType;
             }
 
-            Debug.LogWarning("Provided condition type does not define an IPayload. Using EmptyPayload.");
+            Debug.LogError("Provided state machine type does not have generic arguments.");
 
-            return typeof(EmptyPayload);
+            return null;
+        }
+
+        public static Type GetStatePayloadType(string stateTypeName)
+        {
+            return ResolvePayloadType(stateTypeName);
         }
 
         public static string ToClassNameOnly(string typeName)
@@ -176,6 +140,44 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             var source = type.FullName ?? type.Name;
 
             return ToClassNameOnly(source);
+        }
+
+        private static Type ResolvePayloadType(string typeName)
+        {
+            var stateMachineType = Type.GetType(typeName);
+
+            if (stateMachineType == null)
+            {
+                Debug.LogError($"Failed to find payload type for '{typeName}'");
+
+                return null;
+            }
+
+            if (stateMachineType.IsAbstract || stateMachineType.IsInterface)
+            {
+                Debug.LogError($"Provided type '{typeName}' is abstract or interface.");
+
+                return null;
+            }
+
+            var baseType = stateMachineType;
+
+            while (baseType is { IsInterface: false })
+            {
+                var payloadArg =
+                    baseType.GenericTypeArguments.FirstOrDefault(type => typeof(IPayload).IsAssignableFrom(type));
+
+                if (payloadArg != null)
+                {
+                    return payloadArg;
+                }
+
+                baseType = baseType.BaseType;
+            }
+
+            Debug.LogWarning("Provided type does not have generic arguments. Using EmptyPayload.");
+
+            return typeof(EmptyPayload);
         }
     }
 }

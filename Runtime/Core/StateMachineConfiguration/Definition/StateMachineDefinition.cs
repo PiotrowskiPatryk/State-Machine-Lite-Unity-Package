@@ -14,6 +14,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public static string STATE_MACHINE_TYPE_PROPERTY_NAME = nameof(_stateMachineTypeName);
         public static string TRANSITION_SOLVER_TYPE_PROPERTY_NAME = nameof(_transitionSolverTypeName);
         public static string STATES_PROPERTY_NAME = nameof(_states);
+        public static string INITIAL_STATE_PROPERTY_NAME = nameof(_initialState);
         public static string PAYLOAD_PROPERTY_NAME = nameof(_payload);
 
         [SerializeField]
@@ -32,6 +33,9 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         private string _transitionSolverTypeName;
 
         [SerializeField]
+        private StateDefinition _initialState;
+
+        [SerializeField]
         private List<StateDefinition> _states;
 
         [SerializeReference]
@@ -42,6 +46,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public string Description => _description;
         public string StateMachineTypeName => _stateMachineTypeName;
         public string TransitionSolverTypeName => _transitionSolverTypeName;
+        public StateDefinition InitialState => _initialState;
         public List<StateDefinition> States => _states;
         public IPayload Payload => _payload;
     }

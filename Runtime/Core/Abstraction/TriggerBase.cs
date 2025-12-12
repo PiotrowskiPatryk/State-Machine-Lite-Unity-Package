@@ -2,26 +2,71 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 
 namespace Dev.Cortez.StateMachines.Core.Abstraction
 {
-    public abstract class TriggerBase<TPayload> : TriggerBase, ITrigger<TPayload> where TPayload : IPayload
+    public abstract class TriggerBase<TPayload> : TriggerBase, IAsyncInitializable where TPayload : IPayload
     {
+        public InitializationStatus InitializationStatus { get; private set; }
+
         protected TriggerBase(string id, string name, string description) : base(id, name, description)
         {
         }
 
-        public abstract UniTask<bool> InitializeAsync(TPayload payload, CancellationToken cancellationToken);
+        public async UniTask<bool> InitializeAsync(IPayload payload, CancellationToken cancellationToken)
+        {
+            using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            InitializationStatus = InitializationStatus.Initializing;
+
+            if (payload is not TPayload tPayload)
+            {
+                InitializationStatus = InitializationStatus.Failed;
+
+                return false;
+            }
+
+            var result = await InitializeAsync(tPayload, linkedCancellationToken.Token);
+
+            if (result)
+            {
+                InitializationStatus = InitializationStatus.Initialized;
+
+                return true;
+            }
+
+            InitializationStatus = InitializationStatus.Failed;
+
+            return false;
+        }
+
+        protected abstract UniTask<bool> InitializeAsync(TPayload payload, CancellationToken cancellationToken);
     }
 
     public abstract class TriggerBase : ITrigger
     {
         public event Action<ITrigger, bool> TriggeredValueChanged;
+        private bool _isTriggered;
         public string Id { get; }
         public string Name { get; }
         public string Description { get; }
-        public abstract bool IsTriggered { get; }
+
+        public bool IsTriggered
+        {
+            get => _isTriggered;
+            set
+            {
+                if (value == _isTriggered)
+                {
+                    return;
+                }
+
+                _isTriggered = value;
+                TriggeredValueChanged?.Invoke(this, value);
+            }
+        }
 
         protected TriggerBase(string id, string name, string description)
         {

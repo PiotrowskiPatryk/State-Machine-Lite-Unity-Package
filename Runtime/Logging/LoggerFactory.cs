@@ -16,7 +16,7 @@ namespace Dev.Cortez.StateMachines.Logging
         /// <returns>An instance of <see cref="ILogger" /> suitable for the current environment.</returns>
         public static ILogger Create(object context, LogSeverity severity = LogSeverity.Info)
         {
-#if ENABLE_LOGGING
+#if STATE_MACHINE_ENABLE_LOGGING
             var unityLogger = new UnityLogger(context, severity);
 
             return unityLogger;

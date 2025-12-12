@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     [Serializable]
-    public sealed class TriggerDefinition
+    public sealed class TriggerDefinition : IValidatable
     {
         public static string ID_PROPERTY_NAME = nameof(_id);
         public static string NAME_PROPERTY_NAME = nameof(_name);
@@ -33,5 +33,11 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public string Description => _description;
         public string TypeName => _typeName;
         public IPayload Payload => _payload;
+
+        // Todo - apply validation
+        public bool IsValid()
+        {
+            return true;
+        }
     }
 }

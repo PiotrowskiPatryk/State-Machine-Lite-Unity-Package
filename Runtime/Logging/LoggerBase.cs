@@ -22,52 +22,42 @@ namespace Dev.Cortez.StateMachines.Logging
 
         public void LogTrace(string message)
         {
-            if (_logSeverity < LogSeverity.Trace)
+            if (_logSeverity <= LogSeverity.Trace)
             {
-                return;
+                WriteLogTrace(message);
             }
-
-            WriteLogTrace(message);
         }
 
         public void LogInfo(string message)
         {
-            if (_logSeverity < LogSeverity.Info)
+            if (_logSeverity <= LogSeverity.Info)
             {
-                return;
+                WriteLogInfo(message);
             }
-
-            WriteLogInfo(message);
         }
 
         public void LogWarning(string message)
         {
-            if (_logSeverity < LogSeverity.Warning)
+            if (_logSeverity <= LogSeverity.Warning)
             {
-                return;
+                WriteLogWarning(message);
             }
-
-            WriteLogWarning(message);
         }
 
         public void LogError(string message)
         {
-            if (_logSeverity < LogSeverity.Error)
+            if (_logSeverity <= LogSeverity.Error)
             {
-                return;
+                WriteLogError(message);
             }
-
-            WriteLogError(message);
         }
 
         public void LogException(Exception exception)
         {
-            if (_logSeverity < LogSeverity.Exception)
+            if (_logSeverity <= LogSeverity.Exception)
             {
-                return;
+                WriteLogException(exception);
             }
-
-            WriteLogException(exception);
         }
 
         public void SetLogSeverity(LogSeverity logSeverity)

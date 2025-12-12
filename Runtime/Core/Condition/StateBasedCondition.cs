@@ -5,12 +5,12 @@ using Dev.Cortez.StateMachines.Core.Condition.Payload;
 
 namespace Dev.Cortez.StateMachines.Core.Condition
 {
-    public sealed class TriggerBasedCondition : ConditionBase<TriggerBasedConditionPayload>
+    public sealed class StateBasedCondition : ConditionBase<StateBasedConditionPayload>
     {
         public override bool IsSatisfied { get; }
 
         // TODO - apply fetching payload data
-        protected override UniTask<bool> InitializeAsync(TriggerBasedConditionPayload payload,
+        protected override UniTask<bool> InitializeAsync(StateBasedConditionPayload payload,
             CancellationToken cancellationToken)
         {
             return UniTask.FromResult(true);

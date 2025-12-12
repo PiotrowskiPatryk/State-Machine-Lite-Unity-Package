@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Data
@@ -7,24 +7,22 @@ namespace Dev.Cortez.StateMachines.Core.Data
     [UsedImplicitly]
     public sealed class StateMachineSettings
     {
-        public Type Type { get; }
-        public string Id { get; }
+        public StateMachineDefinition StateMachineDefinition { get; }
         public ITransitionSolver TransitionSolver { get; }
         public IState InitialState { get; }
         public List<IState> States { get; }
         public IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> TransitionRules { get; }
-        
-        public StateMachineSettings(string id, ITransitionSolver transitionSolver, IState initialState,
+
+        public StateMachineSettings(StateMachineDefinition stateMachineDefinition, ITransitionSolver transitionSolver,
+            IState initialState,
             List<IState> states,
-            IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules,
-            Type type)
+            IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules)
         {
-            Id = id;
+            StateMachineDefinition = stateMachineDefinition;
             TransitionSolver = transitionSolver;
             InitialState = initialState;
             States = states;
             TransitionRules = transitionRules;
-            Type = type;
         }
     }
 }

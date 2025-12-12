@@ -14,17 +14,17 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.UnitTests
         public IEnumerator OneFrameTrigger_IsTriggeredProperly()
         {
             // Arrange
-            var trigger = new OneFrameTrigger(Guid.NewGuid().ToString());
+            var trigger = new OneFrameTrigger(Guid.NewGuid().ToString(), "Trigger", "Description");
             var wasTriggered = false;
-            
+
             // Act
-            yield return trigger.TriggerValueAsync(true, CancellationToken.None)
-                .ToCoroutine(output => wasTriggered = output);
-            
+            yield return trigger.TriggerValueAsync(true, CancellationToken.None).
+                ToCoroutine(output => wasTriggered = output);
+
             // Assert
             Assert.IsTrue(wasTriggered);
             Assert.IsTrue(trigger.IsTriggered);
-            
+
             // Cleanup
             yield return trigger.DisposeAsync().AsUniTask().ToCoroutine();
         }
@@ -33,7 +33,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.UnitTests
         public IEnumerator OneFrameTrigger_IsTriggeredOnlyForOneFrame()
         {
             // Arrange
-            var trigger = new OneFrameTrigger(Guid.NewGuid().ToString());
+            var trigger = new OneFrameTrigger(Guid.NewGuid().ToString(), "Trigger", "Description");
             var triggeredFalseValue = false;
 
             trigger.TriggeredValueChanged += (_, value) =>
@@ -43,11 +43,11 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.UnitTests
                     triggeredFalseValue = true;
                 }
             };
-            
+
             // Act
             yield return trigger.TriggerValueAsync(true, CancellationToken.None).ToCoroutine();
             yield return null;
-            
+
             // Assert
             Assert.IsFalse(trigger.IsTriggered);
             Assert.IsTrue(triggeredFalseValue);

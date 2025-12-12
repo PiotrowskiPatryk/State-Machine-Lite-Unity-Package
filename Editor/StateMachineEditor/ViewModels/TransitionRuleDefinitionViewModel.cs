@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Unity.Properties;
@@ -110,6 +111,31 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             var newCondition = new ConditionDefinitionViewModel(newConditionProperty);
             newCondition.CopyFrom(conditionDefinitionViewModel);
 
+            so.ApplyModifiedProperties();
+
+            Notify(nameof(Conditions));
+        }
+
+        public void EditCondition(ConditionDefinitionViewModel conditionDefinitionViewModel)
+        {
+            var condition =
+                Conditions.FirstOrDefault(condition => condition.Id.Equals(conditionDefinitionViewModel.Id));
+
+            condition?.CopyFrom(conditionDefinitionViewModel);
+
+            Notify(nameof(Conditions));
+        }
+
+        public void RemoveCondition(int index)
+        {
+            var conditionsProperty =
+                SerializedProperty.FindPropertyRelative(TransitionRuleDefinition.CONDITION_DEFINITIONS_PROPERTY_NAME);
+
+            Undo.RecordObject(conditionsProperty.serializedObject.targetObject, "Remove condition");
+            var so = conditionsProperty.serializedObject;
+            so.Update();
+
+            conditionsProperty.DeleteArrayElementAtIndex(index);
             so.ApplyModifiedProperties();
 
             Notify(nameof(Conditions));

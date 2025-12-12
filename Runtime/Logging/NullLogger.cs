@@ -14,7 +14,6 @@ namespace Dev.Cortez.StateMachines.Logging
 
         protected override void WriteLogTrace(string message)
         {
-            throw new NotImplementedException();
         }
 
         protected override void WriteLogWarning(string message)

@@ -53,6 +53,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
         private StateMachineGraphView.StateMachineGraphView _stateMachineGraphView;
         private ListView _transitionableStatesListView;
         private Foldout _lastHighlightedFoldout;
+        private DropdownField _initialStateDropdownField;
 
         public StateMachineMenuView()
         {
@@ -143,6 +144,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _stateMachineGraphView = new StateMachineGraphView.StateMachineGraphView();
             _stateMachineGraphContainer.Add(_stateMachineGraphView);
             _transitionableStatesListView = this.Q<ListView>("TransitionableStatesListView");
+            _initialStateDropdownField = this.Q<DropdownField>("InitialStateDropdownField");
 
             // Wire graph <-> inspector events
             _stateMachineGraphView.NodeClicked += OnGraphNodeClicked;
@@ -163,6 +165,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             Assert.NotNull(_exitButton);
             Assert.NotNull(_addStateButton);
             Assert.NotNull(_statesListView);
+            Assert.NotNull(_initialStateDropdownField);
         }
 
         private void BindStatesList()
@@ -530,6 +533,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
 
         private void DoUnbindTransitionItemEntry(VisualElement visualElement)
         {
+            // TODO - CLEANUP THIS, apply DRY principle
+
             // Unregister Remove button
             var removeItemButton = visualElement.Q<Button>("RemoveButton");
 

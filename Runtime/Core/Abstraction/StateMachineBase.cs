@@ -81,9 +81,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// </summary>
         [NotNull]
         public string Id { get; private set; }
-        
+
         public string Name { get; private set; }
-        
+
         public string Description { get; private set; }
 
         /// Represents the active state of the state machine.
@@ -146,7 +146,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     Boolean indicating whether the state machine can be activated.
         /// </return>
         protected virtual bool CanActivate => true;
-        
+
         /// Activates the state machine asynchronously, transitioning it to an operational state.
         /// This involves evaluating conditions necessary for activation and entering the default state if possible.
         /// If the state machine is already active, the method will terminate early with a result indicating no action performed.
@@ -174,7 +174,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                     return false;
                 }
-                
+
                 if (!CanActivate)
                 {
                     LoggerService.Logger.LogError("State machine cannot be activated. Skipping activation.");
@@ -335,7 +335,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 _lifecycleLock.Release();
             }
         }
-        
+
         public async ValueTask DisposeAsync()
         {
             LoggerService.Logger.LogInfo("Disposing state machine");
@@ -380,22 +380,23 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     Updates the state machine's initialization status based on the result.
         /// </summary>
         /// <param name="stateMachineSettings"></param>
-        /// <param name="payload">The payload used for initialization.</param>
         /// <param name="cancellationToken">
         ///     A CancellationToken that can be used to cancel the activation operation while it is in progress.
         /// </param>
         /// <returns>A UniTask that resolves to a boolean indicating whether initialization was successful.</returns>
-        public async UniTask<bool> InitializeAsync(StateMachineSettings stateMachineSettings, IPayload payload, CancellationToken cancellationToken)
+        public async UniTask<bool> InitializeAsync(StateMachineSettings stateMachineSettings,
+            CancellationToken cancellationToken)
         {
             using var linkedCancellationTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             LoggerService.Logger.LogInfo("Initializing state machine");
 
-            if (payload is TStateMachinePayload stateMachinePayload)
+            if (stateMachineSettings.StateMachineDefinition.Payload is TStateMachinePayload stateMachinePayload)
             {
                 var initializationResult =
-                    await InitializeAsync(stateMachineSettings, stateMachinePayload, linkedCancellationTokenSource.Token);
+                    await InitializeAsync(stateMachineSettings, stateMachinePayload,
+                        linkedCancellationTokenSource.Token);
 
                 InitializationStatus =
                     !initializationResult ? InitializationStatus.Failed : InitializationStatus.Initialized;
@@ -404,7 +405,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
 
             LoggerService.Logger.LogError(
-                $"Unable to initialize state machine. Invalid payload type. Expected payload of type {typeof(TStateMachinePayload).Name}, but got {payload.GetType().Name}.");
+                $"Unable to initialize state machine. Invalid payload type. Expected payload of type {typeof(TStateMachinePayload).Name}, but got {stateMachineSettings.StateMachineDefinition?.Payload.GetType().Name}.");
 
             InitializationStatus = InitializationStatus.Failed;
 
@@ -422,7 +423,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         {
             return UniTask.FromResult(true);
         }
-        
+
         /// <summary>
         ///     Determines whether the state machine can be deactivated asynchronously.
         /// </summary>
@@ -495,7 +496,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         }
 
         private async UniTask<bool> InitializeAsync(
-            StateMachineSettings stateMachineSettings, 
+            StateMachineSettings stateMachineSettings,
             TStateMachinePayload stateMachinePayload,
             CancellationToken cancellationToken)
         {
@@ -527,7 +528,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         private void ApplyVariables(StateMachineSettings stateMachineSettings)
         {
-            Id = stateMachineSettings.Id;
+            Id = stateMachineSettings.StateMachineDefinition.Id;
+            Name = stateMachineSettings.StateMachineDefinition.Name;
+            Description = stateMachineSettings.StateMachineDefinition.Description;
 
             _states.Clear();
 

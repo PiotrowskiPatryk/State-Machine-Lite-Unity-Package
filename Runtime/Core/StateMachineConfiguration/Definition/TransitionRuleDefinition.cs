@@ -28,5 +28,6 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public StateDefinition TargetState => _targetState;
         public int Priority => _priority;
         public List<ConditionDefinition> ConditionDefinitions => _conditionDefinitions;
+        public ConditionFilterType ConditionFilterType => _conditionFilterType;
     }
 }

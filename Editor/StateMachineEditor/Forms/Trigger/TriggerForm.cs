@@ -18,7 +18,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Trigger
 
         protected override bool IsInputDataValid()
         {
-            return !string.IsNullOrEmpty(Data.Name) && !string.IsNullOrEmpty(Data.TypeName);
+            return !string.IsNullOrEmpty(Data.Name) && !string.IsNullOrEmpty(Data.TypeName) && Data.Payload != null;
         }
 
         protected override void OnShown()

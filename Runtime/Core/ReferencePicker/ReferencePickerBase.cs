@@ -16,5 +16,7 @@ namespace Dev.Cortez.StateMachines.Core.ReferencePicker
 
         [SerializeField]
         private string _selectedItemId;
+
+        public bool IsReferenceSelected => !string.IsNullOrWhiteSpace(_selectedItemId);
     }
 }

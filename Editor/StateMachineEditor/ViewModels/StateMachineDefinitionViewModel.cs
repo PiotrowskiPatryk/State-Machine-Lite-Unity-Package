@@ -97,6 +97,46 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             }
         }
 
+        [CreateProperty]
+        public StateDefinitionViewModel InitialState
+        {
+            get
+            {
+                var initialStateProperty =
+                    SerializedProperty.FindPropertyRelative(StateMachineDefinition.INITIAL_STATE_PROPERTY_NAME);
+
+                return new StateDefinitionViewModel(initialStateProperty);
+            }
+            set
+            {
+                InitialState.CopyFrom(value);
+                Notify();
+            }
+        }
+
+        [CreateProperty]
+        public List<string> AvailableStates => States.Select(state => state.Name).ToList();
+
+        [CreateProperty]
+        public int InitialStateIndex
+        {
+            get
+            {
+                if (InitialState == null)
+                {
+                    return -1;
+                }
+
+                return States.FindIndex(state => state.Id.Equals(InitialState.Id));
+            }
+
+            set
+            {
+                InitialState = States[value];
+                Notify();
+            }
+        }
+
         public SerializedProperty StatesSerializedProperty =>
             SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
 
@@ -148,6 +188,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             Notify(nameof(States));
             Notify(nameof(StatesCount));
+            Notify(nameof(AvailableStates));
         }
 
         public void UpdateState(StateDefinitionViewModel updatedState)
@@ -179,6 +220,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             Notify(nameof(States));
             Notify(nameof(StatesCount));
+            Notify(nameof(InitialState));
+            Notify(nameof(InitialStateIndex));
+            Notify(nameof(AvailableStates));
         }
 
         internal class StateMachineDefinitionWrapper : DefinitionWrapper<StateMachineDefinition>

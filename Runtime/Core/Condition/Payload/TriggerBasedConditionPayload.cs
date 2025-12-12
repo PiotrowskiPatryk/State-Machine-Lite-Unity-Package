@@ -1,0 +1,21 @@
+﻿using System;
+using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Core.ReferencePicker;
+using UnityEngine;
+
+namespace Dev.Cortez.StateMachines.Core.Condition.Payload
+{
+    [Serializable]
+    public sealed class TriggerBasedConditionPayload : IPayload
+    {
+        [SerializeField]
+        private TriggerReferencePicker _triggerReferencePicker;
+
+        public TriggerReferencePicker TriggerReferencePicker => _triggerReferencePicker;
+
+        public bool IsValid()
+        {
+            return _triggerReferencePicker.IsReferenceSelected;
+        }
+    }
+}

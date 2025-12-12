@@ -2,7 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
-using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core
@@ -20,8 +20,9 @@ namespace Dev.Cortez.StateMachines.Core
         ///     Gets whether the state is currently active.
         /// </summary>
         bool IsActive { get; }
-        
-        UniTask<bool> InitializeAsync([NotNull] StateSettings stateSettings, [NotNull] IPayload payload, CancellationToken cancellationToken);
+
+        UniTask<bool> InitializeAsync([NotNull] StateDefinition stateDefinition,
+            CancellationToken cancellationToken);
     }
 
     public interface IState<in TContext, in TPayload> : IState<TContext>
