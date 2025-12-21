@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 namespace Dev.Cortez.StateMachines.Core.Trigger
 {
     [Serializable]
-    public class UserInputActionBasedTriggerPayload : IPayload
+    public sealed class UserInputActionBasedTriggerPayload : IPayload
     {
         public InputActionReference inputActionReference;
         public ActionType actionType;

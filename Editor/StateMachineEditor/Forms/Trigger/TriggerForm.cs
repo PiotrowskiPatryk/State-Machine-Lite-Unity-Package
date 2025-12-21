@@ -1,5 +1,6 @@
 ﻿using System;
 using Dev.Cortez.StateMachines.Core;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements;

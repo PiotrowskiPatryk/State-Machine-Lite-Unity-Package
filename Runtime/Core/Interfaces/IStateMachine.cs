@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 using JetBrains.Annotations;
 
-namespace Dev.Cortez.StateMachines.Core
+namespace Dev.Cortez.StateMachines.Core.Interfaces
 {
     /// <summary>
     ///     Represents a state machine interface.

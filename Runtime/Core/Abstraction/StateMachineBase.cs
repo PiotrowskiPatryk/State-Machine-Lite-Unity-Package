@@ -61,7 +61,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// <typeparam name="TStateContext">The context type used by the state. Must be a reference type.</typeparam>
     /// <typeparam name="TStateMachinePayload">
     ///     The payload type used during initialization. Must implement
-    ///     <see cref="IStateMachinePayload" />.
+    ///     <see cref="IPayload" />.
     /// </typeparam>
     public abstract class StateMachineBase<TState, TStateMachinePayload, TStateContext> : IStateMachine
         where TState : IState<TStateContext>
@@ -199,13 +199,15 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 if (activatedSuccessfully && properlyEnteredState)
                 {
                     LoggerService.Logger.LogInfo(
-                        "State machine successfully activated and properly entered default state.");
+                        $"State machine {Name} successfully activated and properly entered default state.");
 
                     IsActive = true;
                     _activeState = _defaultState;
 
                     return true;
                 }
+                
+                LoggerService.Logger.LogError($"State machine {Name} failed to activate.");
 
                 return false;
             }
@@ -229,15 +231,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 return false;
             }
-
-            if (!IsActive || ActiveState == null || state.Equals(_activeState))
-            {
-                LoggerService.Logger.LogError(
-                    "Unable to move to state. State machine is not active or state is already active.");
-
-                return false;
-            }
-
+            
             var previousState = _activeState;
 
             if (previousState != null)
@@ -367,7 +361,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 }
 
                 TransitionSolver.TransitionRuleApplied -= OnTransitionRuleApplied;
-                TransitionSolver = null;
+                TransitionSolver = null!;
             }
             finally
             {

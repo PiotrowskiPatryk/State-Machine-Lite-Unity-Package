@@ -1,11 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Registry
 {
-    public sealed class StateMachineContainerRegistry : IStateMachineContainerRegistry
+    public sealed class StateMachineContainerEntry : IStateMachineContainerEntry
     {
         private readonly ConcurrentDictionary<string, ITrigger> _triggers = new();
         private readonly ConcurrentDictionary<string, IStateMachine> _stateMachines = new();
@@ -13,15 +14,17 @@ namespace Dev.Cortez.StateMachines.Core.Registry
         public IReadOnlyDictionary<string, ITrigger> Triggers => _triggers;
         public IReadOnlyDictionary<string, IStateMachine> StateMachines => _stateMachines;
         
-        public string Identifier { get; }
+        public string Id { get; }
 
-        public StateMachineContainerRegistry([NotNull] string identifier)
+        public StateMachineContainerEntry([NotNull] string id)
         {
-            Identifier = identifier;
+            Id = id;
         }
 
         public bool TryRegisterTrigger([NotNull] ITrigger trigger)
         {
+            LoggerService.Logger.LogTrace($"Registering trigger [{trigger.Id} {trigger.Name}]");
+            
             if (!string.IsNullOrWhiteSpace(trigger.Id))
             {
                 return _triggers.TryAdd(trigger.Id, trigger);
@@ -34,6 +37,8 @@ namespace Dev.Cortez.StateMachines.Core.Registry
 
         public bool TryRegisterStateMachine([NotNull] IStateMachine stateMachine)
         {
+            LoggerService.Logger.LogTrace($"Registering state machine [{stateMachine.Id} {stateMachine.Name}]");
+            
             return _stateMachines.TryAdd(stateMachine.Id, stateMachine);
         }
     }

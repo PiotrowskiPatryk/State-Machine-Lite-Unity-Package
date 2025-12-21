@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Extensions;
+using Dev.Cortez.StateMachines.Logging;
 
 namespace Dev.Cortez.StateMachines.Core.Abstraction
 {
@@ -19,6 +21,12 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         {
             using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
+            if (!InitializationStatus.CanInitialize())
+            {
+                LoggerService.Logger.LogError("Unable to initialize trigger base");
+                return false;
+            }
+            
             InitializationStatus = InitializationStatus.Initializing;
 
             if (payload is not TPayload tPayload)
@@ -64,6 +72,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 }
 
                 _isTriggered = value;
+             
+                LoggerService.Logger.LogTrace($"Trigger [{Id}: {Name}] is now {_isTriggered}");
+                
                 TriggeredValueChanged?.Invoke(this, value);
             }
         }

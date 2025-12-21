@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Factories;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
@@ -11,23 +14,35 @@ namespace Dev.Cortez.StateMachines.Core.Registry
     public class StateMachineContainerInstaller
     {
         [ItemCanBeNull]
-        public async UniTask<IStateMachineContainerRegistry> InstallAsync(StateMachineContainer stateMachineContainer,
+        public async UniTask<IStateMachineContainerEntry> InstallAsync(StateMachineContainer stateMachineContainer,
             CancellationToken cancellationToken)
         {
+            LoggerService.Logger.LogInfo($"Installing state machine container [{stateMachineContainer.name}]");
+            
             using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            var stateMachineContainerRegistry = new StateMachineContainerRegistry(Guid.NewGuid().ToString("N"));
+            var stateMachineContainerEntry = new StateMachineContainerEntry(Guid.NewGuid().ToString("N"));
+            LoggerService.Logger.LogInfo($"Creating state machine container registry {stateMachineContainerEntry.Id}");
+            
             var triggersDefinitions = stateMachineContainer.TriggerConfiguration.Triggers;
-            var stateMachineDefinitions = stateMachineContainer.StateMachineConfiguration.StateMachines;
-
+            
+            LoggerService.Logger.LogInfo($"Creating triggers for state machine container registry {stateMachineContainerEntry.Id}");
+            
             var triggers = await triggersDefinitions.
                 Select(triggerDefinition =>
                     StateMachineFactory.CreateTriggerAsync(triggerDefinition, linkedCancellationToken.Token));
+            
+            LoggerService.Logger.LogInfo($"Creating state machines for state machine container registry {stateMachineContainerEntry.Id}");
+
+            var stateMachineDefinitions = stateMachineContainer.StateMachineConfiguration.StateMachines;
+            
             var stateMachines = await stateMachineDefinitions.Select(stateMachine =>
                 StateMachineFactory.CreateStateMachineAsync(stateMachine, linkedCancellationToken.Token));
+            
+            var triggersRegistered = TryRegisterTriggers(triggers, stateMachineContainerEntry);
 
-            var triggersRegistered = TryRegisterTriggers(triggers, stateMachineContainerRegistry);
-
+            LoggerService.Logger.LogInfo($"Registering triggers for state machine container registry {stateMachineContainerEntry.Id}");
+            
             if (!triggersRegistered)
             {
                 LoggerService.Logger.LogError(
@@ -36,7 +51,9 @@ namespace Dev.Cortez.StateMachines.Core.Registry
                 return null;
             }
 
-            var stateMachinesRegistered = TryRegisterStateMachines(stateMachines, stateMachineContainerRegistry);
+            LoggerService.Logger.LogInfo($"Registering state machines for state machine container registry {stateMachineContainerEntry.Id}");
+            
+            var stateMachinesRegistered = TryRegisterStateMachines(stateMachines, stateMachineContainerEntry);
 
             if (!stateMachinesRegistered)
             {
@@ -45,17 +62,21 @@ namespace Dev.Cortez.StateMachines.Core.Registry
 
                 return null;
             }
-
-            return stateMachineContainerRegistry;
+            
+            LoggerService.Logger.LogInfo($"State machine container [{stateMachineContainer.name}] was successfully installed");
+            
+            StateMachineContainerRegistry.Instance.RegisterStateMachineContainer(stateMachineContainerEntry);
+            
+            return stateMachineContainerEntry;
         }
-
+        
         private static bool TryRegisterTriggers(ITrigger[] triggers,
-            StateMachineContainerRegistry stateMachineContainerRegistry)
+            StateMachineContainerEntry stateMachineContainerEntry)
         {
             foreach (var trigger in triggers)
             {
                 LoggerService.Logger.LogTrace($"Registering trigger [{trigger.Id} {trigger.Name}]");
-                var registeredTrigger = stateMachineContainerRegistry.TryRegisterTrigger(trigger);
+                var registeredTrigger = stateMachineContainerEntry.TryRegisterTrigger(trigger);
 
                 if (registeredTrigger)
                 {
@@ -68,17 +89,19 @@ namespace Dev.Cortez.StateMachines.Core.Registry
                     return false;
                 }
             }
+            
+            LoggerService.Logger.LogInfo("All triggers were successfully registered");
 
             return true;
         }
 
         private static bool TryRegisterStateMachines(IStateMachine[] stateMachines,
-            StateMachineContainerRegistry stateMachineContainerRegistry)
+            StateMachineContainerEntry stateMachineContainerEntry)
         {
             foreach (var stateMachine in stateMachines)
             {
                 LoggerService.Logger.LogTrace($"Registering State Machine [{stateMachine.Id} {stateMachine.Name}]");
-                var registeredStateMachine = stateMachineContainerRegistry.TryRegisterStateMachine(stateMachine);
+                var registeredStateMachine = stateMachineContainerEntry.TryRegisterStateMachine(stateMachine);
 
                 if (registeredStateMachine)
                 {
@@ -94,6 +117,8 @@ namespace Dev.Cortez.StateMachines.Core.Registry
                 }
             }
 
+            LoggerService.Logger.LogInfo("All state machines were successfully registered");
+            
             return true;
         }
     }

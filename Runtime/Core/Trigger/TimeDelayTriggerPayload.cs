@@ -4,7 +4,7 @@ using Dev.Cortez.StateMachines.Core.Interfaces;
 namespace Dev.Cortez.StateMachines.Core.Trigger
 {
     [Serializable]
-    public class TimeDelayTriggerPayload : IPayload
+    public sealed class TimeDelayTriggerPayload : IPayload
     {
         public float delayInSeconds;
         

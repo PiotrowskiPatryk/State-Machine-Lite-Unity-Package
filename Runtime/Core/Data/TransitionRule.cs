@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Dev.Cortez.StateMachines.Core.Interfaces;
+using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Data
 {

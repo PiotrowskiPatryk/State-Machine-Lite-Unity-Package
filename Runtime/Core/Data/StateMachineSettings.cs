@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using JetBrains.Annotations;
 

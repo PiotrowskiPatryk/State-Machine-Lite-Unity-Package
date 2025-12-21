@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
@@ -130,6 +131,8 @@ namespace Dev.Cortez.StateMachines.Core.Factories
         {
             using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
+            LoggerService.Logger.LogInfo($"Creating transition from: [{originState.Id} {originState.Name}] to [{transitionRuleDefinition.TargetState.Id} {transitionRuleDefinition.TargetState.Name}]");
+            
             var targetState = states.FirstOrDefault(desiredState =>
                 desiredState.Id.Equals(transitionRuleDefinition.TargetState.Id));
 

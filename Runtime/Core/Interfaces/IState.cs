@@ -5,7 +5,7 @@ using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using JetBrains.Annotations;
 
-namespace Dev.Cortez.StateMachines.Core
+namespace Dev.Cortez.StateMachines.Core.Interfaces
 {
     /// <summary>
     ///     Represents a state in a state machine.

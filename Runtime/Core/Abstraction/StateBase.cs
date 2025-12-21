@@ -36,7 +36,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// </remarks>
     public abstract class StateBase<TStateContext> : StateBase<TStateContext, EmptyPayload>
     {
-        protected override UniTask<bool> DoInitializeAsync(EmptyPayload statePayload,
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload,
             CancellationToken cancellationToken)
         {
             return UniTask.FromResult(true);
@@ -108,6 +108,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         public string Name { get; private set; }
         public string Description { get; private set; }
+        
+        [CanBeNull]
+        protected TStatePayload Payload { get; private set; }
 
         /// <summary>
         ///     Asynchronously initializes the state using the provided payload instance and cancellation token.
@@ -127,6 +130,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
 
             InitializationStatus = InitializationStatus.Failed;
+            Id = stateDefinition.Id;
 
             LoggerService.Logger.LogError(
                 $"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {stateDefinition.Payload?.GetType().Name}.");
@@ -268,13 +272,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// <summary>
         ///     Performs the initialization of the state with the given payload and cancellation token.
         /// </summary>
-        /// <param name="statePayload">The payload required for the state initialization.</param>
+        /// <param name="uiStatePayload">The payload required for the state initialization.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>
         ///     A UniTask representing the asynchronous initialization operation. Returns true if initialization is
         ///     successful; otherwise, false.
         /// </returns>
-        protected abstract UniTask<bool> DoInitializeAsync(TStatePayload statePayload,
+        protected abstract UniTask<bool> DoInitializeAsync(TStatePayload uiStatePayload,
             CancellationToken cancellationToken);
 
         private async UniTask<bool> InitializeAsyncInternal(StateDefinition stateDefinition, TStatePayload payload,
@@ -286,6 +290,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             Id = stateDefinition.Id;
             Name = stateDefinition.Name;
             Description = stateDefinition.Description;
+            Payload = payload;
 
             switch (InitializationStatus)
             {

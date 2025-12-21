@@ -1,4 +1,4 @@
-﻿namespace Dev.Cortez.StateMachines.Core
+﻿namespace Dev.Cortez.StateMachines.Core.Interfaces
 {
     public interface IIdentifiable
     {

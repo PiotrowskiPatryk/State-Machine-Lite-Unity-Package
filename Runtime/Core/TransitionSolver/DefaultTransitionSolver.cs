@@ -4,12 +4,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Logging;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.TransitionSolver
 {
-    public class DefaultTransitionSolver : ITransitionSolver
+    [UsedImplicitly]
+    public sealed class DefaultTransitionSolver : ITransitionSolver
     {
         private readonly List<TransitionRule> _transitionRules = new();
         private readonly Dictionary<TransitionRule, int> _ruleOrder = new();
@@ -22,17 +25,15 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
         private Dictionary<IState, IReadOnlyList<TransitionRule>> _cachedTransitionRules;
         private CancellationTokenSource _composeCts;
         private bool _composeScheduled;
-
-        private bool IsComposing { get; set; }
-
-        public UniTask<bool> PopulateRulesAsync(Dictionary<IState, IReadOnlyList<TransitionRule>> transitionRules)
+        
+        public UniTask<bool> ApplyPopulateTransitionRulesAsync(Dictionary<IState, IReadOnlyList<TransitionRule>> transitionRules)
         {
             _cachedTransitionRules = new Dictionary<IState, IReadOnlyList<TransitionRule>>(transitionRules);
 
             return UniTask.FromResult(true);
         }
 
-        public void SetupNewRules(IState state)
+        public void ApplyRulesForActiveState(IState state)
         {
             DisposeOldTransitionRules();
 
@@ -54,20 +55,24 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
                 _transitionRules.Add(transitionRule);
                 _ruleOrder[transitionRule] = index++;
 
-                if (isSatisfiedNow)
+                if (!isSatisfiedNow)
                 {
-                    if (!_frameSuccessCache.Contains(transitionRule))
-                    {
-                        _frameSuccessCache.Add(transitionRule);
-                    }
-
-                    if (!_composeScheduled)
-                    {
-                        _composeScheduled = true;
-                        _composeCts ??= new CancellationTokenSource();
-                        ComposeOnceAsync(_composeCts.Token).Forget();
-                    }
+                    continue;
                 }
+
+                if (!_frameSuccessCache.Contains(transitionRule))
+                {
+                    _frameSuccessCache.Add(transitionRule);
+                }
+
+                if (_composeScheduled)
+                {
+                    continue;
+                }
+
+                _composeScheduled = true;
+                _composeCts ??= new CancellationTokenSource();
+                ComposeOnceAsync(_composeCts.Token).Forget();
             }
         }
 
@@ -128,8 +133,6 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
         {
             try
             {
-                IsComposing = true;
-
                 await UniTask.NextFrame(cancellationToken);
 
                 TransitionRule selected = null;
@@ -168,8 +171,6 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
             }
             finally
             {
-                IsComposing = false;
-
                 if (!_composeScheduled)
                 {
                     _composeCts?.Dispose();
@@ -180,7 +181,7 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
 
         private void DisposeOldTransitionRules()
         {
-            if (_composeCts is { IsCancellationRequested: false })
+            if (_composeCts is { IsCancellationRequested: false, })
             {
                 _composeCts.Cancel();
             }
@@ -196,7 +197,6 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
             _frameSuccessCache.Clear();
             _lastKnownSatisfied.Clear();
             _composeScheduled = false;
-            IsComposing = false;
 
             _composeCts?.Dispose();
             _composeCts = null;

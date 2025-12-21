@@ -58,6 +58,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             return default;
         }
 
+        protected void PublishSatisfiedChangedEvent(bool value)
+        {
+            SatisfiedChanged?.Invoke(this, value);
+        }
+        
         protected abstract UniTask<bool> InitializeAsync(TPayload payload, CancellationToken cancellationToken);
     }
 }

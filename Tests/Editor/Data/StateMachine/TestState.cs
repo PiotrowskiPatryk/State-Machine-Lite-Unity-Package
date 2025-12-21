@@ -17,7 +17,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine
             return UniTask.CompletedTask;
         }
 
-        protected override UniTask<bool> DoInitializeAsync(EmptyPayload statePayload, CancellationToken cancellationToken)
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload, CancellationToken cancellationToken)
         {
             return UniTask.FromResult(true);
         }

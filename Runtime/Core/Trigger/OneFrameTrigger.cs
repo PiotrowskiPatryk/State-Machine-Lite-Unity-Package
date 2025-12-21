@@ -4,7 +4,7 @@ using Dev.Cortez.StateMachines.Core.Abstraction;
 
 namespace Dev.Cortez.StateMachines.Core.Trigger
 {
-    public class OneFrameTrigger : TriggerBase
+    public sealed class OneFrameTrigger : TriggerBase
     {
         public OneFrameTrigger(string id, string name, string description) : base(id, name, description)
         {

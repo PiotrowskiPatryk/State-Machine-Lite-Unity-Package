@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Logging
 {
-    internal class UnityLogger : LoggerBase
+    internal sealed class UnityLogger : LoggerBase
     {
         public UnityLogger(object context, LogSeverity logSeverity) : base(context, logSeverity)
         {
