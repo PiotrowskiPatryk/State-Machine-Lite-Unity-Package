@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 using JetBrains.Annotations;
@@ -22,8 +23,9 @@ namespace Dev.Cortez.StateMachines.Core.Interfaces
         /// This method typically sets up the initial or updated set of rules the solver will use.
         /// </summary>
         /// <param name="transitionRules">A dictionary mapping states to their associated read-only list of transition rules.</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>A <see cref="UniTask{TResult}" /> indicating whether the rules were successfully applied and populated.</returns>
-        UniTask<bool> ApplyPopulateTransitionRulesAsync([NotNull] Dictionary<IState, IReadOnlyList<TransitionRule>> transitionRules);
+        UniTask<bool> ApplyTransitionRulesAsync([NotNull] IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules, CancellationToken cancellationToken);
 
         /// <summary>
         /// Applies or activates the relevant transition rules for a active state.

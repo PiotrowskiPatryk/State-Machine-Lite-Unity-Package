@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using Dev.Cortez.StateMachines.Core.Condition.Payload;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
 namespace Dev.Cortez.StateMachines.Core.Condition
@@ -20,7 +21,7 @@ namespace Dev.Cortez.StateMachines.Core.Condition
         {
             if (!payload.TriggerReferencePicker.IsReferenceSelected)
             {
-                Logging.LoggerService.Logger.LogError("Unable to initialize TriggerBasedCondition. Provided trigger reference picker is not provided.");
+                LoggerService.Logger.LogError("Unable to initialize TriggerBasedCondition. Provided trigger reference picker is not provided.");
                 return UniTask.FromResult(false);
             }
             

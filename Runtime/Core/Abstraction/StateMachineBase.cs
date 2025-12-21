@@ -248,6 +248,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
             var enterSucceeded = await EnterStateAsync(targetState, linkedCancellationTokenSource.Token);
 
+            TransitionSolver.ApplyRulesForActiveState(targetState);
+            
             if (!enterSucceeded)
             {
                 LoggerService.Logger.LogError("Unable to enter target state. Entering state failed.");
@@ -501,7 +503,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 InitializationStatus = InitializationStatus.Initializing;
 
                 ApplyVariables(stateMachineSettings);
-                InitializeTransitionSolver(stateMachineSettings.TransitionSolver);
+                await InitializeTransitionSolverAsync(stateMachineSettings.TransitionSolver, stateMachineSettings.TransitionRules, cancellationToken);
 
                 var initResult = await DoInitializeStateMachineAsync(stateMachinePayload, cancellationToken);
 
@@ -515,8 +517,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
         }
 
-        private void InitializeTransitionSolver([NotNull] ITransitionSolver transitionSolver)
+        private async UniTask InitializeTransitionSolverAsync([NotNull] ITransitionSolver transitionSolver, [NotNull] IReadOnlyDictionary<IState,IReadOnlyList<TransitionRule>> transitionRules, CancellationToken cancellationToken)
         {
+            await transitionSolver.ApplyTransitionRulesAsync(transitionRules, cancellationToken);
             transitionSolver.TransitionRuleApplied += OnTransitionRuleApplied;
         }
 

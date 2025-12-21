@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Condition;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
@@ -24,6 +25,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
         private Button _cancelButton;
         private TextField _initialStateTextField;
         private DropdownField _targetStateDropdown;
+        private DropdownField _conditionFilterTypeDropdown;
         private MultiColumnListView _conditionsListView;
         private VisualElement _conditionFormContainer;
 
@@ -65,13 +67,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
             _initialStateTextField.value = Data.SourceStateDefinitionViewModel.Name;
             _targetStateDropdown = RootVisualElement.Q<DropdownField>("TargetStateDropdownField");
             _conditionFormContainer = RootVisualElement.Q<VisualElement>("ConditionFormContainer");
-
+            _conditionFilterTypeDropdown = RootVisualElement.Q<DropdownField>("ConditionFilterDropdownField");
+            
             _targetStateDropdown.RegisterValueChangedCallback(OnTargetStateChanged);
+            _conditionFilterTypeDropdown.RegisterValueChangedCallback(OnConditionFilterChanged);
 
             PopulateDropdown();
             ClearConditionForm();
         }
-
+        
         private void DoBindConditionMenuCell(VisualElement visualElement, int index)
         {
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
@@ -174,6 +178,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
             {
                 _targetStateDropdown.value = Data.TransitionRuleDefinitionViewModel.TargetState.Name;
             }
+
+            _conditionFilterTypeDropdown.choices.Clear();
+            
+            foreach (var filterType in Enum.GetValues(typeof(ConditionFilterType)))
+            {
+                _conditionFilterTypeDropdown.choices.Add(filterType.ToString());
+            }
+            
+            _conditionFilterTypeDropdown.value = Data.TransitionRuleDefinitionViewModel.ConditionFilterType.ToString();
         }
 
         private void ShowEditConditionForm(int index)
@@ -233,6 +246,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
                     state.Name.Equals(targetStateName.newValue));
 
             Data.TransitionRuleDefinitionViewModel.TargetState = targetState;
+        }
+        
+        private void OnConditionFilterChanged(ChangeEvent<string> targetConditionTypeValue)
+        {
+            Data.TransitionRuleDefinitionViewModel.ConditionFilterType = Enum.Parse<ConditionFilterType>(targetConditionTypeValue.newValue);
         }
     }
 }

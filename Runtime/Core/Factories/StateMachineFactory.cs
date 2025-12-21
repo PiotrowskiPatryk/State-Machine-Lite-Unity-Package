@@ -156,7 +156,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
 
             var transitionRule = new TransitionRule(originState, targetState, conditionComposite,
                 transitionRuleDefinition.Priority);
-
+            
             return transitionRule;
         }
 
@@ -190,9 +190,14 @@ namespace Dev.Cortez.StateMachines.Core.Factories
 
                 return null;
             }
-
-            // TODO - apply condition initialization here
-
+            
+            if (conditionInstance is IAsyncInitializable conditionAsyncInitializable)
+            {
+                LoggerService.Logger.LogTrace($"Initializing condition: [{conditionDefinition.Id} {conditionDefinition.Name}]");
+                
+                await conditionAsyncInitializable.InitializeAsync(conditionDefinition.Payload, linkedCancellationToken.Token);
+            }
+            
             return conditionInstance;
         }
 
