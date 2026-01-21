@@ -7,7 +7,6 @@ using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
-using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.TransitionSolver
 {
@@ -25,8 +24,10 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
         private Dictionary<IState, IReadOnlyList<TransitionRule>> _cachedTransitionRules;
         private CancellationTokenSource _composeCts;
         private bool _composeScheduled;
-        
-        public UniTask<bool> ApplyTransitionRulesAsync(IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules, CancellationToken cancellationToken)
+
+        public UniTask<bool> ApplyTransitionRulesAsync(
+            IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules,
+            CancellationToken cancellationToken)
         {
             _cachedTransitionRules = new Dictionary<IState, IReadOnlyList<TransitionRule>>(transitionRules);
 
@@ -36,7 +37,7 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
         public void ApplyRulesForActiveState(IState state)
         {
             LoggerService.Logger.LogInfo($"Applying transition solver rules for state: {state.Name}");
-            
+
             DisposeOldTransitionRules();
 
             var transitionRules = _cachedTransitionRules?.GetValueOrDefault(state);
@@ -183,7 +184,7 @@ namespace Dev.Cortez.StateMachines.Core.TransitionSolver
 
         private void DisposeOldTransitionRules()
         {
-            if (_composeCts is { IsCancellationRequested: false, })
+            if (_composeCts is { IsCancellationRequested: false })
             {
                 _composeCts.Cancel();
             }

@@ -121,20 +121,12 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     canceled.
         /// </param>
         /// <returns>A task that resolves to a boolean indicating whether the initialization was successful or failed.</returns>
-        public async UniTask<bool> InitializeAsync(StateDefinition stateDefinition,
+        public UniTask<bool> InitializeAsync(StateDefinition stateDefinition,
             CancellationToken cancellationToken)
         {
             if (stateDefinition.Payload is TStatePayload statePayload)
             {
-                var isInitialized = await InitializeAsyncInternal(stateDefinition, statePayload, cancellationToken);
-
-                if (isInitialized)
-                {
-                    InitializationStatus = InitializationStatus.Initialized;
-                    StateStatus = StateStatus.Inactive;
-                }
-
-                return isInitialized;
+                return InitializeAsyncInternal(stateDefinition, statePayload, cancellationToken);
             }
 
             InitializationStatus = InitializationStatus.Failed;
@@ -143,7 +135,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             LoggerService.Logger.LogError(
                 $"Unable to initialize state. Provided payload is not of the expected type. Expected payload of type {typeof(TStatePayload).Name}, but got {stateDefinition.Payload?.GetType().Name}.");
 
-            return false;
+            return UniTask.FromResult(false);
         }
 
         /// <summary>
@@ -318,6 +310,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
 
             InitializationStatus = InitializationStatus.Initialized;
+            StateStatus = StateStatus.Inactive;
 
             return true;
         }
