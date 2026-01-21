@@ -11,6 +11,7 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
         private IStateMachineContainerEntry _containerEntry;
 
         public bool IsSubscribed { get; private set; }
+        public IStateMachineContainerEntry SubscribedContainerEntry => _containerEntry;
 
         public DebuggerEventSubscriber(DebuggerHistoryManager historyManager)
         {

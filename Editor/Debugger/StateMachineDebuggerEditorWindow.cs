@@ -55,13 +55,19 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
 
             _lastRepaintTime = EditorApplication.timeSinceStartup;
 
+            var currentContainerEntry = IsContainerValid() ? _containerInstaller.StateMachineContainerEntry : null;
+            var subscribedEntry = _eventSubscriber?.SubscribedContainerEntry;
+
+            var containerChanged = currentContainerEntry != subscribedEntry;
+
+            if (containerChanged && _eventSubscriber.IsSubscribed)
+            {
+                _eventSubscriber.Unsubscribe();
+            }
+
             if (IsContainerValid() && !_eventSubscriber.IsSubscribed)
             {
                 TrySubscribe();
-            }
-            else if (!IsContainerValid() && _eventSubscriber.IsSubscribed)
-            {
-                _eventSubscriber.Unsubscribe();
             }
 
             Repaint();
