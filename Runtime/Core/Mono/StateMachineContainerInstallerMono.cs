@@ -11,6 +11,8 @@ namespace Dev.Cortez.StateMachines.Core.Mono
     {
         private readonly StateMachineContainerInstaller _stateMachineContainerInstaller = new();
 
+        public event Action<IStateMachineContainerEntry> InstallationCompleted;
+
         [SerializeField]
         private StateMachineContainer _stateMachineContainer;
 
@@ -34,6 +36,8 @@ namespace Dev.Cortez.StateMachines.Core.Mono
                 destroyCancellationToken);
 
             _isInstalled = true;
+
+            InstallationCompleted?.Invoke(StateMachineContainerEntry);
 
             return StateMachineContainerEntry;
         }

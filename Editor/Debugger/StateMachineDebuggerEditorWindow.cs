@@ -10,8 +10,8 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
 {
     public sealed class StateMachineDebuggerEditorWindow : EditorWindow
     {
-        private const string WindowTitle = "State Machine Debugger";
-        private const float RefreshInterval = 0.1f;
+        private const string WINDOW_TITLE = "State Machine Debugger";
+        private const float REFRESH_INVERVAL_IN_SECONDS = 0.5f;
 
         private readonly DebuggerHistoryManager _historyManager = new();
         private readonly Dictionary<string, bool> _statesFoldouts = new();
@@ -23,20 +23,21 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
         private string _searchFilter = "";
         private double _lastRepaintTime;
         private DebuggerEventSubscriber _eventSubscriber;
-
         private bool _triggersFoldout = true;
         private bool _stateMachinesFoldout = true;
 
+        private bool CanRepaint => EditorApplication.timeSinceStartup - _lastRepaintTime > REFRESH_INVERVAL_IN_SECONDS;
+
         public static void ShowWindow(StateMachineContainerInstallerMono containerInstaller)
         {
-            var window = GetWindow<StateMachineDebuggerEditorWindow>(WindowTitle);
+            var window = GetWindow<StateMachineDebuggerEditorWindow>(WINDOW_TITLE);
             window._containerInstaller = containerInstaller;
             window.Show();
         }
 
         private void OnEnable()
         {
-            titleContent = new GUIContent(WindowTitle);
+            titleContent = new GUIContent(WINDOW_TITLE);
             _eventSubscriber = new DebuggerEventSubscriber(_historyManager);
             TrySubscribe();
         }
@@ -48,13 +49,19 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
 
         private void OnInspectorUpdate()
         {
-            if (EditorApplication.timeSinceStartup - _lastRepaintTime <= RefreshInterval)
+            if (!CanRepaint)
             {
                 return;
             }
 
             _lastRepaintTime = EditorApplication.timeSinceStartup;
 
+            CheckContainerChanged();
+            Repaint();
+        }
+
+        private void CheckContainerChanged()
+        {
             var currentContainerEntry = IsContainerValid() ? _containerInstaller.StateMachineContainerEntry : null;
             var subscribedEntry = _eventSubscriber?.SubscribedContainerEntry;
 
@@ -69,8 +76,6 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
             {
                 TrySubscribe();
             }
-
-            Repaint();
         }
 
         private void OnGUI()
