@@ -82,7 +82,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 initialState, states.ToList(), transitionRules);
 
             await stateMachineInstance.InitializeAsync(stateMachineSettings, linkedCancellationToken.Token);
-
+            
             return stateMachineInstance;
         }
 
