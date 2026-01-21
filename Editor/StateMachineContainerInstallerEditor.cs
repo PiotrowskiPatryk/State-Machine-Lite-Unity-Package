@@ -1,5 +1,6 @@
 ﻿using Dev.Cortez.StateMachines.Core.Mono;
 using Dev.Cortez.StateMachines.Core.Registry;
+using Dev.Cortez.StateMachines.Editor.Debugger;
 using UnityEditor;
 using UnityEngine;
 

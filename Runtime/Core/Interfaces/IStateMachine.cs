@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
@@ -11,6 +12,16 @@ namespace Dev.Cortez.StateMachines.Core.Interfaces
     /// </summary>
     public interface IStateMachine : IIdentifiable, IAsyncDisposable
     {
+        /// <summary>
+        /// Gets a read-only list of all states in this state machine.
+        /// </summary>
+        IReadOnlyList<IState> States { get; }
+
+        /// <summary>
+        /// Gets a read-only list of all transition rules for this state machine.
+        /// </summary>
+        IReadOnlyList<TransitionRule> TransitionRules { get; }
+
         bool IsActive { get; }
 
         [CanBeNull]

@@ -1,18 +1,19 @@
-﻿{
-  "name": "Dev.Cortez.StateMachines.Editor",
-  "rootNamespace": "Dev.Cortez.StateMachines.Editor",
-  "references": [
-    "Dev.Cortez.StateMachines"
-  ],
-  "optionalUnityReferences": [],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "noEngineReferences": false
+{
+    "name": "Dev.Cortez.StateMachines.Editor",
+    "rootNamespace": "Dev.Cortez.StateMachines.Editor",
+    "references": [
+        "Dev.Cortez.StateMachines",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

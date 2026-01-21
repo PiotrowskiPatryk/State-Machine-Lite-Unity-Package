@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -74,6 +75,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         private TState _activeState;
         private TState _defaultState;
         private CancellationTokenSource _transitionCts;
+        private List<IState> _cachedStatesAsInterface;
+        private IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> _transitionRulesMap;
+        private List<TransitionRule> _cachedTransitionRulesList;
 
         /// <summary>
         ///     Gets the unique identifier of the state machine.
@@ -132,6 +136,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// </remarks>
         [NotNull]
         protected IReadOnlyList<TState> States => _states;
+
+        /// <inheritdoc />
+        IReadOnlyList<IState> IStateMachine.States => _cachedStatesAsInterface ??= _states.Cast<IState>().ToList();
+
+        /// <inheritdoc />
+        IReadOnlyList<TransitionRule> IStateMachine.TransitionRules => 
+            _cachedTransitionRulesList ??= _transitionRulesMap?.Values.SelectMany(r => r).ToList() ?? new List<TransitionRule>();
 
         /// <summary>
         ///     A property representing the transition solver used within the state machine.
@@ -503,6 +514,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 InitializationStatus = InitializationStatus.Initializing;
 
                 ApplyVariables(stateMachineSettings);
+                _transitionRulesMap = stateMachineSettings.TransitionRules;
+                _cachedTransitionRulesList = null;
                 await InitializeTransitionSolverAsync(stateMachineSettings.TransitionSolver, stateMachineSettings.TransitionRules, cancellationToken);
 
                 var initResult = await DoInitializeStateMachineAsync(stateMachinePayload, cancellationToken);
@@ -530,6 +543,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             Description = stateMachineSettings.StateMachineDefinition.Description;
 
             _states.Clear();
+            _cachedStatesAsInterface = null;
 
             foreach (var state in stateMachineSettings.States)
             {
