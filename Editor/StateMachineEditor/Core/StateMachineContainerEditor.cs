@@ -88,21 +88,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
                 _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel);
         }
 
-        private void RebindFromWorking()
-        {
-            var working = StateMachineContainerSingleton.instance.WorkingSerializedObject;
-
-            if (working == null)
-            {
-                Debug.LogError("Working SerializedObject is null. Cannot bind UI.");
-
-                return;
-            }
-
-            _stateMachineContainerViewModelRegistry = new StateMachineContainerViewModelRegistry(working);
-            BindData();
-        }
-
         private void InitializeEventListeners()
         {
             _mainMenuView.PressedNewStateMachineButton += OnPressedNewStateMachineButton;
@@ -136,22 +121,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
         private void Initialize(SerializedObject serializedObject)
         {
             _stateMachineContainerViewModelRegistry = new StateMachineContainerViewModelRegistry(serializedObject);
-        }
-
-        private void OnPressedNewStateMachineButton()
-        {
-            var stateMachineDefinitionViewModel = new StateMachineDefinitionViewModel();
-
-            DisplayForm<StateMachineForm, StateMachineDefinitionViewModel>(stateMachineDefinitionViewModel,
-                _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.AddStateMachine);
-        }
-
-        private void OnPressedNewTriggerButton()
-        {
-            var triggerDefinitionViewModel = new TriggerDefinitionViewModel();
-
-            DisplayForm<TriggerForm, TriggerDefinitionViewModel>(triggerDefinitionViewModel,
-                _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel.AddTrigger);
         }
 
         private void DisplayForm<TForm, TData>(TData data, Action<TData> addedCallback)
@@ -273,6 +242,22 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
 
             DisplayForm<TransitionRuleForm, TransitionRuleFormData>(transitionRuleFormData,
                 data => stateDefinitionViewModel.EditTransition(data.TransitionRuleDefinitionViewModel));
+        }
+
+        private void OnPressedNewStateMachineButton()
+        {
+            var stateMachineDefinitionViewModel = new StateMachineDefinitionViewModel();
+
+            DisplayForm<StateMachineForm, StateMachineDefinitionViewModel>(stateMachineDefinitionViewModel,
+                _stateMachineContainerViewModelRegistry.StateMachineConfigurationViewModel.AddStateMachine);
+        }
+
+        private void OnPressedNewTriggerButton()
+        {
+            var triggerDefinitionViewModel = new TriggerDefinitionViewModel();
+
+            DisplayForm<TriggerForm, TriggerDefinitionViewModel>(triggerDefinitionViewModel,
+                _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel.AddTrigger);
         }
 
         private void OnRemoveTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,

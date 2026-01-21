@@ -3,7 +3,6 @@ using System.Linq;
 using Dev.Cortez.StateMachines.Core.ReferencePicker;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
-using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -17,9 +16,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
         private Dictionary<string, string> _referenceDropdownOptions;
 
         protected SerializedProperty SerializedProperty { get; private set; }
-        protected StateMachineContainer SelectedStateMachineContainer { get; private set; }
 
-        [ItemCanBeNull]
+        protected StateMachines.Core.StateMachineConfiguration.StateMachineContainer SelectedStateMachineContainer
+        {
+            get;
+            private set;
+        }
+
         private string SelectedItemReferenceId
         {
             get => SerializedProperty.FindPropertyRelative(ReferencePickerBase.SELECTED_ITEM_ID_PROPERTY_NAME).
@@ -39,7 +42,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
             }
         }
 
-        [ItemCanBeNull]
         private string SelectedStateMachineContainerGuid
         {
             get => SerializedProperty.FindPropertyRelative(ReferencePickerBase.

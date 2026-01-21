@@ -10,9 +10,7 @@ namespace Dev.Cortez.StateMachines.Core.Mono
     public class StateMachineContainerInstallerMono : MonoBehaviour
     {
         private readonly StateMachineContainerInstaller _stateMachineContainerInstaller = new();
-        
-        private IStateMachineContainerEntry _stateMachineContainerEntry;
-        
+
         [SerializeField]
         private StateMachineContainer _stateMachineContainer;
 
@@ -21,21 +19,23 @@ namespace Dev.Cortez.StateMachines.Core.Mono
 
         private bool _isInstalled;
 
+        public IStateMachineContainerEntry StateMachineContainerEntry { get; private set; }
+
         public async UniTask<IStateMachineContainerEntry> InstallAsync(CancellationToken cancellationToken)
         {
             if (_isInstalled)
             {
                 Debug.LogWarning("State machine container is already installed");
 
-                return _stateMachineContainerEntry;
+                return StateMachineContainerEntry;
             }
 
-            _stateMachineContainerEntry = await _stateMachineContainerInstaller.InstallAsync(_stateMachineContainer,
+            StateMachineContainerEntry = await _stateMachineContainerInstaller.InstallAsync(_stateMachineContainer,
                 destroyCancellationToken);
 
             _isInstalled = true;
 
-            return _stateMachineContainerEntry;
+            return StateMachineContainerEntry;
         }
 
         private async void Awake()

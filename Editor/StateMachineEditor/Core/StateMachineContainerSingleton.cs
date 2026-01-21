@@ -4,8 +4,7 @@ using UnityEditor;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
 {
-    // Simple singleton that binds directly to the original asset
-    public class StateMachineContainerSingleton : ScriptableSingleton<StateMachineContainerSingleton>
+    public sealed class StateMachineContainerSingleton : ScriptableSingleton<StateMachineContainerSingleton>
     {
         public StateMachineContainer OriginalContainer { get; private set; }
 
@@ -14,8 +13,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
 
         public bool TryApply(SerializedObject stateMachineContainer)
         {
-            if (stateMachineContainer == null ||
-                stateMachineContainer.targetObject is not StateMachineContainer selectedContainer)
+            if (stateMachineContainer is not { targetObject: StateMachineContainer selectedContainer })
             {
                 return false;
             }

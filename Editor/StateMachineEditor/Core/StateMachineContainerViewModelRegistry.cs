@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
 {
-    public class StateMachineContainerViewModelRegistry
+    public sealed class StateMachineContainerViewModelRegistry
     {
         public StateMachineConfigurationViewModel StateMachineConfigurationViewModel { get; }
         public TriggerConfigurationViewModel TriggerConfigurationViewModel { get; }
