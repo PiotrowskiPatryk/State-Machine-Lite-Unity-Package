@@ -65,7 +65,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
         public ConditionDefinitionViewModel()
         {
-            // TODO - Handle disposal
+            // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
             var definitionWrapper = ScriptableObject.CreateInstance<ConditionDefinitionWrapper>();
             SerializedProperty =
                 new SerializedObject(definitionWrapper).FindProperty(ConditionDefinitionWrapper.DATA_PROPERTY_NAME);

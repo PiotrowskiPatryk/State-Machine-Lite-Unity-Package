@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.Registry;
@@ -7,6 +9,8 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
     public sealed class DebuggerEventSubscriber
     {
         private readonly DebuggerHistoryManager _historyManager;
+        private readonly Dictionary<IState, Action<StateStatus>> _stateHandlers = new();
+        private readonly Dictionary<ICondition, Action<ICondition, bool>> _conditionHandlers = new();
 
         private IStateMachineContainerEntry _containerEntry;
 
@@ -26,6 +30,8 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
             }
 
             _containerEntry = containerEntry;
+            _stateHandlers.Clear();
+            _conditionHandlers.Clear();
 
             foreach (var trigger in containerEntry.Triggers.Values)
             {
@@ -36,13 +42,17 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
             {
                 foreach (var state in stateMachine.States)
                 {
-                    state.StatusChanged += status => OnStateStatusChanged(stateMachine, state, status);
+                    Action<StateStatus> stateHandler = status => OnStateStatusChanged(stateMachine, state, status);
+                    _stateHandlers[state] = stateHandler;
+                    state.StatusChanged += stateHandler;
                 }
 
                 foreach (var rule in stateMachine.TransitionRules)
                 {
                     var transitionRule = rule;
-                    rule.Condition.SatisfiedChanged += (_, satisfied) => OnConditionChanged(transitionRule, satisfied);
+                    Action<ICondition, bool> conditionHandler = (_, satisfied) => OnConditionChanged(transitionRule, satisfied);
+                    _conditionHandlers[rule.Condition] = conditionHandler;
+                    rule.Condition.SatisfiedChanged += conditionHandler;
                 }
             }
 
@@ -61,6 +71,27 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
                 trigger.TriggeredValueChanged -= OnTriggerValueChanged;
             }
 
+            foreach (var stateMachine in _containerEntry.StateMachines.Values)
+            {
+                foreach (var state in stateMachine.States)
+                {
+                    if (_stateHandlers.TryGetValue(state, out var stateHandler))
+                    {
+                        state.StatusChanged -= stateHandler;
+                    }
+                }
+
+                foreach (var rule in stateMachine.TransitionRules)
+                {
+                    if (_conditionHandlers.TryGetValue(rule.Condition, out var conditionHandler))
+                    {
+                        rule.Condition.SatisfiedChanged -= conditionHandler;
+                    }
+                }
+            }
+
+            _stateHandlers.Clear();
+            _conditionHandlers.Clear();
             _containerEntry = null;
             IsSubscribed = false;
         }

@@ -7,10 +7,37 @@ using Object = UnityEngine.Object;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 {
-    public abstract class ViewModelBase : INotifyBindablePropertyChanged
+    public abstract class ViewModelBase : INotifyBindablePropertyChanged, IDisposable
     {
+        private bool _disposed;
+
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
         public abstract SerializedProperty SerializedProperty { get; }
+
+        /// <summary>
+        /// Disposes the ViewModel and cleans up any ScriptableObject backing the SerializedProperty.
+        /// Call this method when the ViewModel is no longer needed to prevent memory leaks.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+
+            if (SerializedProperty?.serializedObject?.targetObject != null)
+            {
+                var targetObject = SerializedProperty.serializedObject.targetObject;
+                SerializedProperty.serializedObject.Dispose();
+
+                if (targetObject is ScriptableObject)
+                {
+                    Object.DestroyImmediate(targetObject);
+                }
+            }
+        }
 
         protected void ApplyPropertyValueString(string relativePropertyPath, string value,
             [CallerMemberName] string property = "")

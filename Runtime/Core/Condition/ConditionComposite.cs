@@ -9,6 +9,7 @@ namespace Dev.Cortez.StateMachines.Core.Condition
     {
         private readonly List<ICondition> _conditions;
         private readonly ConditionFilterType _conditionFilterType;
+        private bool _lastSatisfiedState;
 
         public override bool IsSatisfied
         {
@@ -28,6 +29,7 @@ namespace Dev.Cortez.StateMachines.Core.Condition
         {
             _conditions = conditions;
             _conditionFilterType = conditionFilterType;
+            _lastSatisfiedState = IsSatisfied;
 
             foreach (var condition in conditions)
             {
@@ -45,10 +47,15 @@ namespace Dev.Cortez.StateMachines.Core.Condition
             return base.DisposeAsync();
         }
 
-        // TODO - Refactor this functionality to publish only changed condition events, not everytime
         private void OnConditionSatisfiedChanged(ICondition condition, bool _)
         {
-            PublishSatisfiedChangedEvent(IsSatisfied);
+            var currentSatisfiedState = IsSatisfied;
+
+            if (currentSatisfiedState != _lastSatisfiedState)
+            {
+                _lastSatisfiedState = currentSatisfiedState;
+                PublishSatisfiedChangedEvent(currentSatisfiedState);
+            }
         }
     }
 }
