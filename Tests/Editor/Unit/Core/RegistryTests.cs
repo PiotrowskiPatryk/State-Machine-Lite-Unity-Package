@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Registry;
 using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Builders;
 using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks;
@@ -137,7 +138,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             var settings = new StateMachineSettingsBuilder().WithStateMachineDefinition(stateDefinition).
                 WithTransitionSolver(new MockTransitionSolver()).Build();
 
-            await stateMachine.InitializeAsync(settings, default);
+            await stateMachine.InitializeAsync(settings, CancellationToken.None);
 
             // Act
             var result = _entry.TryRegisterStateMachine(stateMachine);

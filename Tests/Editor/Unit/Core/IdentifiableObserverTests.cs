@@ -60,6 +60,9 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             // Assert
             Assert.That(callbackCalled, Is.True);
             Assert.That(receivedValue, Is.EqualTo("test-value"));
+
+            // Cleanup
+            observer.Dispose();
         }
 
         [Test]
@@ -78,18 +81,26 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
 
             // Assert
             Assert.That(callbackCalled, Is.True);
+
+            // Cleanup
+            observer.Dispose();
         }
 
         [Test]
         public void Constructor_WithNullCallbacks_DoesNotThrow()
         {
+            IdentifiableObserver<string> observer = null;
+
             // Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                var observer = new IdentifiableObserver<string>("test-id", null, null);
+                observer = new IdentifiableObserver<string>("test-id", null, null);
                 Assert.That(observer.OnRegistered, Is.Null);
                 Assert.That(observer.OnUnregistered, Is.Null);
             });
+
+            // Cleanup
+            observer.Dispose();
         }
 
         #endregion

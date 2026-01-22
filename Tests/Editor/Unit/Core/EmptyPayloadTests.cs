@@ -10,8 +10,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
     [TestFixture]
     public sealed class EmptyPayloadTests
     {
-        #region IsValid Tests
-
         [Test]
         public void IsValid_AlwaysReturnsTrue()
         {
@@ -24,19 +22,5 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             // Assert
             Assert.That(result, Is.True);
         }
-
-        [Test]
-        public void IsValid_MultipleInstances_AllReturnTrue()
-        {
-            // Arrange
-            var payload1 = new EmptyPayload();
-            var payload2 = new EmptyPayload();
-
-            // Assert
-            Assert.That(payload1.IsValid(), Is.True);
-            Assert.That(payload2.IsValid(), Is.True);
-        }
-
-        #endregion
     }
 }

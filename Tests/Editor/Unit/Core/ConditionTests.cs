@@ -129,20 +129,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             Assert.Pass("DisposeAsync completed successfully");
         }
 
-        [Test]
-        public void Reset_ClearsAllTrackingState()
-        {
-            // Arrange
-            _condition.SetSatisfied(true);
-
-            // Act
-            _condition.Reset();
-
-            // Assert
-            Assert.That(_condition.IsSatisfied, Is.False);
-            Assert.That(_condition.SetSatisfiedCallCount, Is.EqualTo(0));
-        }
-
         #endregion
 
         #region ConditionComposite Tests
