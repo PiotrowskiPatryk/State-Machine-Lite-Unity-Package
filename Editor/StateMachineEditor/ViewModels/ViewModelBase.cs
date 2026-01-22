@@ -7,10 +7,49 @@ using Object = UnityEngine.Object;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 {
-    public abstract class ViewModelBase : INotifyBindablePropertyChanged
+    public abstract class ViewModelBase : INotifyBindablePropertyChanged, IDisposable
     {
+        private bool _disposed;
+
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
         public abstract SerializedProperty SerializedProperty { get; }
+
+        /// <summary>
+        /// Disposes the ViewModel and cleans up any ScriptableObject backing the SerializedProperty.
+        /// Call this method when the ViewModel is no longer needed to prevent memory leaks.
+        /// Only destroys ScriptableObjects that were created in memory (not persisted to assets).
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Protected implementation of Dispose pattern.
+        /// </summary>
+        /// <param name="disposing">True if disposing managed resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+
+            if (disposing && SerializedProperty?.serializedObject?.targetObject != null)
+            {
+                var targetObject = SerializedProperty.serializedObject.targetObject;
+                SerializedProperty.serializedObject.Dispose();
+
+                // Only destroy ScriptableObjects that are not persisted to an asset
+                if (targetObject is ScriptableObject && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(targetObject)))
+                {
+                    Object.DestroyImmediate(targetObject);
+                }
+            }
+        }
 
         protected void ApplyPropertyValueString(string relativePropertyPath, string value,
             [CallerMemberName] string property = "")

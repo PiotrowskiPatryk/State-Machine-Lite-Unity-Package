@@ -68,7 +68,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
         public TriggerDefinitionViewModel()
         {
-            // TODO - Handle disposal
+            // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
             var definitionWrapper = ScriptableObject.CreateInstance<TriggerDefinitionWrapper>();
             SerializedProperty =
                 new SerializedObject(definitionWrapper).FindProperty(TriggerDefinitionWrapper.DATA_PROPERTY_NAME);

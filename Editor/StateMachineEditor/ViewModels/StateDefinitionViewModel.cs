@@ -110,7 +110,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
         public StateDefinitionViewModel(string stateMachineType)
         {
-            // TODO - Handle disposal
+            // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
             var definitionWrapper = ScriptableObject.CreateInstance<StateDefinitionWrapper>();
             SerializedProperty =
                 new SerializedObject(definitionWrapper).FindProperty(StateDefinitionWrapper.DATA_PROPERTY_NAME);

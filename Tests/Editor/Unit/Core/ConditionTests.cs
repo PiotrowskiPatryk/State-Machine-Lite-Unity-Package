@@ -236,6 +236,10 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             var condition1 = new MockCondition();
             var condition2 = new MockCondition();
 
+            // Pre-satisfy condition2 so that when condition1 becomes true,
+            // the composite transitions from false to true (All mode)
+            condition2.SetSatisfied(true);
+
             var composite = new ConditionComposite(
                 new List<ICondition> { condition1, condition2 },
                 ConditionFilterType.All);
@@ -243,10 +247,10 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             var eventFired = false;
             composite.SatisfiedChanged += (_, _) => eventFired = true;
 
-            // Act
+            // Act - condition1 changes to true, causing composite to become satisfied
             condition1.SetSatisfied(true);
 
-            // Assert
+            // Assert - Event fires because composite state changed from false to true
             Assert.That(eventFired, Is.True);
         }
 

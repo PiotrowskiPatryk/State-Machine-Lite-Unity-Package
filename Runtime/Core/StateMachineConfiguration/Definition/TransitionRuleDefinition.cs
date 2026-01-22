@@ -9,10 +9,10 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
     [Serializable]
     public sealed class TransitionRuleDefinition : IValidatable
     {
-        public static string PRIORITY_PROPERTY_NAME = nameof(_priority);
-        public static string CONDITION_DEFINITIONS_PROPERTY_NAME = nameof(_conditionDefinitions);
-        public static string TARGET_STATE_PROPERTY_NAME = nameof(_targetState);
-        public static string CONDITION_FILTER_TYPE_PROPERTY_NAME = nameof(_conditionFilterType);
+        public const string PRIORITY_PROPERTY_NAME = nameof(_priority);
+        public const string CONDITION_DEFINITIONS_PROPERTY_NAME = nameof(_conditionDefinitions);
+        public const string TARGET_STATE_PROPERTY_NAME = nameof(_targetState);
+        public const string CONDITION_FILTER_TYPE_PROPERTY_NAME = nameof(_conditionFilterType);
 
         [SerializeField]
         private StateDefinition _targetState;
