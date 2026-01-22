@@ -7,6 +7,15 @@ namespace Dev.Cortez.StateMachines.Core.ReferencePicker
     [Serializable]
     public sealed class StateReferencePicker : ReferencePickerBase<IState>
     {
+        public StateReferencePicker()
+        {
+        }
+
+        public StateReferencePicker(string selectedItemId, string selectedStateMachineContainerGuid = null) 
+            : base(selectedItemId, selectedStateMachineContainerGuid)
+        {
+        }
+
         protected override void DoSubscribe(StateMachineContainerRegistry stateMachineContainerRegistry,
             IdentifiableObserver<IState> observer)
         {

@@ -20,11 +20,30 @@ namespace Dev.Cortez.StateMachines.Core.ReferencePicker
         protected string _selectedStateMachineContainerGuid;
         [SerializeField]
         protected string _selectedItemId;
+
+        protected ReferencePickerBase()
+        {
+        }
+
+        protected ReferencePickerBase(string selectedItemId, string selectedStateMachineContainerGuid = null)
+        {
+            _selectedItemId = selectedItemId;
+            _selectedStateMachineContainerGuid = selectedStateMachineContainerGuid;
+        }
     }
     
     [Serializable]
     public abstract class ReferencePickerBase<TItem> : ReferencePickerBase where TItem : class
     {
+        protected ReferencePickerBase()
+        {
+        }
+
+        protected ReferencePickerBase(string selectedItemId, string selectedStateMachineContainerGuid = null) 
+            : base(selectedItemId, selectedStateMachineContainerGuid)
+        {
+        }
+
         public bool IsReferenceSelected => !string.IsNullOrWhiteSpace(_selectedItemId);
         
         [CanBeNull]

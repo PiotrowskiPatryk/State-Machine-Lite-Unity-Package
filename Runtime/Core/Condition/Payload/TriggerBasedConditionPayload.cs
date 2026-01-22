@@ -18,6 +18,18 @@ namespace Dev.Cortez.StateMachines.Core.Condition.Payload
         public TriggerReferencePicker TriggerReferencePicker => _triggerReferencePicker;
         public TriggerSatisfiedConditionType TriggerSatisfiedConditionType => _triggerSatisfiedConditionType;
 
+        public TriggerBasedConditionPayload()
+        {
+        }
+
+        public TriggerBasedConditionPayload(
+            TriggerReferencePicker triggerReferencePicker,
+            TriggerSatisfiedConditionType triggerSatisfiedConditionType)
+        {
+            _triggerReferencePicker = triggerReferencePicker;
+            _triggerSatisfiedConditionType = triggerSatisfiedConditionType;
+        }
+
         public bool IsValid()
         {
             return _triggerReferencePicker.IsReferenceSelected &&

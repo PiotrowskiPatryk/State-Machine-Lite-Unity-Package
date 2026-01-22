@@ -17,6 +17,18 @@ namespace Dev.Cortez.StateMachines.Core.Condition.Payload
         public StateReferencePicker StateReferencePicker => _stateReferencePicker;
         public StateSatisfiedConditionType StateSatisfiedConditionType => _stateSatisfiedConditionType;
 
+        public StateBasedConditionPayload()
+        {
+        }
+
+        public StateBasedConditionPayload(
+            StateReferencePicker stateReferencePicker,
+            StateSatisfiedConditionType stateSatisfiedConditionType)
+        {
+            _stateReferencePicker = stateReferencePicker;
+            _stateSatisfiedConditionType = stateSatisfiedConditionType;
+        }
+
         public bool IsValid()
         {
             return _stateReferencePicker.IsReferenceSelected;
