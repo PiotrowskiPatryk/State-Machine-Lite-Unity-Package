@@ -17,8 +17,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         /// <summary>
         /// Disposes the ViewModel and cleans up any ScriptableObject backing the SerializedProperty.
         /// Call this method when the ViewModel is no longer needed to prevent memory leaks.
+        /// Only destroys ScriptableObjects that were created in memory (not persisted to assets).
         /// </summary>
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Protected implementation of Dispose pattern.
+        /// </summary>
+        /// <param name="disposing">True if disposing managed resources.</param>
+        protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
             {
@@ -27,12 +38,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             _disposed = true;
 
-            if (SerializedProperty?.serializedObject?.targetObject != null)
+            if (disposing && SerializedProperty?.serializedObject?.targetObject != null)
             {
                 var targetObject = SerializedProperty.serializedObject.targetObject;
                 SerializedProperty.serializedObject.Dispose();
 
-                if (targetObject is ScriptableObject)
+                // Only destroy ScriptableObjects that are not persisted to an asset
+                if (targetObject is ScriptableObject && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(targetObject)))
                 {
                     Object.DestroyImmediate(targetObject);
                 }

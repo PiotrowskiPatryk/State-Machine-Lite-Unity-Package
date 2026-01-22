@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.Registry;
@@ -81,11 +82,11 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
                     }
                 }
 
-                foreach (var rule in stateMachine.TransitionRules)
+                foreach (var condition in stateMachine.TransitionRules.Select(rule => rule.Condition))
                 {
-                    if (_conditionHandlers.TryGetValue(rule.Condition, out var conditionHandler))
+                    if (_conditionHandlers.TryGetValue(condition, out var conditionHandler))
                     {
-                        rule.Condition.SatisfiedChanged -= conditionHandler;
+                        condition.SatisfiedChanged -= conditionHandler;
                     }
                 }
             }
