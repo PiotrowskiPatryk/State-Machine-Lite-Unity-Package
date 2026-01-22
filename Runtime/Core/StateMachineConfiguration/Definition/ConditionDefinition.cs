@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     [Serializable]
-    public sealed class ConditionDefinition
+    public sealed class ConditionDefinition : IValidatable
     {
         public static string ID_PROPERTY_NAME = nameof(_id);
         public static string NAME_PROPERTY_NAME = nameof(_name);
@@ -45,6 +45,14 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 
         public ConditionDefinition()
         {
+        }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrWhiteSpace(_id) &&
+                   !string.IsNullOrWhiteSpace(_name) &&
+                   !string.IsNullOrWhiteSpace(_typeName) &&
+                   Payload?.IsValid() == true;
         }
     }
 }

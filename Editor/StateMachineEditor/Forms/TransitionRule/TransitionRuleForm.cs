@@ -40,8 +40,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
 
         protected override bool IsInputDataValid()
         {
-            // TODO implement validation
-            return true;
+            return Data.TransitionRuleDefinitionViewModel.IsValid;
         }
 
         protected override void OnShown()
@@ -68,14 +67,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
             _targetStateDropdown = RootVisualElement.Q<DropdownField>("TargetStateDropdownField");
             _conditionFormContainer = RootVisualElement.Q<VisualElement>("ConditionFormContainer");
             _conditionFilterTypeDropdown = RootVisualElement.Q<DropdownField>("ConditionFilterDropdownField");
-            
+
             _targetStateDropdown.RegisterValueChangedCallback(OnTargetStateChanged);
             _conditionFilterTypeDropdown.RegisterValueChangedCallback(OnConditionFilterChanged);
 
             PopulateDropdown();
             ClearConditionForm();
         }
-        
+
         private void DoBindConditionMenuCell(VisualElement visualElement, int index)
         {
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
@@ -180,12 +179,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
             }
 
             _conditionFilterTypeDropdown.choices.Clear();
-            
+
             foreach (var filterType in Enum.GetValues(typeof(ConditionFilterType)))
             {
                 _conditionFilterTypeDropdown.choices.Add(filterType.ToString());
             }
-            
+
             _conditionFilterTypeDropdown.value = Data.TransitionRuleDefinitionViewModel.ConditionFilterType.ToString();
         }
 
@@ -247,10 +246,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
 
             Data.TransitionRuleDefinitionViewModel.TargetState = targetState;
         }
-        
+
         private void OnConditionFilterChanged(ChangeEvent<string> targetConditionTypeValue)
         {
-            Data.TransitionRuleDefinitionViewModel.ConditionFilterType = Enum.Parse<ConditionFilterType>(targetConditionTypeValue.newValue);
+            Data.TransitionRuleDefinitionViewModel.ConditionFilterType =
+                Enum.Parse<ConditionFilterType>(targetConditionTypeValue.newValue);
         }
     }
 }

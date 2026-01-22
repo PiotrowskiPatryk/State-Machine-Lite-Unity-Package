@@ -14,6 +14,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
     {
         private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
 
+        public bool IsValid => ((StateMachineDefinition)SerializedProperty.boxedValue).IsValid();
+
         [CreateProperty]
         public int StatesCount =>
             SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME).arraySize;

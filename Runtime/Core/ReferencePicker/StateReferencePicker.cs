@@ -7,14 +7,16 @@ namespace Dev.Cortez.StateMachines.Core.ReferencePicker
     [Serializable]
     public sealed class StateReferencePicker : ReferencePickerBase<IState>
     {
-        protected override void DoSubscribe(StateMachineContainerRegistry stateMachineContainerRegistry, IdentifiableObserver<IState> observer)
+        protected override void DoSubscribe(StateMachineContainerRegistry stateMachineContainerRegistry,
+            IdentifiableObserver<IState> observer)
         {
-            throw new NotImplementedException();
+            stateMachineContainerRegistry.SubscribeState(observer);
         }
 
-        protected override void DoUnsubscribe(StateMachineContainerRegistry stateMachineContainerRegistry, IdentifiableObserver<IState> observer)
+        protected override void DoUnsubscribe(StateMachineContainerRegistry stateMachineContainerRegistry,
+            IdentifiableObserver<IState> observer)
         {
-            throw new NotImplementedException();
+            stateMachineContainerRegistry.UnsubscribeState(observer);
         }
     }
 }

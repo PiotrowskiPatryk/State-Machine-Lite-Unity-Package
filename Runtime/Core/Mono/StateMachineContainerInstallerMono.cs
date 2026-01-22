@@ -12,12 +12,16 @@ namespace Dev.Cortez.StateMachines.Core.Mono
         private readonly StateMachineContainerInstaller _stateMachineContainerInstaller = new();
 
         public event Action<IStateMachineContainerEntry> InstallationCompleted;
+        public event Action<IStateMachineContainerEntry> StateMachinesActivated;
 
         [SerializeField]
         private StateMachineContainer _stateMachineContainer;
 
         [SerializeField]
         private bool _installOnAwake;
+
+        [SerializeField]
+        private bool _activateStateMachinesAfterInstallation;
 
         private bool _isInstalled;
 
@@ -32,14 +36,32 @@ namespace Dev.Cortez.StateMachines.Core.Mono
                 return StateMachineContainerEntry;
             }
 
+            await InstallStateMachineContainerAsync();
+
+            if (_activateStateMachinesAfterInstallation)
+            {
+                await ActivateStateMachinesAsync(cancellationToken);
+            }
+
+            return StateMachineContainerEntry;
+        }
+
+        private async UniTask InstallStateMachineContainerAsync()
+        {
             StateMachineContainerEntry = await _stateMachineContainerInstaller.InstallAsync(_stateMachineContainer,
                 destroyCancellationToken);
 
             _isInstalled = true;
 
             InstallationCompleted?.Invoke(StateMachineContainerEntry);
+        }
 
-            return StateMachineContainerEntry;
+        private async UniTask ActivateStateMachinesAsync(CancellationToken cancellationToken)
+        {
+            foreach (var stateMachine in StateMachineContainerEntry.StateMachines)
+            {
+                await stateMachine.Value.ActivateAsync(cancellationToken);
+            }
         }
 
         private async void Awake()

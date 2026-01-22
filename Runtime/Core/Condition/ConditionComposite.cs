@@ -17,9 +17,9 @@ namespace Dev.Cortez.StateMachines.Core.Condition
                 return _conditionFilterType switch
                 {
                     ConditionFilterType.Undefined => false,
-                    ConditionFilterType.All => _conditions.TrueForAll(condition => condition.IsSatisfied),
-                    ConditionFilterType.Any => _conditions.Exists(condition => condition.IsSatisfied),
-                    _ => false,
+                    ConditionFilterType.All => _conditions.TrueForAll(condition => condition?.IsSatisfied == true),
+                    ConditionFilterType.Any => _conditions.Exists(condition => condition?.IsSatisfied == true),
+                    _ => false
                 };
             }
         }
@@ -41,7 +41,7 @@ namespace Dev.Cortez.StateMachines.Core.Condition
             {
                 condition.SatisfiedChanged -= OnConditionSatisfiedChanged;
             }
-            
+
             return base.DisposeAsync();
         }
 

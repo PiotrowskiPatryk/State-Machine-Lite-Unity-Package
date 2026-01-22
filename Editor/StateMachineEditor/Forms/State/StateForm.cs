@@ -18,8 +18,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.State
 
         protected override bool IsInputDataValid()
         {
-            return !string.IsNullOrWhiteSpace(Data.Name) && !string.IsNullOrWhiteSpace(Data.TypeName) &&
-                   !string.IsNullOrWhiteSpace(Data.StateMachineTypeName) && Data.Payload != null;
+            return Data.IsValid;
         }
 
         protected override void OnShown()

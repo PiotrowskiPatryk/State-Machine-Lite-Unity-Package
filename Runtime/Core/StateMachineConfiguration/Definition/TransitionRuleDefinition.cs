@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Condition;
+using Dev.Cortez.StateMachines.Core.Interfaces;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     [Serializable]
-    public sealed class TransitionRuleDefinition
+    public sealed class TransitionRuleDefinition : IValidatable
     {
         public static string PRIORITY_PROPERTY_NAME = nameof(_priority);
         public static string CONDITION_DEFINITIONS_PROPERTY_NAME = nameof(_conditionDefinitions);
@@ -29,5 +30,13 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public int Priority => _priority;
         public List<ConditionDefinition> ConditionDefinitions => _conditionDefinitions;
         public ConditionFilterType ConditionFilterType => _conditionFilterType;
+
+        public bool IsValid()
+        {
+            return _targetState != null &&
+                   _targetState.IsValid() &&
+                   _conditionDefinitions.TrueForAll(condition => condition.IsValid()) &&
+                   _conditionFilterType != ConditionFilterType.Undefined;
+        }
     }
 }

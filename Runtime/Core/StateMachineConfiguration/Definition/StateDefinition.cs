@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     [Serializable]
-    public sealed class StateDefinition
+    public sealed class StateDefinition : IValidatable
     {
         public static string ID_PROPERTY_NAME = nameof(_id);
         public static string NODE_POSITION_PROPERTY_NAME = nameof(_nodePosition);
@@ -72,6 +72,16 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 
         public StateDefinition()
         {
+        }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrWhiteSpace(_id) &&
+                   !string.IsNullOrWhiteSpace(_name) &&
+                   !string.IsNullOrWhiteSpace(_typeName) &&
+                   !string.IsNullOrWhiteSpace(_stateMachineTypeName) &&
+                   _payload?.IsValid() == true &&
+                   _transitionRules.TrueForAll(transitionRule => transitionRule?.IsValid() == true);
         }
     }
 }
