@@ -18,7 +18,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
     public abstract class ConditionBase<TPayload> : ICondition, IAsyncInitializable where TPayload : IPayload
     {
+        private readonly CancellationTokenSource _disposalCancellationTokenSource = new();
+
         public event Action<ICondition, bool> SatisfiedChanged;
+
+        public CancellationToken DisposalCancellationToken => _disposalCancellationTokenSource.Token;
 
         public abstract bool IsSatisfied { get; }
 
@@ -55,6 +59,12 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         {
             SatisfiedChanged = null;
 
+            if (!_disposalCancellationTokenSource.IsCancellationRequested)
+            {
+                _disposalCancellationTokenSource.Cancel();
+                _disposalCancellationTokenSource.Dispose();
+            }
+
             return default;
         }
 
@@ -62,7 +72,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         {
             SatisfiedChanged?.Invoke(this, value);
         }
-        
+
         protected abstract UniTask<bool> InitializeAsync(TPayload payload, CancellationToken cancellationToken);
     }
 }

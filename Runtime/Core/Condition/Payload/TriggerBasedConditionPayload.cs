@@ -11,11 +11,17 @@ namespace Dev.Cortez.StateMachines.Core.Condition.Payload
         [SerializeField]
         private TriggerReferencePicker _triggerReferencePicker;
 
+        [SerializeField]
+        private TriggerSatisfiedConditionType _triggerSatisfiedConditionType =
+            TriggerSatisfiedConditionType.WhenTriggered;
+
         public TriggerReferencePicker TriggerReferencePicker => _triggerReferencePicker;
+        public TriggerSatisfiedConditionType TriggerSatisfiedConditionType => _triggerSatisfiedConditionType;
 
         public bool IsValid()
         {
-            return _triggerReferencePicker.IsReferenceSelected;
+            return _triggerReferencePicker.IsReferenceSelected &&
+                   _triggerSatisfiedConditionType != TriggerSatisfiedConditionType.Undefined;
         }
     }
 }

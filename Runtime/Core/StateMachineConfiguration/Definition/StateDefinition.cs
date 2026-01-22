@@ -49,5 +49,29 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public string StateMachineTypeName => _stateMachineTypeName;
         public IPayload Payload => _payload;
         public List<TransitionRuleDefinition> TransitionRules => _transitionRules;
+
+        public StateDefinition(
+            string id,
+            string name,
+            string description,
+            string typeName,
+            IPayload payload,
+            List<TransitionRuleDefinition> transitionRules = null,
+            Vector2Int nodePosition = default,
+            string stateMachineTypeName = null)
+        {
+            _id = id;
+            _name = name;
+            _description = description;
+            _typeName = typeName;
+            _payload = payload;
+            _transitionRules = transitionRules ?? new List<TransitionRuleDefinition>();
+            _nodePosition = nodePosition;
+            _stateMachineTypeName = stateMachineTypeName;
+        }
+
+        public StateDefinition()
+        {
+        }
     }
 }

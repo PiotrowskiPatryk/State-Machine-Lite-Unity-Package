@@ -49,5 +49,29 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public StateDefinition InitialState => _initialState;
         public List<StateDefinition> States => _states;
         public IPayload Payload => _payload;
+
+        public StateMachineDefinition(
+            string id,
+            string name,
+            string description,
+            string stateMachineTypeName,
+            string transitionSolverTypeName,
+            StateDefinition initialState,
+            List<StateDefinition> states,
+            IPayload payload)
+        {
+            _id = id;
+            _name = name;
+            _description = description;
+            _stateMachineTypeName = stateMachineTypeName;
+            _transitionSolverTypeName = transitionSolverTypeName;
+            _initialState = initialState;
+            _states = states ?? new List<StateDefinition>();
+            _payload = payload;
+        }
+
+        public StateMachineDefinition()
+        {
+        }
     }
 }

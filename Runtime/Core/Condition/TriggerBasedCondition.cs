@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
@@ -13,26 +14,50 @@ namespace Dev.Cortez.StateMachines.Core.Condition
     public sealed class TriggerBasedCondition : ConditionBase<TriggerBasedConditionPayload>
     {
         private ITrigger _targetTrigger;
+        private TriggerSatisfiedConditionType _triggerSatisfiedConditionType;
 
-        public override bool IsSatisfied => _targetTrigger?.IsTriggered == true;
-        
+        public override bool IsSatisfied
+        {
+            get
+            {
+                return _triggerSatisfiedConditionType switch
+                {
+                    TriggerSatisfiedConditionType.Undefined => false,
+                    TriggerSatisfiedConditionType.WhenTriggered => _targetTrigger?.IsTriggered == true,
+                    TriggerSatisfiedConditionType.WhenNotTriggered => _targetTrigger?.IsTriggered == false,
+                    _ => false
+                };
+            }
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            DisposeTriggerEventListener();
+
+            return base.DisposeAsync();
+        }
+
         protected override UniTask<bool> InitializeAsync(TriggerBasedConditionPayload payload,
             CancellationToken cancellationToken)
         {
             if (!payload.TriggerReferencePicker.IsReferenceSelected)
             {
-                LoggerService.Logger.LogError("Unable to initialize TriggerBasedCondition. Provided trigger reference picker is not provided.");
+                LoggerService.Logger.LogError(
+                    "Unable to initialize TriggerBasedCondition. Provided trigger reference picker is not provided.");
+
                 return UniTask.FromResult(false);
             }
-            
-            payload.TriggerReferencePicker.Observe(OnResolvedTrigger, OnUnresolvedTrigger, cancellationToken);
+
+            _triggerSatisfiedConditionType = payload.TriggerSatisfiedConditionType;
+            payload.TriggerReferencePicker.Observe(OnResolvedTrigger, OnUnresolvedTrigger, DisposalCancellationToken);
+
             return UniTask.FromResult(true);
         }
 
         private void OnResolvedTrigger(ITrigger trigger)
         {
             DisposeTriggerEventListener();
-            
+
             _targetTrigger = trigger;
             _targetTrigger.TriggeredValueChanged += OnTriggerValueChanged;
         }
@@ -41,7 +66,7 @@ namespace Dev.Cortez.StateMachines.Core.Condition
         {
             DisposeTriggerEventListener();
         }
-        
+
         private void DisposeTriggerEventListener()
         {
             if (_targetTrigger == null)
@@ -52,17 +77,10 @@ namespace Dev.Cortez.StateMachines.Core.Condition
             _targetTrigger.TriggeredValueChanged -= OnTriggerValueChanged;
             _targetTrigger = null;
         }
-        
-        public override ValueTask DisposeAsync()
+
+        private void OnTriggerValueChanged(ITrigger _, bool __)
         {
-            DisposeTriggerEventListener();
-            
-            return base.DisposeAsync();
-        }
-        
-        private void OnTriggerValueChanged(ITrigger _, bool value)
-        {
-            PublishSatisfiedChangedEvent(value);
+            PublishSatisfiedChangedEvent(IsSatisfied);
         }
     }
 }

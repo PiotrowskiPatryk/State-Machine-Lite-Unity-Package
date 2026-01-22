@@ -11,7 +11,11 @@ namespace Dev.Cortez.StateMachines.Core.Condition.Payload
         [SerializeField]
         private StateReferencePicker _stateReferencePicker;
 
+        [SerializeField]
+        private StateSatisfiedConditionType _stateSatisfiedConditionType;
+
         public StateReferencePicker StateReferencePicker => _stateReferencePicker;
+        public StateSatisfiedConditionType StateSatisfiedConditionType => _stateSatisfiedConditionType;
 
         public bool IsValid()
         {

@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using Dev.Cortez.StateMachines.Core.Data;
 
-namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine
+namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Data.StateMachine
 {
     public class TestState : StateBase
     {
@@ -17,7 +17,8 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Data.StateMachine
             return UniTask.CompletedTask;
         }
 
-        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload, CancellationToken cancellationToken)
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload,
+            CancellationToken cancellationToken)
         {
             return UniTask.FromResult(true);
         }

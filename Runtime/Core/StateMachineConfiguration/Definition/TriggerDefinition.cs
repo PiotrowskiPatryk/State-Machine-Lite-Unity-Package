@@ -29,15 +29,32 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         private IPayload _payload;
 
         public string Id => _id;
+
         public string Name => _name;
+
         public string Description => _description;
+
         public string TypeName => _typeName;
+
         public IPayload Payload => _payload;
 
-        // Todo - apply validation
+        public TriggerDefinition(string id, string name, string description, string typeName, IPayload payload)
+        {
+            _id = id;
+            _name = name;
+            _description = description;
+            _typeName = typeName;
+            _payload = payload;
+        }
+
+        public TriggerDefinition()
+        {
+        }
+
         public bool IsValid()
         {
-            return true;
+            return !string.IsNullOrWhiteSpace(_id) && !string.IsNullOrWhiteSpace(_name) &&
+                   !string.IsNullOrWhiteSpace(_typeName) && Payload != null;
         }
     }
 }

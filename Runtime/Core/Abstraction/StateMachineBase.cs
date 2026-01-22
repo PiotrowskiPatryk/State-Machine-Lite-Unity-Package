@@ -78,6 +78,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         private List<IState> _cachedStatesAsInterface;
         private IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> _transitionRulesMap;
         private List<TransitionRule> _cachedTransitionRulesList;
+        private bool _wasDisposed;
 
         /// <summary>
         ///     Gets the unique identifier of the state machine.
@@ -116,6 +117,16 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         public InitializationStatus InitializationStatus { get; private set; } = InitializationStatus.NotInitialized;
 
         /// <summary>
+        ///     Provides access to the collection of states managed by the state machine.
+        /// </summary>
+        /// <remarks>
+        ///     This property is a read-only list that contains all registered states within the state machine.
+        ///     It is useful for inspecting or debugging the state machine's configuration.
+        /// </remarks>
+        [NotNull]
+        public IReadOnlyList<TState> States => _states;
+
+        /// <summary>
         ///     Gets the context object associated with the state machine, which defines the data or configuration
         ///     that is shared across states during transitions.
         /// </summary>
@@ -126,23 +137,6 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// </remarks>
         [NotNull]
         protected abstract TStateContext StateContext { get; }
-
-        /// <summary>
-        ///     Provides access to the collection of states managed by the state machine.
-        /// </summary>
-        /// <remarks>
-        ///     This property is a read-only list that contains all registered states within the state machine.
-        ///     It is useful for inspecting or debugging the state machine's configuration.
-        /// </remarks>
-        [NotNull]
-        protected IReadOnlyList<TState> States => _states;
-
-        /// <inheritdoc />
-        IReadOnlyList<IState> IStateMachine.States => _cachedStatesAsInterface ??= _states.Cast<IState>().ToList();
-
-        /// <inheritdoc />
-        IReadOnlyList<TransitionRule> IStateMachine.TransitionRules => 
-            _cachedTransitionRulesList ??= _transitionRulesMap?.Values.SelectMany(r => r).ToList() ?? new List<TransitionRule>();
 
         /// <summary>
         ///     A property representing the transition solver used within the state machine.
@@ -157,6 +151,14 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         ///     Boolean indicating whether the state machine can be activated.
         /// </return>
         protected virtual bool CanActivate => true;
+
+        /// <inheritdoc />
+        IReadOnlyList<IState> IStateMachine.States => _cachedStatesAsInterface ??= _states.Cast<IState>().ToList();
+
+        /// <inheritdoc />
+        IReadOnlyList<TransitionRule> IStateMachine.TransitionRules =>
+            _cachedTransitionRulesList ??=
+                _transitionRulesMap?.Values.SelectMany(r => r).ToList() ?? new List<TransitionRule>();
 
         /// Activates the state machine asynchronously, transitioning it to an operational state.
         /// This involves evaluating conditions necessary for activation and entering the default state if possible.
@@ -217,7 +219,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                     return true;
                 }
-                
+
                 LoggerService.Logger.LogError($"State machine {Name} failed to activate.");
 
                 return false;
@@ -242,7 +244,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
                 return false;
             }
-            
+
             var previousState = _activeState;
 
             if (previousState != null)
@@ -260,7 +262,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             var enterSucceeded = await EnterStateAsync(targetState, linkedCancellationTokenSource.Token);
 
             TransitionSolver.ApplyRulesForActiveState(targetState);
-            
+
             if (!enterSucceeded)
             {
                 LoggerService.Logger.LogError("Unable to enter target state. Entering state failed.");
@@ -347,6 +349,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         {
             LoggerService.Logger.LogInfo("Disposing state machine");
 
+            if (_wasDisposed)
+            {
+                LoggerService.Logger.LogWarning("Unable to dispose state machine, due was already disposed.");
+
+                return;
+            }
+
             await _lifecycleLock.WaitAsync().ConfigureAwait(false);
 
             try
@@ -379,6 +388,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             finally
             {
                 _lifecycleLock.Release();
+                _wasDisposed = true;
             }
         }
 
@@ -516,7 +526,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 ApplyVariables(stateMachineSettings);
                 _transitionRulesMap = stateMachineSettings.TransitionRules;
                 _cachedTransitionRulesList = null;
-                await InitializeTransitionSolverAsync(stateMachineSettings.TransitionSolver, stateMachineSettings.TransitionRules, cancellationToken);
+                await InitializeTransitionSolverAsync(stateMachineSettings.TransitionSolver,
+                    stateMachineSettings.TransitionRules, cancellationToken);
 
                 var initResult = await DoInitializeStateMachineAsync(stateMachinePayload, cancellationToken);
 
@@ -530,7 +541,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             }
         }
 
-        private async UniTask InitializeTransitionSolverAsync([NotNull] ITransitionSolver transitionSolver, [NotNull] IReadOnlyDictionary<IState,IReadOnlyList<TransitionRule>> transitionRules, CancellationToken cancellationToken)
+        private async UniTask InitializeTransitionSolverAsync([NotNull] ITransitionSolver transitionSolver,
+            [NotNull] IReadOnlyDictionary<IState, IReadOnlyList<TransitionRule>> transitionRules,
+            CancellationToken cancellationToken)
         {
             await transitionSolver.ApplyTransitionRulesAsync(transitionRules, cancellationToken);
             transitionSolver.TransitionRuleApplied += OnTransitionRuleApplied;

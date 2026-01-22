@@ -82,7 +82,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 initialState, states.ToList(), transitionRules);
 
             await stateMachineInstance.InitializeAsync(stateMachineSettings, linkedCancellationToken.Token);
-            
+
             return stateMachineInstance;
         }
 
@@ -131,8 +131,9 @@ namespace Dev.Cortez.StateMachines.Core.Factories
         {
             using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            LoggerService.Logger.LogInfo($"Creating transition from: [{originState.Id} {originState.Name}] to [{transitionRuleDefinition.TargetState.Id} {transitionRuleDefinition.TargetState.Name}]");
-            
+            LoggerService.Logger.LogInfo(
+                $"Creating transition from: [{originState.Id} {originState.Name}] to [{transitionRuleDefinition.TargetState.Id} {transitionRuleDefinition.TargetState.Name}]");
+
             var targetState = states.FirstOrDefault(desiredState =>
                 desiredState.Id.Equals(transitionRuleDefinition.TargetState.Id));
 
@@ -156,7 +157,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
 
             var transitionRule = new TransitionRule(originState, targetState, conditionComposite,
                 transitionRuleDefinition.Priority);
-            
+
             return transitionRule;
         }
 
@@ -190,14 +191,16 @@ namespace Dev.Cortez.StateMachines.Core.Factories
 
                 return null;
             }
-            
+
             if (conditionInstance is IAsyncInitializable conditionAsyncInitializable)
             {
-                LoggerService.Logger.LogTrace($"Initializing condition: [{conditionDefinition.Id} {conditionDefinition.Name}]");
-                
-                await conditionAsyncInitializable.InitializeAsync(conditionDefinition.Payload, linkedCancellationToken.Token);
+                LoggerService.Logger.LogTrace(
+                    $"Initializing condition: [{conditionDefinition.Id} {conditionDefinition.Name}]");
+
+                await conditionAsyncInitializable.InitializeAsync(conditionDefinition.Payload,
+                    linkedCancellationToken.Token);
             }
-            
+
             return conditionInstance;
         }
 
@@ -207,6 +210,13 @@ namespace Dev.Cortez.StateMachines.Core.Factories
             LoggerService.Logger.LogTrace($"Creating state: [{stateDefinition.Id} {stateDefinition.Name}]");
 
             using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            if (stateDefinition.TypeName == null)
+            {
+                LoggerService.Logger.LogError("Unable to create state. Provided state type is null");
+
+                return null;
+            }
 
             var stateType = Type.GetType(stateDefinition.TypeName);
 

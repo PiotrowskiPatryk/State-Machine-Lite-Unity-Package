@@ -33,5 +33,18 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public string Description => _description;
         public string Type => _typeName;
         public IPayload Payload => _payload;
+
+        public ConditionDefinition(string id, string name, string description, string typeName, IPayload payload)
+        {
+            _id = id;
+            _name = name;
+            _description = description;
+            _typeName = typeName;
+            _payload = payload;
+        }
+
+        public ConditionDefinition()
+        {
+        }
     }
 }
