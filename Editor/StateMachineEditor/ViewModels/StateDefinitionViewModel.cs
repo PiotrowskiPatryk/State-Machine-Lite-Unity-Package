@@ -186,12 +186,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             {
                 var element = transitionsProperty.GetArrayElementAtIndex(i);
 
-                if (element.propertyPath == targetPath)
+                if (element.propertyPath != targetPath)
                 {
-                    indexToRemove = i;
-
-                    break;
+                    continue;
                 }
+
+                indexToRemove = i;
+
+                break;
             }
 
             // Fallback: try to match by values (Priority + TargetState.Id) in case VMs come from different SO contexts
@@ -202,18 +204,22 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                     var element = transitionsProperty.GetArrayElementAtIndex(i);
                     var vm = new TransitionRuleDefinitionViewModel(element);
 
-                    if (vm.Priority == transitionRuleDefinitionViewModel.Priority)
+                    if (vm.Priority != transitionRuleDefinitionViewModel.Priority)
                     {
-                        var targetIdA = vm.TargetState?.Id;
-                        var targetIdB = transitionRuleDefinitionViewModel.TargetState?.Id;
-
-                        if (targetIdA == targetIdB)
-                        {
-                            indexToRemove = i;
-
-                            break;
-                        }
+                        continue;
                     }
+
+                    var targetIdA = vm.TargetState?.Id;
+                    var targetIdB = transitionRuleDefinitionViewModel.TargetState?.Id;
+
+                    if (targetIdA != targetIdB)
+                    {
+                        continue;
+                    }
+
+                    indexToRemove = i;
+
+                    break;
                 }
             }
 
@@ -262,12 +268,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             {
                 var element = transitionsProperty.GetArrayElementAtIndex(i);
 
-                if (element.propertyPath == targetPath)
+                if (element.propertyPath != targetPath)
                 {
-                    indexToEdit = i;
-
-                    break;
+                    continue;
                 }
+
+                indexToEdit = i;
+
+                break;
             }
 
             // Fallback: match by values (Priority + TargetState.Id)
@@ -278,18 +286,22 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                     var element = transitionsProperty.GetArrayElementAtIndex(i);
                     var vm = new TransitionRuleDefinitionViewModel(element);
 
-                    if (vm.Priority == dataTransitionRuleDefinitionViewModel.Priority)
+                    if (vm.Priority != dataTransitionRuleDefinitionViewModel.Priority)
                     {
-                        var targetIdA = vm.TargetState?.Id;
-                        var targetIdB = dataTransitionRuleDefinitionViewModel.TargetState?.Id;
-
-                        if (targetIdA == targetIdB)
-                        {
-                            indexToEdit = i;
-
-                            break;
-                        }
+                        continue;
                     }
+
+                    var targetIdA = vm.TargetState?.Id;
+                    var targetIdB = dataTransitionRuleDefinitionViewModel.TargetState?.Id;
+
+                    if (targetIdA != targetIdB)
+                    {
+                        continue;
+                    }
+
+                    indexToEdit = i;
+
+                    break;
                 }
             }
 
@@ -304,6 +316,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             }
 
             var targetElement = transitionsProperty.GetArrayElementAtIndex(indexToEdit);
+
+            // TODO - Investigate this why it's unused
             var targetVm = new TransitionRuleDefinitionViewModel(targetElement)
             {
                 Priority = dataTransitionRuleDefinitionViewModel.Priority,

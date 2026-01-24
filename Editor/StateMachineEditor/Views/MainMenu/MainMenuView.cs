@@ -97,7 +97,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             _stateMachineListView.columns[4].unbindCell = DoUnbindStateMachineMenuCell;
         }
 
-        private void DoUnbindStateMachineMenuCell(VisualElement visualElement, int index)
+        private static void DoUnbindStateMachineMenuCell(VisualElement visualElement, int index)
         {
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
 
@@ -142,7 +142,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             _stateMachineListView.columns[4].unbindCell = DoUnbindTriggerMenuCell;
         }
 
-        private void DoUnbindTriggerMenuCell(VisualElement visualElement, int index)
+        // TODO - investigate method repetition with DoUnbindStateMachineMenuCell
+        private static void DoUnbindTriggerMenuCell(VisualElement visualElement, int index)
         {
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
 
@@ -176,45 +177,45 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             }
         }
 
-        private void DoBindTriggerTypeCell(VisualElement visualElement, int index)
+        private static void DoBindTriggerTypeCell(VisualElement visualElement, int index)
         {
             BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.TypeName), index);
         }
 
-        private void DoBindTriggerDescriptionCell(VisualElement visualElement, int index)
+        private static void DoBindTriggerDescriptionCell(VisualElement visualElement, int index)
         {
             BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.Description), index);
         }
 
-        private void DoBindTriggerNameCell(VisualElement visualElement, int index)
+        private static void DoBindTriggerNameCell(VisualElement visualElement, int index)
         {
             BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.Name), index);
         }
 
-        private void DoBindTriggerIdCell(VisualElement visualElement, int index)
+        private static void DoBindTriggerIdCell(VisualElement visualElement, int index)
         {
             BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.Id), index);
         }
 
-        private void DoBindStateMachineTypeCell(VisualElement visualElement, int index)
+        private static void DoBindStateMachineTypeCell(VisualElement visualElement, int index)
         {
             BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.TypeName),
                 index);
         }
 
-        private void DoBindStateMachineDescriptionCell(VisualElement visualElement, int index)
+        private static void DoBindStateMachineDescriptionCell(VisualElement visualElement, int index)
         {
             BindStateMachineTablePropertyCell(visualElement,
                 nameof(StateMachineDefinitionViewModel.Description), index);
         }
 
-        private void DoBindStateMachineNameCell(VisualElement visualElement, int index)
+        private static void DoBindStateMachineNameCell(VisualElement visualElement, int index)
         {
             BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.Name),
                 index);
         }
 
-        private void DoBindStateMachineIdCell(VisualElement visualElement, int index)
+        private static void DoBindStateMachineIdCell(VisualElement visualElement, int index)
         {
             BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.Id),
                 index);

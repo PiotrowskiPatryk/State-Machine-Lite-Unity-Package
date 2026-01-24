@@ -12,8 +12,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
     {
         private const float _clickPixelThreshold = 7f; // screen px
 
-        private const int _zNormal = 2;
-        private const int _zSelected = 6;
         private readonly VisualElement _from;
         private readonly VisualElement _to;
 
@@ -61,7 +59,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             style.top = 0;
             style.right = 0;
             style.bottom = 0;
-            // style.zIndex = _zNormal;
 
             generateVisualContent += OnGenerateVisualContent;
 
@@ -86,21 +83,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             if (IsSelected)
             {
                 AddToClassList("selected");
-
-                //
-                // if (BringToFrontOnSelect)
-                // {
-                //     style.zIndex = _zSelected;
-                // }
             }
             else
             {
                 RemoveFromClassList("selected");
-
-                // if (BringToFrontOnSelect)
-                // {
-                //     style.zIndex = _zNormal;
-                // }
             }
 
             MarkDirtyRepaint();
@@ -193,9 +179,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 _pressedNearCurve = true;
                 _pressedPointerId = evt.pointerId;
                 _pressWorldPos = evt.position;
-
-                // If your background starts a pan on pointerDown, you may want to block it:
-                // evt.StopPropagation();
             }
         }
 

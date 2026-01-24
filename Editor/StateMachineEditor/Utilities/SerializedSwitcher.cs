@@ -79,98 +79,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             {
                 case SerializedPropertyType.ManagedReference:
                 {
-                    var current = _property.managedReferenceValue;
-
-                    if (current != null)
-                    {
-                        _cache[current.GetType().AssemblyQualifiedName] = current;
-                    }
-
-                    if (current == null || current.GetType() != desiredType)
-                    {
-                        if (_cache.TryGetValue(desiredKey, out var cached))
-                        {
-                            _property.managedReferenceValue = cached;
-                            changed = true;
-                        }
-                        else
-                        {
-                            if (desiredType.IsAbstract || desiredType.IsGenericTypeDefinition)
-                            {
-                                Debug.LogError(
-                                    $"Cannot instantiate abstract/open-generic type: {desiredType.FullName}");
-
-                                break;
-                            }
-
-                            var ctor = desiredType.GetConstructor(Type.EmptyTypes);
-
-                            if (ctor == null)
-                            {
-                                Debug.LogError(
-                                    $"Type {desiredType.FullName} requires a public parameterless constructor.");
-
-                                break;
-                            }
-
-                            _property.managedReferenceValue = Activator.CreateInstance(desiredType);
-                            changed = true;
-                        }
-                    }
+                    changed = HandleSwitchToForManagedReference(desiredType, desiredKey);
 
                     break;
                 }
 
                 case SerializedPropertyType.ObjectReference:
                 {
-                    if (!typeof(Object).IsAssignableFrom(desiredType))
-                    {
-                        Debug.LogWarning(
-                            $"Property is ObjectReference but {desiredType.FullName} is not a UnityEngine.Object.");
-
-                        break;
-                    }
-
-                    var currentObj = _property.objectReferenceValue;
-
-                    if (currentObj != null)
-                    {
-                        _cache[currentObj.GetType().AssemblyQualifiedName] = currentObj;
-                    }
-
-                    if (currentObj == null || currentObj.GetType() != desiredType)
-                    {
-                        if (_cache.TryGetValue(desiredKey, out var cachedObj))
-                        {
-                            _property.objectReferenceValue = (Object)cachedObj; // restore prior
-                            changed = true;
-                        }
-                        else
-                        {
-                            Object instance;
-
-                            if (typeof(ScriptableObject).IsAssignableFrom(desiredType))
-                            {
-                                instance = ScriptableObject.CreateInstance(desiredType);
-
-                                if (createAssetIfSO)
-                                {
-                                    var folder = string.IsNullOrWhiteSpace(assetFolder) ? "Assets" : assetFolder;
-                                    var path = AssetDatabase.GenerateUniqueAssetPath(
-                                        $"{folder}/{desiredType.Name}.asset");
-                                    AssetDatabase.CreateAsset(instance, path);
-                                    AssetDatabase.SaveAssets();
-                                }
-                            }
-                            else
-                            {
-                                instance = (Object)Activator.CreateInstance(desiredType);
-                            }
-
-                            _property.objectReferenceValue = instance;
-                            changed = true;
-                        }
-                    }
+                    changed = HandleSwitchToForObjectReference(desiredType, createAssetIfSO, assetFolder, desiredKey);
 
                     break;
                 }
@@ -271,6 +187,105 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
         public bool HasCached(Type type)
         {
             return type != null && _cache.ContainsKey(type.AssemblyQualifiedName);
+        }
+
+        private bool HandleSwitchToForObjectReference(Type desiredType, bool createAssetIfSO, string assetFolder,
+            string desiredKey)
+        {
+            if (!typeof(Object).IsAssignableFrom(desiredType))
+            {
+                Debug.LogWarning(
+                    $"Property is ObjectReference but {desiredType.FullName} is not a UnityEngine.Object.");
+
+                return false;
+            }
+
+            var currentObj = _property.objectReferenceValue;
+
+            if (currentObj != null)
+            {
+                _cache[currentObj.GetType().AssemblyQualifiedName] = currentObj;
+            }
+
+            if (currentObj != null && currentObj.GetType() == desiredType)
+            {
+                return false;
+            }
+
+            if (_cache.TryGetValue(desiredKey, out var cachedObj))
+            {
+                _property.objectReferenceValue = (Object)cachedObj; // restore prior
+
+                return true;
+            }
+
+            Object instance;
+
+            if (typeof(ScriptableObject).IsAssignableFrom(desiredType))
+            {
+                instance = ScriptableObject.CreateInstance(desiredType);
+
+                if (createAssetIfSO)
+                {
+                    var folder = string.IsNullOrWhiteSpace(assetFolder) ? "Assets" : assetFolder;
+                    var path = AssetDatabase.GenerateUniqueAssetPath(
+                        $"{folder}/{desiredType.Name}.asset");
+                    AssetDatabase.CreateAsset(instance, path);
+                    AssetDatabase.SaveAssets();
+                }
+            }
+            else
+            {
+                instance = (Object)Activator.CreateInstance(desiredType);
+            }
+
+            _property.objectReferenceValue = instance;
+
+            return true;
+        }
+
+        private bool HandleSwitchToForManagedReference(Type desiredType, string desiredKey)
+        {
+            var current = _property.managedReferenceValue;
+
+            if (current != null)
+            {
+                _cache[current.GetType().AssemblyQualifiedName!] = current;
+            }
+
+            if (current == null || current.GetType() != desiredType)
+            {
+                if (_cache.TryGetValue(desiredKey, out var cached))
+                {
+                    _property.managedReferenceValue = cached;
+
+                    return true;
+                }
+
+                if (desiredType.IsAbstract || desiredType.IsGenericTypeDefinition)
+                {
+                    Debug.LogError(
+                        $"Cannot instantiate abstract/open-generic type: {desiredType.FullName}");
+
+                    return false;
+                }
+
+                var ctor = desiredType.GetConstructor(Type.EmptyTypes);
+
+                if (ctor == null)
+                {
+                    Debug.LogError(
+                        $"Type {desiredType.FullName} requires a public parameterless constructor.");
+
+                    return false;
+                }
+
+                _property.managedReferenceValue = Activator.CreateInstance(desiredType);
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

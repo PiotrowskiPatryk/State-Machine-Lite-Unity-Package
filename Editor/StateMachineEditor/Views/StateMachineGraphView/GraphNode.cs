@@ -31,11 +31,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 var old = _value;
                 SetValueWithoutNotify(value);
 
-                using (var evt = ChangeEvent<Vector2Int>.GetPooled(old, _value))
-                {
-                    evt.target = this;
-                    SendEvent(evt); // runtime binder listens to this (via INotifyValueChanged)
-                }
+                using var evt = ChangeEvent<Vector2Int>.GetPooled(old, _value);
+
+                evt.target = this;
+                SendEvent(evt); // runtime binder listens to this (via INotifyValueChanged)
+                _value = value;
             }
         }
 

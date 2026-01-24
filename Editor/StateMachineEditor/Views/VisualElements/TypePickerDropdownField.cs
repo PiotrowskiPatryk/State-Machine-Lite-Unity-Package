@@ -52,12 +52,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
 
                 foreach (var t in group)
                 {
-                    var label = hasCollision
-                        ? $"{t.AssemblyQualifiedName} ({(string.IsNullOrEmpty(t.Namespace) ? "global" : t.Namespace)})"
+                    var namespaceName = string.IsNullOrEmpty(t.Namespace) ? "global" : t.Namespace;
+                    var labelValue = hasCollision
+                        ? $"{t.AssemblyQualifiedName} ({namespaceName})"
                         : t.AssemblyQualifiedName;
 
-                    _typeToDisplay[t] = label;
-                    _displayToType[label] = t;
+                    _typeToDisplay[t] = labelValue;
+                    _displayToType[labelValue!] = t;
                 }
             }
 

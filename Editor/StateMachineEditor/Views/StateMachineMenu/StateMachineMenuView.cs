@@ -183,7 +183,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _transitionableStatesListView.unbindItem = DoUnbindTransitionableStateItem;
         }
 
-        private void DoBindStateIdCell(VisualElement visualElement, int index)
+        private static void DoBindStateIdCell(VisualElement visualElement, int index)
         {
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Id), index);
         }
@@ -310,17 +310,17 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             }
         }
 
-        private void DoBindStateNameCell(VisualElement visualElement, int index)
+        private static void DoBindStateNameCell(VisualElement visualElement, int index)
         {
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Name), index);
         }
 
-        private void DoBindStateDescriptionCell(VisualElement visualElement, int index)
+        private static void DoBindStateDescriptionCell(VisualElement visualElement, int index)
         {
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Description), index);
         }
 
-        private void DoBindStateTypeCell(VisualElement visualElement, int index)
+        private static void DoBindStateTypeCell(VisualElement visualElement, int index)
         {
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.TypeNameShort), index);
         }
@@ -363,7 +363,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             });
         }
 
-        private void DoUnbindStateMenuCell(VisualElement visualElement, int index)
+        private static void DoUnbindStateMenuCell(VisualElement visualElement, int index)
         {
             var itemOptionsMenu = visualElement.Q<ItemOptionsMenu>();
 
@@ -532,7 +532,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             }
         }
 
-        private void DoUnbindTransitionItemEntry(VisualElement visualElement)
+        private static void DoUnbindTransitionItemEntry(VisualElement visualElement)
         {
             // TODO - CLEANUP THIS, apply DRY principle
 
