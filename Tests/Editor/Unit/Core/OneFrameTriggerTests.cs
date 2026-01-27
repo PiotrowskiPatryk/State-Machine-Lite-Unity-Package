@@ -22,8 +22,8 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         {
             // Arrange
             var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
-            var cts = new CancellationTokenSource();
-            bool wasTrueAtSomePoint = false;
+            using var cts = new CancellationTokenSource();
+            var wasTrueAtSomePoint = false;
 
             // Act - Start the trigger but don't wait for completion yet
             var task = trigger.TriggerValueAsync(true, cts.Token);
@@ -47,7 +47,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         {
             // Arrange
             var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
-            var cts = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource();
 
             // Act
             await trigger.TriggerValueAsync(true, cts.Token);
@@ -62,7 +62,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             // Arrange
             var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
             trigger.IsTriggered = true; // Manually set to true
-            var cts = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource();
 
             // Act
             await trigger.TriggerValueAsync(false, cts.Token);
@@ -77,7 +77,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             // Arrange
             var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
             trigger.IsTriggered = true;
-            var cts = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource();
 
             // Act
             var result = await trigger.TriggerValueAsync(true, cts.Token);
@@ -92,7 +92,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         {
             // Arrange
             var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
-            var cts = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource();
 
             // Act
             var result = await trigger.TriggerValueAsync(true, cts.Token);

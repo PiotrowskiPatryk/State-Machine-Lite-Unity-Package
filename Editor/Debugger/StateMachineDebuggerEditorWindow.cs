@@ -67,12 +67,12 @@ namespace Dev.Cortez.StateMachines.Editor.Debugger
 
             var containerChanged = currentContainerEntry != subscribedEntry;
 
-            if (containerChanged && _eventSubscriber.IsSubscribed)
+            if (containerChanged && _eventSubscriber?.IsSubscribed == true)
             {
                 _eventSubscriber.Unsubscribe();
             }
 
-            if (IsContainerValid() && !_eventSubscriber.IsSubscribed)
+            if (IsContainerValid() && _eventSubscriber?.IsSubscribed == false)
             {
                 TrySubscribe();
             }
