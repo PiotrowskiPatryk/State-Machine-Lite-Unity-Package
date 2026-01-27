@@ -13,9 +13,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
     /// </summary>
     public abstract class ViewModelBase : INotifyBindablePropertyChanged, IDisposable
     {
-        private bool _disposed;
-
         public event EventHandler<BindablePropertyChangedEventArgs> propertyChanged;
+        private bool _disposed;
         public abstract SerializedProperty SerializedProperty { get; }
 
         /// <summary>
@@ -53,6 +52,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                     Object.DestroyImmediate(targetObject);
                 }
             }
+        }
+
+        /// <summary>
+        /// Notifies listeners that a property has changed.
+        /// </summary>
+        /// <param name="property">The name of the property that changed.</param>
+        protected void Notify([CallerMemberName] string property = "")
+        {
+            propertyChanged?.Invoke(this, new BindablePropertyChangedEventArgs(property));
         }
 
         #region Generic Property Application
@@ -307,14 +315,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         }
 
         #endregion
-
-        /// <summary>
-        /// Notifies listeners that a property has changed.
-        /// </summary>
-        /// <param name="property">The name of the property that changed.</param>
-        protected void Notify([CallerMemberName] string property = "")
-        {
-            propertyChanged?.Invoke(this, new BindablePropertyChangedEventArgs(property));
-        }
     }
 }

@@ -1,6 +1,9 @@
+using System.Text.RegularExpressions;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilities
 {
@@ -8,8 +11,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilitie
     /// Unit tests for StateMachineReflectionUtilities.
     /// Tests type resolution and name formatting methods.
     /// </summary>
-    [TestFixture]
-    [Category("Utilities")]
+    [TestFixture, Category("Utilities")]
     public sealed class StateMachineReflectionUtilitiesTests
     {
         #region GetTriggerPayloadType Tests
@@ -32,6 +34,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilitie
         {
             // Arrange
             const string invalidTypeName = "NonExistent.Type, NonExistent.Assembly";
+            LogAssert.Expect(LogType.Error, new Regex("Failed to find payload type"));
 
             // Act
             var result = StateMachineReflectionUtilities.GetTriggerPayloadType(invalidTypeName);
@@ -62,6 +65,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilitie
         {
             // Arrange
             const string invalidTypeName = "NonExistent.Type, NonExistent.Assembly";
+            LogAssert.Expect(LogType.Error, new Regex("Failed to find payload type"));
 
             // Act
             var result = StateMachineReflectionUtilities.GetConditionPayloadType(invalidTypeName);
@@ -92,6 +96,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilitie
         {
             // Arrange
             const string invalidTypeName = "NonExistent.Type, NonExistent.Assembly";
+            LogAssert.Expect(LogType.Error, new Regex("Failed to find state machine payload type"));
 
             // Act
             var result = StateMachineReflectionUtilities.GetStateMachinePayloadType(invalidTypeName);
@@ -122,6 +127,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilitie
         {
             // Arrange
             const string invalidTypeName = "NonExistent.Type, NonExistent.Assembly";
+            LogAssert.Expect(LogType.Error, new Regex("Failed to find payload type"));
 
             // Act
             var result = StateMachineReflectionUtilities.GetStatePayloadType(invalidTypeName);
@@ -152,6 +158,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.Utilitie
         {
             // Arrange
             const string invalidTypeName = "NonExistent.Type, NonExistent.Assembly";
+            LogAssert.Expect(LogType.Error, new Regex("Failed to find state type"));
 
             // Act
             var result = StateMachineReflectionUtilities.GetBaseStateFromStateMachine(invalidTypeName);

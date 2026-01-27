@@ -17,7 +17,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
     [Category("ViewModels")]
     public sealed class StateMachineConfigurationViewModelTests
     {
-        private DefinitionWrapper<StateMachineConfiguration> _wrapper;
+        private StateMachineConfigurationWrapper _wrapper;
         private SerializedObject _serializedObject;
         private SerializedProperty _property;
         private StateMachineConfigurationViewModel _viewModel;
@@ -25,9 +25,9 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         [SetUp]
         public void SetUp()
         {
-            _wrapper = ScriptableObject.CreateInstance<DefinitionWrapper<StateMachineConfiguration>>();
+            _wrapper = ScriptableObject.CreateInstance<StateMachineConfigurationWrapper>();
             _serializedObject = new SerializedObject(_wrapper);
-            _property = _serializedObject.FindProperty(DefinitionWrapper<StateMachineConfiguration>.DATA_PROPERTY_NAME)
+            _property = _serializedObject.FindProperty(StateMachineConfigurationWrapper.DATA_PROPERTY_NAME)
                 .FindPropertyRelative(StateMachineConfiguration.STATE_MACHINES_PROPERTY_NAME);
             _viewModel = new StateMachineConfigurationViewModel(_property);
         }

@@ -69,9 +69,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public TriggerDefinitionViewModel()
         {
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
-            var definitionWrapper = ScriptableObject.CreateInstance<DefinitionWrapper<TriggerDefinition>>();
+            var definitionWrapper = ScriptableObject.CreateInstance<TriggerDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<TriggerDefinition>.DATA_PROPERTY_NAME);
+                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<TriggerDefinition>.
+                    DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }
@@ -90,6 +91,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             TypeName = other.TypeName;
             Payload.managedReferenceValue = other.Payload.managedReferenceValue;
         }
-
     }
 }

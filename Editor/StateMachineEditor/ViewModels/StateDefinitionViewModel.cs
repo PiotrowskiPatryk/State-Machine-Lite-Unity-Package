@@ -111,9 +111,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public StateDefinitionViewModel(string stateMachineType)
         {
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
-            var definitionWrapper = ScriptableObject.CreateInstance<DefinitionWrapper<StateDefinition>>();
+            var definitionWrapper = ScriptableObject.CreateInstance<StateDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<StateDefinition>.DATA_PROPERTY_NAME);
+                new SerializedObject(definitionWrapper).FindProperty(StateDefinitionEditorWrapper.DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
             StateMachineTypeName = stateMachineType;

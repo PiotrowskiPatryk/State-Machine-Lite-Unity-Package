@@ -66,9 +66,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public ConditionDefinitionViewModel()
         {
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
-            var definitionWrapper = ScriptableObject.CreateInstance<DefinitionWrapper<ConditionDefinition>>();
+            var definitionWrapper = ScriptableObject.CreateInstance<ConditionDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<ConditionDefinition>.DATA_PROPERTY_NAME);
+                new SerializedObject(definitionWrapper).FindProperty(ConditionDefinitionEditorWrapper.DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }

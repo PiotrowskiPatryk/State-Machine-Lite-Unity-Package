@@ -17,7 +17,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
     [Category("ViewModels")]
     public sealed class TriggerConfigurationViewModelTests
     {
-        private DefinitionWrapper<TriggerConfiguration> _wrapper;
+        private TriggerConfigurationWrapper _wrapper;
         private SerializedObject _serializedObject;
         private SerializedProperty _property;
         private TriggerConfigurationViewModel _viewModel;
@@ -25,9 +25,9 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         [SetUp]
         public void SetUp()
         {
-            _wrapper = ScriptableObject.CreateInstance<DefinitionWrapper<TriggerConfiguration>>();
+            _wrapper = ScriptableObject.CreateInstance<TriggerConfigurationWrapper>();
             _serializedObject = new SerializedObject(_wrapper);
-            _property = _serializedObject.FindProperty(DefinitionWrapper<TriggerConfiguration>.DATA_PROPERTY_NAME)
+            _property = _serializedObject.FindProperty(TriggerConfigurationWrapper.DATA_PROPERTY_NAME)
                 .FindPropertyRelative(TriggerConfiguration.TRIGGERS_PROPERTY_NAME);
             _viewModel = new TriggerConfigurationViewModel(_property);
         }

@@ -86,9 +86,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public TransitionRuleDefinitionViewModel()
         {
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
-            var definitionWrapper = ScriptableObject.CreateInstance<DefinitionWrapper<TransitionRuleDefinition>>();
+            var definitionWrapper = ScriptableObject.CreateInstance<TransitionRuleDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<TransitionRuleDefinition>.
+                new SerializedObject(definitionWrapper).FindProperty(TransitionRuleDefinitionEditorWrapper.
                     DATA_PROPERTY_NAME);
         }
 

@@ -147,9 +147,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public StateMachineDefinitionViewModel()
         {
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
-            var definitionWrapper = ScriptableObject.CreateInstance<DefinitionWrapper<StateMachineDefinition>>();
+            var definitionWrapper = ScriptableObject.CreateInstance<StateMachineDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<StateMachineDefinition>.DATA_PROPERTY_NAME);
+                new SerializedObject(definitionWrapper).FindProperty(StateMachineDefinitionEditorWrapper.DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }

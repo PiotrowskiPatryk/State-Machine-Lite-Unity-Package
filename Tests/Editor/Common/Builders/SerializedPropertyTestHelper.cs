@@ -1,5 +1,7 @@
 using System;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
+using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Data;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -22,23 +24,8 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Builders
         public static (SerializedObject serializedObject, SerializedProperty property) CreateTestProperty<TData>()
             where TData : class, new()
         {
-            var wrapper = ScriptableObject.CreateInstance<DefinitionWrapper<TData>>();
-            var so = new SerializedObject(wrapper);
-            var property = so.FindProperty(DefinitionWrapper<TData>.DATA_PROPERTY_NAME);
-
-            return (so, property);
-        }
-
-        /// <summary>
-        /// Creates a DefinitionWrapper ScriptableObject instance for testing.
-        /// Remember to call <see cref="Cleanup"/> when done to destroy the temporary object.
-        /// </summary>
-        /// <typeparam name="TData">The type of data to wrap</typeparam>
-        /// <returns>The wrapper instance</returns>
-        public static DefinitionWrapper<TData> CreateDefinitionWrapper<TData>()
-            where TData : class, new()
-        {
-            return ScriptableObject.CreateInstance<DefinitionWrapper<TData>>();
+            var context = CreateTestContext<TData>();
+            return (context.SerializedObject, context.Property);
         }
 
         /// <summary>
@@ -95,7 +82,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Builders
         /// <summary>
         /// The wrapper ScriptableObject.
         /// </summary>
-        public DefinitionWrapper<TData> Wrapper { get; }
+        public TestWrapperBase Wrapper { get; }
 
         /// <summary>
         /// The SerializedObject for the wrapper.
@@ -107,16 +94,79 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Builders
         /// </summary>
         public SerializedProperty Property { get; }
 
-        /// <summary>
-        /// Direct access to the data instance.
-        /// </summary>
-        public TData Data => Wrapper.Data;
-
         public TestPropertyContext()
         {
-            Wrapper = ScriptableObject.CreateInstance<DefinitionWrapper<TData>>();
+            // Create the appropriate concrete wrapper based on TData type
+            Wrapper = CreateWrapper();
+
+            if (Wrapper == null)
+            {
+                throw new InvalidOperationException(
+                    $"No test wrapper defined for type {typeof(TData).FullName}. " +
+                    "Add a concrete wrapper class to TestDefinitionWrapper.cs.");
+            }
+
             SerializedObject = new SerializedObject(Wrapper);
-            Property = SerializedObject.FindProperty(DefinitionWrapper<TData>.DATA_PROPERTY_NAME);
+            Property = SerializedObject.FindProperty(GetDataPropertyName());
+
+            if (Property == null)
+            {
+                throw new InvalidOperationException(
+                    $"Could not find Data property in wrapper for type {typeof(TData).FullName}.");
+            }
+        }
+
+        private TestWrapperBase CreateWrapper()
+        {
+            var dataType = typeof(TData);
+
+            if (dataType == typeof(ConditionDefinition))
+            {
+                return ScriptableObject.CreateInstance<ConditionDefinitionWrapper>();
+            }
+
+            if (dataType == typeof(StateDefinition))
+            {
+                return ScriptableObject.CreateInstance<StateDefinitionWrapper>();
+            }
+
+            if (dataType == typeof(TransitionRuleDefinition))
+            {
+                return ScriptableObject.CreateInstance<TransitionRuleDefinitionWrapper>();
+            }
+
+            if (dataType == typeof(TriggerDefinition))
+            {
+                return ScriptableObject.CreateInstance<TriggerDefinitionWrapper>();
+            }
+
+            if (dataType == typeof(StateMachineDefinition))
+            {
+                return ScriptableObject.CreateInstance<StateMachineDefinitionWrapper>();
+            }
+
+            if (dataType == typeof(TriggerConfiguration))
+            {
+                return ScriptableObject.CreateInstance<TriggerConfigurationWrapper>();
+            }
+
+            if (dataType == typeof(StateMachineConfiguration))
+            {
+                return ScriptableObject.CreateInstance<StateMachineConfigurationWrapper>();
+            }
+
+            if (dataType == typeof(AllPropertyTypesData))
+            {
+                return ScriptableObject.CreateInstance<AllPropertyTypesDataWrapper>();
+            }
+
+            return null;
+        }
+
+        private string GetDataPropertyName()
+        {
+            // All wrappers use the same property name
+            return "Data";
         }
 
         /// <summary>

@@ -479,10 +479,10 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         [Test]
         public void Dispose_CleansUpSerializedObject()
         {
-            // Arrange
-            var wrapper = ScriptableObject.CreateInstance<DefinitionWrapper<AllPropertyTypesData>>();
+            // Arrange - Use concrete wrapper instead of generic DefinitionWrapper
+            var wrapper = ScriptableObject.CreateInstance<AllPropertyTypesDataWrapper>();
             var so = new SerializedObject(wrapper);
-            var property = so.FindProperty(DefinitionWrapper<AllPropertyTypesData>.DATA_PROPERTY_NAME);
+            var property = so.FindProperty(AllPropertyTypesDataWrapper.DATA_PROPERTY_NAME);
             var disposableVm = new TestableViewModel(property);
 
             // Act
