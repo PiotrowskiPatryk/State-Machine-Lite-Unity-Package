@@ -85,10 +85,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
         public TransitionRuleDefinitionViewModel()
         {
-            // TODO - Handle disposal
-            var definitionWrapper = ScriptableObject.CreateInstance<TransitionRuleDefinitionWrapper>();
+            // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
+            var definitionWrapper = ScriptableObject.CreateInstance<DefinitionWrapper<TransitionRuleDefinition>>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(TransitionRuleDefinitionWrapper.
+                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<TransitionRuleDefinition>.
                     DATA_PROPERTY_NAME);
         }
 
@@ -155,8 +155,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             }
         }
 
-        internal class TransitionRuleDefinitionWrapper : DefinitionWrapper<TransitionRuleDefinition>
-        {
-        }
     }
 }

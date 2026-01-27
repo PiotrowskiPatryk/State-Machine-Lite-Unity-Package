@@ -2,7 +2,6 @@
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements;
-using NUnit.Framework;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
@@ -39,9 +38,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             InitializeStateMachineListView();
             InitializeTriggerListView();
 
-            Assert.NotNull(_stateMachineListView);
-            Assert.NotNull(_triggerListView);
-            Assert.NotNull(_formContainer);
+            Debug.Assert(_stateMachineListView != null, "_stateMachineListView should not be null");
+            Debug.Assert(_triggerListView != null, "_triggerListView should not be null");
+            Debug.Assert(_formContainer != null, "_formContainer should not be null");
         }
 
         public void DisplayForm(VisualElement visualElement)
