@@ -397,6 +397,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         public void RemoveTransition_WithNull_LogsError()
         {
             // Act & Assert - Should not throw, just log error
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, "RemoveTransition called with null argument");
             Assert.DoesNotThrow(() => _viewModel.RemoveTransition(null));
         }
 

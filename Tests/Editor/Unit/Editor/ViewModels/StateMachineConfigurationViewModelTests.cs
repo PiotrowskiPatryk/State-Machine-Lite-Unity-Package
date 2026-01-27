@@ -27,9 +27,9 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         {
             _wrapper = ScriptableObject.CreateInstance<StateMachineConfigurationWrapper>();
             _serializedObject = new SerializedObject(_wrapper);
-            _property = _serializedObject.FindProperty(StateMachineConfigurationWrapper.DATA_PROPERTY_NAME)
-                .FindPropertyRelative(StateMachineConfiguration.STATE_MACHINES_PROPERTY_NAME);
-            _viewModel = new StateMachineConfigurationViewModel(_property);
+            var dataProperty = _serializedObject.FindProperty(StateMachineConfigurationWrapper.DATA_PROPERTY_NAME);
+            _property = dataProperty.FindPropertyRelative(StateMachineConfiguration.STATE_MACHINES_PROPERTY_NAME);
+            _viewModel = new StateMachineConfigurationViewModel(dataProperty);
         }
 
         [TearDown]
@@ -163,7 +163,10 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         public void RemoveStateMachineAtIndex_WithInvalidIndex_LogsError()
         {
             // Act & Assert - Should not throw
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Invalid index -1 for state machine count \\d+"));
             Assert.DoesNotThrow(() => _viewModel.RemoveStateMachineAtIndex(-1));
+            
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Invalid index 100 for state machine count \\d+"));
             Assert.DoesNotThrow(() => _viewModel.RemoveStateMachineAtIndex(100));
         }
 

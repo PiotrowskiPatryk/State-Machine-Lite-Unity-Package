@@ -27,9 +27,9 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         {
             _wrapper = ScriptableObject.CreateInstance<TriggerConfigurationWrapper>();
             _serializedObject = new SerializedObject(_wrapper);
-            _property = _serializedObject.FindProperty(TriggerConfigurationWrapper.DATA_PROPERTY_NAME)
-                .FindPropertyRelative(TriggerConfiguration.TRIGGERS_PROPERTY_NAME);
-            _viewModel = new TriggerConfigurationViewModel(_property);
+            var dataProperty = _serializedObject.FindProperty(TriggerConfigurationWrapper.DATA_PROPERTY_NAME);
+            _property = dataProperty.FindPropertyRelative(TriggerConfiguration.TRIGGERS_PROPERTY_NAME);
+            _viewModel = new TriggerConfigurationViewModel(dataProperty);
         }
 
         [TearDown]
@@ -164,7 +164,10 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         public void RemoveTriggerAtIndex_WithInvalidIndex_LogsError()
         {
             // Act & Assert - Should not throw
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Invalid index -1 for trigger count \\d+"));
             Assert.DoesNotThrow(() => _viewModel.RemoveTriggerAtIndex(-1));
+
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Invalid index 100 for trigger count \\d+"));
             Assert.DoesNotThrow(() => _viewModel.RemoveTriggerAtIndex(100));
         }
 

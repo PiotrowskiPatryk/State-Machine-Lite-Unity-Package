@@ -395,7 +395,10 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         public void RemoveStateAtIndex_WithInvalidIndex_LogsError()
         {
             // Act & Assert - Should not throw, just log error
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Invalid index -1 for states count \\d+"));
             Assert.DoesNotThrow(() => _viewModel.RemoveStateAtIndex(-1));
+
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Invalid index 100 for states count \\d+"));
             Assert.DoesNotThrow(() => _viewModel.RemoveStateAtIndex(100));
         }
 

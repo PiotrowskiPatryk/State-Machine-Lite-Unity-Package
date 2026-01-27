@@ -38,7 +38,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
         public StateMachineDefinitionViewModel GetStateMachineByIndex(int index)
         {
-            if (StateMachinesCount <= index)
+            if (index < 0 || StateMachinesCount <= index)
             {
                 return null;
             }

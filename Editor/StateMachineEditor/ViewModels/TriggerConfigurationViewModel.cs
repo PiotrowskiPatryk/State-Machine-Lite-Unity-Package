@@ -38,7 +38,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
         public TriggerDefinitionViewModel GetTriggerByIndex(int index)
         {
-            if (TriggersCount <= index)
+            if (index < 0 || TriggersCount <= index)
             {
                 return null;
             }
@@ -92,7 +92,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             if (index < 0 || index >= TriggersCount)
             {
-                Debug.LogError($"Invalid index {index} for state machine count {TriggersCount}");
+                Debug.LogError($"Invalid index {index} for trigger count {TriggersCount}");
 
                 return;
             }

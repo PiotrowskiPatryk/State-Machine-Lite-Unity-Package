@@ -71,7 +71,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
             var definitionWrapper = ScriptableObject.CreateInstance<TriggerDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(DefinitionWrapper<TriggerDefinition>.
+                new SerializedObject(definitionWrapper).FindProperty(TriggerDefinitionEditorWrapper.
                     DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);

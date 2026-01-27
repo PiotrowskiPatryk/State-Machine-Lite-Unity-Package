@@ -41,15 +41,44 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             _disposed = true;
 
-            if (disposing && SerializedProperty?.serializedObject?.targetObject != null)
+            if (disposing)
             {
-                var targetObject = SerializedProperty.serializedObject.targetObject;
-                SerializedProperty.serializedObject.Dispose();
-
-                // Only destroy ScriptableObjects that are not persisted to an asset
-                if (targetObject is ScriptableObject && string.IsNullOrEmpty(AssetDatabase.GetAssetPath(targetObject)))
+                // Check if SerializedProperty is valid before accessing it
+                if (SerializedProperty != null)
                 {
-                    Object.DestroyImmediate(targetObject);
+                    try
+                    {
+                        // Check if serializedObject is valid
+                        var serializedObject = SerializedProperty.serializedObject;
+                        if (serializedObject != null)
+                        {
+                            // Safely access targetObject
+                            Object targetObject = null;
+                            try
+                            {
+                                targetObject = serializedObject.targetObject;
+                            }
+                            catch (NullReferenceException)
+                            {
+                                // Target object might be already destroyed
+                            }
+
+                            serializedObject.Dispose();
+
+                            // Only destroy ScriptableObjects that are not persisted to an asset
+                            if (targetObject is ScriptableObject scriptableObject && 
+                                targetObject != null && // Double check
+                                string.IsNullOrEmpty(AssetDatabase.GetAssetPath(targetObject)))
+                            {
+                                Object.DestroyImmediate(targetObject);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log error but don't crash disposal
+                        Debug.LogWarning($"[ViewModelBase] Error during disposal: {ex.Message}");
+                    }
                 }
             }
         }
