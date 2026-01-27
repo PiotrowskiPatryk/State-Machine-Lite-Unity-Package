@@ -62,8 +62,11 @@ namespace Dev.Cortez.StateMachines.Core.Mono
             {
                 await stateMachine.Value.ActivateAsync(cancellationToken);
             }
+
+            StateMachinesActivated?.Invoke(StateMachineContainerEntry);
         }
 
+#pragma warning disable S3168
         private async void Awake()
         {
             try
@@ -80,4 +83,5 @@ namespace Dev.Cortez.StateMachines.Core.Mono
             }
         }
     }
+#pragma warning restore S3168
 }

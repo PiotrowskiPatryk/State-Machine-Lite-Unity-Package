@@ -50,6 +50,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public List<StateDefinition> States => _states;
         public IPayload Payload => _payload;
 
+#pragma warning disable S107
         public StateMachineDefinition(
             string id,
             string name,
@@ -69,6 +70,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
             _states = states ?? new List<StateDefinition>();
             _payload = payload;
         }
+#pragma warning restore S107
 
         public StateMachineDefinition()
         {

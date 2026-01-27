@@ -16,7 +16,8 @@ namespace Dev.Cortez.StateMachines.Core.Condition
         private IState _targetState;
         private StateSatisfiedConditionType _stateSatisfiedConditionType;
 
-        public override bool IsSatisfied => _stateSatisfiedConditionType.IsValidStatement(_targetState.StateStatus);
+        public override bool IsSatisfied => _targetState != null &&
+                                            _stateSatisfiedConditionType.IsValidStatement(_targetState.StateStatus);
 
         public override ValueTask DisposeAsync()
         {

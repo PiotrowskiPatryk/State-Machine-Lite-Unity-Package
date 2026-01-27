@@ -22,11 +22,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         public event Action<ICondition, bool> SatisfiedChanged;
 
-        public CancellationToken DisposalCancellationToken => _disposalCancellationTokenSource.Token;
-
         public abstract bool IsSatisfied { get; }
 
         public InitializationStatus InitializationStatus { get; private set; }
+
+        protected CancellationToken DisposalCancellationToken => _disposalCancellationTokenSource.Token;
 
         public async UniTask<bool> InitializeAsync(IPayload payload, CancellationToken cancellationToken)
         {
