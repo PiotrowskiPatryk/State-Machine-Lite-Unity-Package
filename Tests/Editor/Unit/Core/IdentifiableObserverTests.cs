@@ -98,9 +98,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 Assert.That(observer.OnRegistered, Is.Null);
                 Assert.That(observer.OnUnregistered, Is.Null);
             });
-
-            // Cleanup
-            observer.Dispose();
         }
 
         #endregion
