@@ -1,0 +1,43 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="GraphSectionTemplate" src="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/GraphSectionTemplate.uxml?fileID=9197481963319205126&amp;guid=ce3dcd7d019bed54c88c658ac9136f03&amp;type=3#GraphSectionTemplate" />
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" name="Form" class="background-main" style="flex-grow: 1;">
+        <ui:VisualElement name="HeaderSection" style="flex-grow: 0; height: 50px; border-bottom-color: rgba(17, 115, 212, 0.14); border-bottom-width: 2px; align-items: center; justify-content: center; background-color: rgb(26, 36, 47);">
+            <ui:Label text="State Machine Node Editor" class="text-bold" style="font-size: 24px; color: rgb(255, 255, 255);" />
+            <ui:Button text="Save" icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Save.png?fileID=2800000&amp;guid=7532d6b95cc030e4c9081e3d9830ca63&amp;type=3#Icon_Save" name="SaveButton" style="position: absolute; right: 10px; top: auto; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px; flex-shrink: 1; flex-direction: row; max-height: 32px; min-height: 32px; bottom: auto;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+            <ui:VisualElement name="MenuSection" style="width: 250px; border-right-color: rgba(17, 115, 212, 0.14); border-right-width: 2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; visibility: visible; display: flex; overflow: visible; background-color: rgb(26, 36, 47);">
+                <ui:Label text="State Machine Setup" name="Label" class="text-bold" style="font-size: 20px; -unity-text-align: middle-left; color: rgb(255, 255, 255);" />
+                <ui:TextField label="Id" placeholder-text="Id" readonly="true" name="StateMachineId">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="StateMachineId" binding-mode="ToTarget" />
+                    </Bindings>
+                </ui:TextField>
+                <ui:TextField label="Name" name="StateMachineName">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="StateMachineName" binding-mode="TwoWay" />
+                    </Bindings>
+                </ui:TextField>
+                <ui:TextField label="Description" name="StateMachineDescription" multiline="true" style="min-height: 128px; max-height: 128px;">
+                    <Bindings>
+                        <ui:DataBinding property="value" data-source-path="StateMachineDescription" binding-mode="TwoWay" />
+                    </Bindings>
+                </ui:TextField>
+                <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields.TypePickerDropdownField name="StateMachineTypeDropdown" label="State Machine Type" base-type="Dev.Cortez.StateMachines.Core.IStateMachine" />
+                <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Fields.TypePickerDropdownField name="TransitionSolverTypeDropdown" base-type="Dev.Cortez.StateMachines.Core.ITransitionSolver" label="Transition Solver" />
+                <ui:Label text="States" class="text-bold" style="font-size: 18px; -unity-text-align: middle-left; color: rgb(255, 255, 255);" />
+                <ui:ListView name="States" item-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/Labels/Label-StateItem.uxml?fileID=9197481963319205126&amp;guid=0d653ee804365f94c8e3a99657729418&amp;type=3#Label-StateItem" show-add-remove-footer="false" reorderable="true" virtualization-method="DynamicHeight" allow-remove="false" allow-add="false" show-bound-collection-size="false" binding-source-selection-mode="AutoAssign">
+                    <Bindings>
+                        <ui:DataBinding property="itemsSource" data-source-path="States" binding-mode="TwoWay" />
+                    </Bindings>
+                </ui:ListView>
+                <ui:Button text="Add new state" name="AddNewStateButton" style="align-self: flex-end;" />
+            </ui:VisualElement>
+            <ui:Instance template="GraphSectionTemplate" name="GraphSectionTemplate" style="flex-grow: 1;" />
+            <ui:VisualElement name="InspectorSection" style="flex-grow: 0; width: 250px; border-left-color: rgba(17, 115, 212, 0.14); border-left-width: 2px; background-color: rgb(26, 36, 47);">
+                <UnityEditor.UIElements.PropertyField name="StatePropertyField" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

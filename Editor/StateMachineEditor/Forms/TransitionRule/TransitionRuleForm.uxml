@@ -1,0 +1,36 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/Styling/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement name="Root" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.TransitionRuleDefinitionViewModel, Dev.Cortez.StateMachines.Editor" class="background-main" style="flex-grow: 1; justify-content: space-between; flex-shrink: 0;">
+        <ui:VisualElement name="Form" style="flex-grow: 1; flex-shrink: 0; margin-top: 10px; margin-bottom: 10px; margin-right: 10px; margin-left: 10px; justify-content: flex-start;">
+            <ui:TextField label="Initial state" placeholder-text="Initial state" name="InitialStateTextField" readonly="true" />
+            <ui:DropdownField label="Target state" name="TargetStateDropdownField" />
+            <ui:IntegerField label="Priority" name="PriorityIntegerField">
+                <Bindings>
+                    <ui:DataBinding property="value" data-source-path="Priority" binding-mode="TwoWay" />
+                </Bindings>
+            </ui:IntegerField>
+            <ui:GroupBox text="Condition rule">
+                <ui:DropdownField label="Filter" choices="All,Any" index="0" name="ConditionFilterDropdownField" />
+                <ui:MultiColumnListView name="ConditionsListView" virtualization-method="DynamicHeight" show-border="false">
+                    <Bindings>
+                        <ui:DataBinding property="itemsSource" data-source-path="Conditions" />
+                    </Bindings>
+                    <ui:Columns primary-column-name="Id">
+                        <ui:Column name="Name" title="Name" stretchable="true" />
+                        <ui:Column name="Description" title="Description" stretchable="true" />
+                        <ui:Column name="Condition type" title="Condition type" stretchable="true" />
+                        <ui:Column name="Rule" title="Rule" stretchable="true" />
+                        <ui:Column cell-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/CustomElements/TableItemButtons.uxml?fileID=9197481963319205126&amp;guid=d7807b0c1a28a9645889e99e42ab2369&amp;type=3#TableItemButtons" min-width="150px" max-width="150px" resizable="false" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+                <ui:Button text="New condition" name="NewConditionButton" style="align-self: flex-end; min-height: 30px; top: 10px;" />
+            </ui:GroupBox>
+            <ui:VisualElement name="Spacer" style="flex-grow: 1;" />
+            <ui:VisualElement name="Buttons" style="flex-grow: 0; flex-direction: row; justify-content: center;">
+                <ui:Button text="Submit" name="SubmitButton" style="align-self: flex-end; min-height: 30px; min-width: 100px;" />
+                <ui:Button text="Cancel" name="CancelButton" style="align-self: flex-end; min-width: 100px; min-height: 30px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="ConditionFormContainer" style="flex-grow: 1; position: absolute; right: 0; bottom: 0; left: 0; top: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

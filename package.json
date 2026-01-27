@@ -1,7 +1,7 @@
 ﻿{
   "name": "dev.cortez.state-machines",
   "displayName": "State Machines",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "unity": "6000.0",
   "description": "A lightweight, extensible set of utilities to build state machines for Unity projects.",
   "keywords": [

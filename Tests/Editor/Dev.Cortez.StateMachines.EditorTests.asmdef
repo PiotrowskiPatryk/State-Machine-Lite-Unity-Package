@@ -1,21 +1,26 @@
-﻿{
-  "name": "Dev.Cortez.StateMachines.EditorTests",
-  "rootNamespace": "Dev.Cortez.StateMachines.EditorTests",
-  "references": [
-    "Dev.Cortez.StateMachines",
-    "Dev.Cortez.StateMachines.Editor"
-  ],
-  "optionalUnityReferences": [
-    "TestAssemblies"
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": false,
-  "defineConstraints": [],
-  "noEngineReferences": false
+{
+    "name": "Dev.Cortez.StateMachines.EditorTests",
+    "rootNamespace": "Dev.Cortez.StateMachines.EditorTests",
+    "references": [
+        "Dev.Cortez.StateMachines",
+        "Dev.Cortez.StateMachines.Editor",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

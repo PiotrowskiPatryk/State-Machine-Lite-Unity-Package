@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement style="flex-grow: 1; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+        <ui:MultiColumnListView virtualization-method="DynamicHeight" show-add-remove-footer="false" allow-add="false" allow-remove="false" show-bound-collection-size="false" show-foldout-header="false" header-title="Triggers" show-border="false" name="ListView">
+            <ui:Columns primary-column-name="Id" stretch-mode="GrowAndFill" reorderable="false">
+                <ui:Column name="Id" title="Id" binding-path="_id" stretchable="true" resizable="true" min-width="270px" cell-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/Labels/Label-Normal.uxml?fileID=9197481963319205126&amp;guid=181885e777b741c4eabb59b69b717cae&amp;type=3#Label-Normal" />
+                <ui:Column name="Name" title="Name" binding-path="_name" stretchable="true" resizable="true" cell-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/Labels/Label-Normal.uxml?fileID=9197481963319205126&amp;guid=181885e777b741c4eabb59b69b717cae&amp;type=3#Label-Normal" />
+                <ui:Column name="Trigger Type" title="Trigger Type" cell-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/Labels/Label-Normal.uxml?fileID=9197481963319205126&amp;guid=181885e777b741c4eabb59b69b717cae&amp;type=3#Label-Normal" binding-path="_typeName" stretchable="true" />
+                <ui:Column name="Description" title="Description" binding-path="_description" stretchable="true" resizable="true" cell-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/Labels/LabelMultiline-Normal.uxml?fileID=9197481963319205126&amp;guid=f38617f208ed0e64dbc42c66f82f49e6&amp;type=3#LabelMultiline-Normal" />
+                <ui:Column stretchable="false" cell-template="project://database/Packages/dev.cortez.state-machines/Runtime/Visuals/Templates/ItemButtons.uxml?fileID=9197481963319205126&amp;guid=139e5eb9a775548969ca26931c6ad749&amp;type=3#ItemButtons" max-width="80px" resizable="false" min-width="80px" />
+            </ui:Columns>
+        </ui:MultiColumnListView>
+        <ui:VisualElement name="Spacer" style="flex-grow: 0; height: 10px;" />
+        <ui:VisualElement style="flex-grow: 0; align-items: flex-end; align-content: auto; justify-content: flex-start;">
+            <ui:Button text="New trigger" name="NewTriggerButton" class="primary-background" style="height: 30px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
