@@ -101,7 +101,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
             }
         }
 
-        private void DoUnbindConditionMenuCell(VisualElement visualElement, int index)
+        private static void DoUnbindConditionMenuCell(VisualElement visualElement, int index)
         {
             // TODO - CLEANUP THIS, apply DRY principle
 

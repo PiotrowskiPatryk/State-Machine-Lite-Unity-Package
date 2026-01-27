@@ -50,6 +50,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public IPayload Payload => _payload;
         public List<TransitionRuleDefinition> TransitionRules => _transitionRules;
 
+#pragma warning disable S107
         public StateDefinition(
             string id,
             string name,
@@ -69,6 +70,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
             _nodePosition = nodePosition;
             _stateMachineTypeName = stateMachineTypeName;
         }
+#pragma warning restore S107
 
         public StateDefinition()
         {

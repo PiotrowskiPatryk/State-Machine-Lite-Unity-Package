@@ -167,8 +167,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                         _zoomSlider.SetValueWithoutNotify(Mathf.Clamp(_zoom, _minZoom, _maxZoom));
                     }
                 }
-
-                Zoom = Zoom; // re-clamp and apply
             }
         }
 
@@ -203,8 +201,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                         _zoomSlider.SetValueWithoutNotify(Mathf.Clamp(_zoom, _minZoom, _maxZoom));
                     }
                 }
-
-                Zoom = Zoom; // re-clamp and apply
             }
         }
 
@@ -239,8 +235,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 }
 
                 _limitPanToBounds = value;
-                // Re-clamp pan when toggled
-                Pan = Pan;
             }
         }
 
@@ -256,7 +250,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 }
 
                 _boundsX = value;
-                Pan = Pan;
             }
         }
 
@@ -272,7 +265,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 }
 
                 _boundsY = value;
-                Pan = Pan;
             }
         }
 
@@ -290,7 +282,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 }
 
                 _boundsWidth = v;
-                Pan = Pan;
             }
         }
 
@@ -308,7 +299,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 }
 
                 _boundsHeight = v;
-                Pan = Pan;
             }
         }
 
@@ -330,7 +320,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 _boundsY = value.y;
                 _boundsWidth = Mathf.Max(0f, value.width);
                 _boundsHeight = Mathf.Max(0f, value.height);
-                Pan = Pan;
             }
         }
 
@@ -503,11 +492,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             RegisterCallback<PointerUpEvent>(OnPointerUp);
             RegisterCallback<PointerCaptureOutEvent>(_ => _panning = false);
             RegisterCallback<WheelEvent>(OnWheel, TrickleDown.TrickleDown);
-            RegisterCallback<GeometryChangedEvent>(_ =>
-            {
-                Pan = Pan;
-                SyncCenterField();
-            });
+            RegisterCallback<GeometryChangedEvent>(_ => { SyncCenterField(); });
         }
 
         private void OnPointerDown(PointerDownEvent evt)

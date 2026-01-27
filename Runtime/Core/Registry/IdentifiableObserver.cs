@@ -17,6 +17,12 @@ namespace Dev.Cortez.StateMachines.Core.Registry
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             OnRegistered = null;
             OnUnregistered = null;
         }

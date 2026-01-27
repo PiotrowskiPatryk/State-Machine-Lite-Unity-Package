@@ -39,8 +39,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private string _previewSourceId;
         private int _dragPointerId = -1;
 
-        private bool _isCreatingEdge;
-
         public StateMachineGraphView()
         {
             var visualTreeAsset =
@@ -158,47 +156,53 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             foreach (var source in states)
             {
-                if (!_nodeById.TryGetValue(source.Id, out var sourceNode))
+                CreateTransitionEdges(source);
+            }
+        }
+
+        private void CreateTransitionEdges(StateDefinitionViewModel source)
+        {
+            if (!_nodeById.TryGetValue(source.Id, out var sourceNode))
+            {
+                return;
+            }
+
+            var fromAnchor = sourceNode.Q<VisualElement>("OutputNode");
+
+            if (fromAnchor == null)
+            {
+                return;
+            }
+
+            foreach (var tr in source.Transitions)
+            {
+                var targetId = tr.TargetState?.Id;
+
+                if (string.IsNullOrEmpty(targetId))
                 {
                     continue;
                 }
 
-                var fromAnchor = sourceNode.Q<VisualElement>("OutputNode");
-
-                if (fromAnchor == null)
+                if (!_nodeById.TryGetValue(targetId, out var targetNode))
                 {
                     continue;
                 }
 
-                foreach (var tr in source.Transitions)
+                var toAnchor = targetNode.Q<VisualElement>("InputNode");
+
+                if (toAnchor == null)
                 {
-                    var targetId = tr.TargetState?.Id;
-
-                    if (string.IsNullOrEmpty(targetId))
-                    {
-                        continue;
-                    }
-
-                    if (!_nodeById.TryGetValue(targetId, out var targetNode))
-                    {
-                        continue;
-                    }
-
-                    var toAnchor = targetNode.Q<VisualElement>("InputNode");
-
-                    if (toAnchor == null)
-                    {
-                        continue;
-                    }
-
-                    var edge = new TransitionEdgeElement(fromAnchor, toAnchor, source.Id, targetId)
-                    {
-                        Tag = tr.SerializedProperty.propertyPath
-                    };
-                    edge.Clicked += OnEdgeClickedInternal;
-                    _edges.Add(edge);
-                    _transitionsContainer.Add(edge);
+                    continue;
                 }
+
+                var edge = new TransitionEdgeElement(fromAnchor, toAnchor, source.Id, targetId)
+                {
+                    Tag = tr.SerializedProperty.propertyPath
+                };
+
+                edge.Clicked += OnEdgeClickedInternal;
+                _edges.Add(edge);
+                _transitionsContainer.Add(edge);
             }
         }
 
@@ -243,39 +247,45 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             if (output != null)
             {
                 // Listen on the node in capture (TrickleDown) phase to avoid Button's internal handlers swallowing the event
-                node.RegisterCallback<PointerDownEvent>(evt =>
-                {
-                    if (evt.button != 0)
-                    {
-                        return;
-                    }
-
-                    // Start only if the press originated on the Output port (or its children)
-                    if (evt.target is VisualElement ve)
-                    {
-                        var cur = ve;
-
-                        while (cur != null && cur != node)
-                        {
-                            if (cur == output)
-                            {
-                                StartCreateEdgeDrag(evt, output, state.Id);
-                                // Prevent the GraphNode drag manipulator and others from reacting
-                                evt.StopImmediatePropagation();
-
-                                break;
-                            }
-
-                            cur = cur.parent;
-                        }
-                    }
-                }, TrickleDown.TrickleDown);
+                node.RegisterCallback<PointerDownEvent>(evt => HandleOutputPortClick(state, evt, node, output),
+                    TrickleDown.TrickleDown);
             }
 
             _statesContainer.Add(instance);
             _nodeById[state.Id] = node;
 
             return node;
+        }
+
+        private void HandleOutputPortClick(StateDefinitionViewModel state, PointerDownEvent evt, GraphNode node,
+            Button output)
+        {
+            if (evt.button != 0)
+            {
+                return;
+            }
+
+            // Start only if the press originated on the Output port (or its children)
+            if (evt.target is not VisualElement ve)
+            {
+                return;
+            }
+
+            var cur = ve;
+
+            while (cur != null && cur != node)
+            {
+                if (cur == output)
+                {
+                    StartCreateEdgeDrag(evt, output, state.Id);
+                    // Prevent the GraphNode drag manipulator and others from reacting
+                    evt.StopImmediatePropagation();
+
+                    break;
+                }
+
+                cur = cur.parent;
+            }
         }
 
         private void RemoveNode(string id)
@@ -408,7 +418,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             RegisterCallback<PointerUpEvent>(OnCreateEdgePointerUp, TrickleDown.TrickleDown);
             RegisterCallback<PointerCaptureOutEvent>(OnCreateEdgePointerCaptureOut);
 
-            _isCreatingEdge = true;
             evt.StopImmediatePropagation();
         }
 
@@ -473,12 +482,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                     r.yMin -= pad;
                     r.yMax += pad;
 
-                    if (r.Contains(evt.position))
+                    if (!r.Contains(evt.position))
                     {
-                        targetId = kv.Key;
-
-                        break;
+                        continue;
                     }
+
+                    targetId = kv.Key;
+
+                    break;
                 }
             }
 

@@ -8,14 +8,14 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
     [Serializable]
     public sealed class StateMachineDefinition : IValidatable
     {
-        public static string ID_PROPERTY_NAME = nameof(_id);
-        public static string NAME_PROPERTY_NAME = nameof(_name);
-        public static string DESCRIPTION_PROPERTY_NAME = nameof(_description);
-        public static string STATE_MACHINE_TYPE_PROPERTY_NAME = nameof(_stateMachineTypeName);
-        public static string TRANSITION_SOLVER_TYPE_PROPERTY_NAME = nameof(_transitionSolverTypeName);
-        public static string STATES_PROPERTY_NAME = nameof(_states);
-        public static string INITIAL_STATE_PROPERTY_NAME = nameof(_initialState);
-        public static string PAYLOAD_PROPERTY_NAME = nameof(_payload);
+        public const string ID_PROPERTY_NAME = nameof(_id);
+        public const string NAME_PROPERTY_NAME = nameof(_name);
+        public const string DESCRIPTION_PROPERTY_NAME = nameof(_description);
+        public const string STATE_MACHINE_TYPE_PROPERTY_NAME = nameof(_stateMachineTypeName);
+        public const string TRANSITION_SOLVER_TYPE_PROPERTY_NAME = nameof(_transitionSolverTypeName);
+        public const string STATES_PROPERTY_NAME = nameof(_states);
+        public const string INITIAL_STATE_PROPERTY_NAME = nameof(_initialState);
+        public const string PAYLOAD_PROPERTY_NAME = nameof(_payload);
 
         [SerializeField]
         private string _id;
@@ -50,6 +50,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public List<StateDefinition> States => _states;
         public IPayload Payload => _payload;
 
+#pragma warning disable S107
         public StateMachineDefinition(
             string id,
             string name,
@@ -69,6 +70,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
             _states = states ?? new List<StateDefinition>();
             _payload = payload;
         }
+#pragma warning restore S107
 
         public StateMachineDefinition()
         {

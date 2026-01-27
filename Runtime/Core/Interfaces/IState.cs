@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
@@ -33,7 +34,7 @@ namespace Dev.Cortez.StateMachines.Core.Interfaces
     ///     Represents a generic state in a state machine with context and payload.
     /// </summary>
     /// <typeparam name="TContext">The type of the context.</typeparam>
-    public interface IState<in TContext> : IState
+    public interface IState<in TContext> : IState, IEqualityComparer<IState>
     {
         /// <summary>
         ///     Enters the state asynchronously.

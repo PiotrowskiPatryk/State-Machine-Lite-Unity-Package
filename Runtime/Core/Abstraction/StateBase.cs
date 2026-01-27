@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -235,13 +236,23 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         public static bool operator ==(StateBase<TStateContext, TStatePayload> left,
             StateBase<TStateContext, TStatePayload> right)
         {
-            return Equals(left, right);
+            return left?.Equals(right) == true;
         }
 
         public static bool operator !=(StateBase<TStateContext, TStatePayload> left,
             StateBase<TStateContext, TStatePayload> right)
         {
-            return !Equals(left, right);
+            return left?.Equals(right) == false;
+        }
+
+        public bool Equals(IState x, IState y)
+        {
+            return x?.Id.Equals(y?.Id) == true;
+        }
+
+        public int GetHashCode(IState state)
+        {
+            return state.Id.GetHashCode();
         }
 
         /// Executes the logic required when entering the state asynchronously.

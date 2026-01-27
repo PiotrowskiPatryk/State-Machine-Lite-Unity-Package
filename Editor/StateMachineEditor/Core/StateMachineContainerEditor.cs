@@ -108,14 +108,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
             _mainMenuView.PressedEditTriggerButton -= OnPressedEditTriggerButton;
         }
 
-        private bool ShowDialogWindow(string header, string content, string okText, string cancelText)
+        private static bool ShowDialogWindow(string header, string content, string okText, string cancelText)
         {
             return EditorUtility.DisplayDialog(header, content, okText, cancelText);
         }
 
-        private bool ShowDialogWindow(string header, string content, string okText)
+        private static void ShowDialogWindow(string header, string content, string okText)
         {
-            return EditorUtility.DisplayDialog(header, content, okText);
+            EditorUtility.DisplayDialog(header, content, okText);
         }
 
         private void Initialize(SerializedObject serializedObject)
@@ -260,7 +260,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
                 _stateMachineContainerViewModelRegistry.TriggerConfigurationViewModel.AddTrigger);
         }
 
-        private void OnRemoveTransitionButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+        private static void OnRemoveTransitionButtonPressed(
+            StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
             StateDefinitionViewModel stateDefinitionViewModel,
             TransitionRuleDefinitionViewModel transitionRuleDefinitionViewModel)
         {
@@ -305,7 +306,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
                 data => stateDefinitionViewModel.AddTransition(data.TransitionRuleDefinitionViewModel));
         }
 
-        private void OnDeleteStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
+        private static void OnDeleteStateButtonPressed(StateMachineDefinitionViewModel stateMachineDefinitionViewModel,
             int index)
         {
             stateMachineDefinitionViewModel.RemoveStateAtIndex(index);
