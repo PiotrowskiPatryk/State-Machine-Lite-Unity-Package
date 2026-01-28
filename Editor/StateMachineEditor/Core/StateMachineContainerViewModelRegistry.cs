@@ -1,6 +1,6 @@
-﻿using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
+﻿using System.Diagnostics;
+using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
-using NUnit.Framework;
 using UnityEditor;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
@@ -18,7 +18,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
             TriggerConfigurationViewModel = new TriggerConfigurationViewModel(
                 serializedObject.FindProperty(StateMachineContainer.TRIGGER_CONFIGURATION_PROPERTY_NAME));
 
-            Assert.NotNull(StateMachineConfigurationViewModel);
+            Debug.Assert(StateMachineConfigurationViewModel != null, "StateMachineConfigurationViewModel should not be null");
         }
     }
 }

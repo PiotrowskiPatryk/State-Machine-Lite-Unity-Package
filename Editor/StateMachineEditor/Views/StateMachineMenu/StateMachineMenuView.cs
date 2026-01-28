@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dev.Cortez.StateMachines.Core;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
-using NUnit.Framework;
+using System.Diagnostics;
 using Unity.Properties;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Debug = UnityEngine.Debug;
 using ItemOptionsMenu = Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.ItemOptionsMenu;
 using TypePickerDropdownField =
     Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.TypePickerDropdownField;
@@ -159,14 +159,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _stateMachineTypeDropdown.RegisterValueChangedCallback(OnChangedStateMachineTypeDropdown);
             _transitionSolverTypeDropdown.RegisterValueChangedCallback(OnChangedTransitionSolverTypeDropdown);
 
-            Assert.NotNull(_stateMachineTypeDropdown);
-            Assert.NotNull(_transitionSolverTypeDropdown);
-            Assert.NotNull(_payloadPropertyField);
-            Assert.NotNull(_saveButton);
-            Assert.NotNull(_exitButton);
-            Assert.NotNull(_addStateButton);
-            Assert.NotNull(_statesListView);
-            Assert.NotNull(_initialStateDropdownField);
+            Debug.Assert(_stateMachineTypeDropdown != null, "_stateMachineTypeDropdown should not be null");
+            Debug.Assert(_transitionSolverTypeDropdown != null, "_transitionSolverTypeDropdown should not be null");
+            Debug.Assert(_payloadPropertyField != null, "_payloadPropertyField should not be null");
+            Debug.Assert(_saveButton != null, "_saveButton should not be null");
+            Debug.Assert(_exitButton != null, "_exitButton should not be null");
+            Debug.Assert(_addStateButton != null, "_addStateButton should not be null");
+            Debug.Assert(_statesListView != null, "_statesListView should not be null");
+            Debug.Assert(_initialStateDropdownField != null, "_initialStateDropdownField should not be null");
         }
 
         private void BindStatesList()

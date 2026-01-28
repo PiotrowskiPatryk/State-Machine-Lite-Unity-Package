@@ -4,7 +4,6 @@ using System.Linq;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineGraphView.VisualElements;
-using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -70,10 +69,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
                     StateMachineEditorViewRepository.STATE_NODE_TEMPLATE_VIEW_PATH);
 
-            Assert.NotNull(_statesContainer);
-            Assert.NotNull(_transitionsContainer);
-            Assert.NotNull(_stateNodeTemplate);
-            Assert.NotNull(_background);
+            Debug.Assert(_statesContainer != null, "_statesContainer should not be null");
+            Debug.Assert(_transitionsContainer != null, "_transitionsContainer should not be null");
+            Debug.Assert(_stateNodeTemplate != null, "_stateNodeTemplate should not be null");
+            Debug.Assert(_background != null, "_background should not be null");
         }
 
         public void Bind(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)

@@ -66,9 +66,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         public ConditionDefinitionViewModel()
         {
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
-            var definitionWrapper = ScriptableObject.CreateInstance<ConditionDefinitionWrapper>();
+            var definitionWrapper = ScriptableObject.CreateInstance<ConditionDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(ConditionDefinitionWrapper.DATA_PROPERTY_NAME);
+                new SerializedObject(definitionWrapper).FindProperty(ConditionDefinitionEditorWrapper.DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }
@@ -88,8 +88,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             Payload.managedReferenceValue = other.Payload.managedReferenceValue;
         }
 
-        internal class ConditionDefinitionWrapper : DefinitionWrapper<ConditionDefinition>
-        {
-        }
     }
 }
