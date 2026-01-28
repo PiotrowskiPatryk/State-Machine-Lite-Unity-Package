@@ -342,12 +342,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
 
         private void OnChangedTransitionSolverTypeDropdown(ChangeEvent<string> changeEvent)
         {
-            _stateMachineDefinitionViewModel.TransitionSolverTypeName = changeEvent.newValue;
+            // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
+            _stateMachineDefinitionViewModel.TransitionSolverTypeName = _transitionSolverTypeDropdown.SelectedTypeAssemblyQualifiedName;
         }
 
         private void OnChangedStateMachineTypeDropdown(ChangeEvent<string> changeEvent)
         {
-            _stateMachineDefinitionViewModel.TypeName = changeEvent.newValue;
+            // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
+            _stateMachineDefinitionViewModel.TypeName = _stateMachineTypeDropdown.SelectedTypeAssemblyQualifiedName;
         }
 
         private static void BindStateTablePropertyCell(VisualElement visualElement, string propertyName,

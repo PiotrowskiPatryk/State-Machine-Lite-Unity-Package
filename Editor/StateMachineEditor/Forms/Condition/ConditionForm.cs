@@ -13,6 +13,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Condition
         private Button _submitButton;
         private Button _cancelButton;
         private PropertyField _propertyField;
+        private TypePickerDropdownField _typePicker;
 
         protected override string FORM_PATH => StateMachineEditorViewRepository.CONDITION_FORM_PATH;
 
@@ -28,10 +29,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Condition
             _propertyField = RootVisualElement.Q<PropertyField>();
             _propertyField.BindProperty(Data.Payload);
 
-            var typePicker = RootVisualElement.Q<TypePickerDropdownField>("TypePicker");
-            typePicker.ChangeType(typeof(ICondition), Type.GetType(Data.TypeName));
+            _typePicker = RootVisualElement.Q<TypePickerDropdownField>("TypePicker");
+            _typePicker.ChangeType(typeof(ICondition), Type.GetType(Data.TypeName));
 
-            typePicker.RegisterValueChangedCallback(OnConditionTypeChanged);
+            _typePicker.RegisterValueChangedCallback(OnConditionTypeChanged);
 
             _submitButton.clicked += Submit;
             _cancelButton.clicked += Cancel;
@@ -39,7 +40,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Condition
 
         private void OnConditionTypeChanged(ChangeEvent<string> conditionTypeValue)
         {
-            Data.TypeName = conditionTypeValue.newValue;
+            // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
+            Data.TypeName = _typePicker.SelectedTypeAssemblyQualifiedName;
             _propertyField.BindProperty(Data.Payload);
         }
     }

@@ -13,6 +13,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Trigger
         private Button _submitButton;
         private Button _cancelButton;
         private PropertyField _propertyField;
+        private TypePickerDropdownField _typePicker;
 
         protected override string FORM_PATH => StateMachineEditorViewRepository.TRIGGER_FORM_PATH;
 
@@ -28,10 +29,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Trigger
             _propertyField = RootVisualElement.Q<PropertyField>();
             _propertyField.BindProperty(Data.Payload);
 
-            var typePicker = RootVisualElement.Q<TypePickerDropdownField>();
-            typePicker.ChangeType(typeof(ITrigger), Type.GetType(Data.TypeName));
+            _typePicker = RootVisualElement.Q<TypePickerDropdownField>();
+            _typePicker.ChangeType(typeof(ITrigger), Type.GetType(Data.TypeName));
 
-            typePicker.RegisterValueChangedCallback(OnTypeValueChanged);
+            _typePicker.RegisterValueChangedCallback(OnTypeValueChanged);
 
             _submitButton.clicked += Submit;
             _cancelButton.clicked += Cancel;
@@ -39,7 +40,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.Trigger
 
         private void OnTypeValueChanged(ChangeEvent<string> triggerValue)
         {
-            Data.TypeName = triggerValue.newValue;
+            // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
+            Data.TypeName = _typePicker.SelectedTypeAssemblyQualifiedName;
             _propertyField.BindProperty(Data.Payload);
         }
     }
