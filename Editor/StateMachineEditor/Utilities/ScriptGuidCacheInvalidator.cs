@@ -19,17 +19,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             string[] movedAssets,
             string[] movedFromAssetPaths)
         {
-            var scriptsChanged = importedAssets.Any(path => path.EndsWith(".cs"));
-
-            if (!scriptsChanged && deletedAssets.Any(path => path.EndsWith(".cs")))
-            {
-                scriptsChanged = true;
-            }
-
-            if (!scriptsChanged && movedAssets.Any(path => path.EndsWith(".cs")))
-            {
-                scriptsChanged = true;
-            }
+            var scriptsChanged = importedAssets.Any(path => path.EndsWith(".cs")) ||
+                                 deletedAssets.Any(path => path.EndsWith(".cs")) ||
+                                 movedAssets.Any(path => path.EndsWith(".cs"));
 
             if (scriptsChanged)
             {

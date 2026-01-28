@@ -104,6 +104,14 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 
         public void OnBeforeSerialize()
         {
+            if (_payload != null)
+            {
+                _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
             var resolvedType = ScriptGuidUtility.GetTypeFromGuid(_scriptGuid);
 
             if (resolvedType != null)
@@ -118,14 +126,6 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
                 _stateMachineTypeName = resolvedStateMachineType.AssemblyQualifiedName;
             }
 
-            if (_payload != null)
-            {
-                _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
-            }
-        }
-
-        public void OnAfterDeserialize()
-        {
             _payload = ScriptGuidUtility.TryRecoverPayload(_payloadScriptGuid, _payload);
         }
     }

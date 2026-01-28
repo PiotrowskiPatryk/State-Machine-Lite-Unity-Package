@@ -105,6 +105,14 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 
         public void OnBeforeSerialize()
         {
+            if (_payload != null)
+            {
+                _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
             var resolvedStateMachineType = ScriptGuidUtility.GetTypeFromGuid(_stateMachineScriptGuid);
 
             if (resolvedStateMachineType != null)
@@ -119,14 +127,6 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
                 _transitionSolverTypeName = resolvedTransitionSolverType.AssemblyQualifiedName;
             }
 
-            if (_payload != null)
-            {
-                _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
-            }
-        }
-
-        public void OnAfterDeserialize()
-        {
             _payload = ScriptGuidUtility.TryRecoverPayload(_payloadScriptGuid, _payload);
         }
     }
