@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Dev.Cortez.StateMachines.Core.Attributes;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 
@@ -12,6 +13,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     /// A controllable ITransitionSolver implementation for testing purposes.
     /// Records all method calls and allows manual triggering of events.
     /// </summary>
+    [ExcludeFromTypePicker]
     public sealed class MockTransitionSolver : ITransitionSolver
     {
         public event Action<TransitionRule> TransitionRuleApplied;
@@ -47,6 +49,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         {
             ApplyTransitionRulesCallCount++;
             AppliedTransitionRules = transitionRules;
+
             return UniTask.FromResult(ApplyTransitionRulesShouldSucceed);
         }
 
@@ -67,6 +70,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         {
             DisposeCallCount++;
             TransitionRuleApplied = null;
+
             return default;
         }
 

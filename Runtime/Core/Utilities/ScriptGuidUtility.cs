@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,12 +11,14 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
     /// Utility class for resolving MonoScript GUIDs to Types and vice versa.
     /// This enables resilient type tracking even when classes are renamed or moved to different namespaces.
     /// Editor-only functionality wrapped in #if UNITY_EDITOR.
+    /// Includes caching for performance optimization.
     /// </summary>
     public static class ScriptGuidUtility
     {
         /// <summary>
         /// Gets the GUID of the MonoScript that defines the given type.
         /// Returns null if the type is not found in any MonoScript.
+        /// Results are cached for performance.
         /// </summary>
         public static string GetGuidForType(Type type)
         {
@@ -25,6 +28,13 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
                 return null;
             }
 
+            // Check cache first
+            if (TypeToGuidCache.TryGetValue(type, out var cachedGuid))
+            {
+                return cachedGuid;
+            }
+
+            // Perform expensive lookup
             var scripts = AssetDatabase.FindAssets($"t:MonoScript {type.Name}");
 
             foreach (var guid in scripts)
@@ -34,9 +44,16 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
 
                 if (script != null && script.GetClass() == type)
                 {
+                    // Cache both directions
+                    TypeToGuidCache[type] = guid;
+                    GuidToTypeCache[guid] = type;
+
                     return guid;
                 }
             }
+
+            // Cache null result to avoid repeated lookups for types without scripts
+            TypeToGuidCache[type] = null;
 
             return null;
 #else
@@ -47,6 +64,7 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
         /// <summary>
         /// Resolves a script GUID to the Type it defines.
         /// Returns null if the GUID is invalid or the script has no class.
+        /// Results are cached for performance.
         /// </summary>
         public static Type GetTypeFromGuid(string guid)
         {
@@ -56,6 +74,13 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
                 return null;
             }
 
+            // Check cache first
+            if (GuidToTypeCache.TryGetValue(guid, out var cachedType))
+            {
+                return cachedType;
+            }
+
+            // Perform lookup
             var path = AssetDatabase.GUIDToAssetPath(guid);
 
             if (string.IsNullOrEmpty(path))
@@ -64,10 +89,31 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
             }
 
             var script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+            var type = script?.GetClass();
 
-            return script?.GetClass();
+            // Cache the result (including null)
+            GuidToTypeCache[guid] = type;
+
+            if (type != null)
+            {
+                TypeToGuidCache[type] = guid;
+            }
+
+            return type;
 #else
             return null;
+#endif
+        }
+
+        /// <summary>
+        /// Clears all cached GUID/Type mappings.
+        /// Call this when scripts are reimported or the project structure changes.
+        /// </summary>
+        public static void ClearCache()
+        {
+#if UNITY_EDITOR
+            TypeToGuidCache.Clear();
+            GuidToTypeCache.Clear();
 #endif
         }
 
@@ -117,5 +163,9 @@ namespace Dev.Cortez.StateMachines.Core.Utilities
             return currentPayload;
 #endif
         }
+#if UNITY_EDITOR
+        private static readonly Dictionary<Type, string> TypeToGuidCache = new();
+        private static readonly Dictionary<string, Type> GuidToTypeCache = new();
+#endif
     }
 }

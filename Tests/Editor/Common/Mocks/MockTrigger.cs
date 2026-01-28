@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
+using Dev.Cortez.StateMachines.Core.Attributes;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
 {
@@ -9,6 +11,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     /// A controllable Trigger implementation for testing purposes.
     /// Extends TriggerBase to test actual base class behavior while allowing configurable responses.
     /// </summary>
+    [ExcludeFromTypePicker]
     public sealed class MockTrigger : TriggerBase
     {
         /// <summary>
@@ -50,13 +53,8 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
             }
 
             IsTriggered = targetValue;
-            return UniTask.FromResult(true);
-        }
 
-        protected override System.Threading.Tasks.ValueTask DoDisposeAsync()
-        {
-            DisposeCallCount++;
-            return default;
+            return UniTask.FromResult(true);
         }
 
         /// <summary>
@@ -77,6 +75,13 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         public void SetTriggered(bool value)
         {
             IsTriggered = value;
+        }
+
+        protected override ValueTask DoDisposeAsync()
+        {
+            DisposeCallCount++;
+
+            return default;
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
-using Dev.Cortez.StateMachines.Core.Interfaces;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Data
 {
@@ -11,25 +11,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Data
     [Serializable]
     public sealed class AllPropertyTypesData
     {
-        public string StringValue;
-        public int IntValue;
-        public bool BoolValue;
-        public float FloatValue;
-        public double DoubleValue;
-        public long LongValue;
-        public Vector2 Vector2Value;
-        public Vector3 Vector3Value;
-        public Vector4 Vector4Value;
-        public Vector2Int Vector2IntValue;
-        public Vector3Int Vector3IntValue;
-        public Color ColorValue;
-        public Rect RectValue;
-        public Bounds BoundsValue;
-        public Quaternion QuaternionValue;
-        public AnimationCurve AnimationCurveValue;
-        public TestEnumType EnumValue;
-        public UnityEngine.Object ObjectValue;
-
         // Property name constants for testing
         public const string STRING_VALUE_PROPERTY = nameof(StringValue);
         public const string INT_VALUE_PROPERTY = nameof(IntValue);
@@ -49,6 +30,24 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Data
         public const string ANIMATION_CURVE_VALUE_PROPERTY = nameof(AnimationCurveValue);
         public const string ENUM_VALUE_PROPERTY = nameof(EnumValue);
         public const string OBJECT_VALUE_PROPERTY = nameof(ObjectValue);
+        public string StringValue;
+        public int IntValue;
+        public bool BoolValue;
+        public float FloatValue;
+        public double DoubleValue;
+        public long LongValue;
+        public Vector2 Vector2Value;
+        public Vector3 Vector3Value;
+        public Vector4 Vector4Value;
+        public Vector2Int Vector2IntValue;
+        public Vector3Int Vector3IntValue;
+        public Color ColorValue;
+        public Rect RectValue;
+        public Bounds BoundsValue;
+        public Quaternion QuaternionValue;
+        public AnimationCurve AnimationCurveValue;
+        public TestEnumType EnumValue;
+        public Object ObjectValue;
     }
 
     /// <summary>

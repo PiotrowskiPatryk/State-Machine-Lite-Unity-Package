@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Dev.Cortez.StateMachines.Core.Attributes;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
@@ -8,15 +9,15 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     /// A mock reference picker that allows direct control over reference resolution
     /// without depending on StateMachineContainerRegistry.
     /// </summary>
+    [ExcludeFromTypePicker]
     public sealed class MockTriggerReferencePicker
     {
         private readonly string _selectedItemId;
-        private ITrigger _reference;
         private Action<ITrigger> _onResolvedCallback;
         private Action _onUnresolvedCallback;
 
         public bool IsReferenceSelected => !string.IsNullOrWhiteSpace(_selectedItemId);
-        public ITrigger Reference => _reference;
+        public ITrigger Reference { get; private set; }
 
         public MockTriggerReferencePicker(string selectedItemId = "test-trigger")
         {
@@ -37,7 +38,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         /// </summary>
         public void ResolveReference(ITrigger trigger)
         {
-            _reference = trigger;
+            Reference = trigger;
             _onResolvedCallback?.Invoke(trigger);
         }
 
@@ -46,7 +47,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         /// </summary>
         public void UnresolveReference()
         {
-            _reference = null;
+            Reference = null;
             _onUnresolvedCallback?.Invoke();
         }
     }
@@ -58,12 +59,11 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     public sealed class MockStateReferencePicker
     {
         private readonly string _selectedItemId;
-        private IState _reference;
         private Action<IState> _onResolvedCallback;
         private Action _onUnresolvedCallback;
 
         public bool IsReferenceSelected => !string.IsNullOrWhiteSpace(_selectedItemId);
-        public IState Reference => _reference;
+        public IState Reference { get; private set; }
 
         public MockStateReferencePicker(string selectedItemId = "test-state")
         {
@@ -84,7 +84,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         /// </summary>
         public void ResolveReference(IState state)
         {
-            _reference = state;
+            Reference = state;
             _onResolvedCallback?.Invoke(state);
         }
 
@@ -93,7 +93,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         /// </summary>
         public void UnresolveReference()
         {
-            _reference = null;
+            Reference = null;
             _onUnresolvedCallback?.Invoke();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dev.Cortez.StateMachines.Core.Attributes;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -51,6 +52,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             if (string.IsNullOrEmpty(assemblyQualifiedName))
             {
                 SetValueWithoutNotify(NoneLabel);
+
                 return;
             }
 
@@ -139,10 +141,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
                            ?? typeof(object);
 
             var assignables = TypeCache.GetTypesDerivedFrom(baseType).
-                Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition);
+                Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition).
+                Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false));
 
-            // Optionally include baseType itself if concrete
-            if (!baseType.IsAbstract && !baseType.IsInterface && !baseType.IsGenericTypeDefinition)
+            // Optionally include baseType itself if concrete and not excluded
+            if (!baseType.IsAbstract && !baseType.IsInterface && !baseType.IsGenericTypeDefinition &&
+                !baseType.IsDefined(typeof(ExcludeFromTypePickerAttribute), false))
             {
                 assignables = assignables.Append(baseType);
             }
