@@ -13,11 +13,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
         /// Called when assets are imported, deleted, or moved.
         /// Clears the GUID cache if any scripts were affected.
         /// </summary>
-        private static void OnPostprocessAllAssets(
-            string[] importedAssets,
-            string[] deletedAssets,
-            string[] movedAssets,
-            string[] movedFromAssetPaths)
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
+            string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
         {
             var scriptsChanged = importedAssets.Any(path => path.EndsWith(".cs")) ||
                                  deletedAssets.Any(path => path.EndsWith(".cs")) ||
