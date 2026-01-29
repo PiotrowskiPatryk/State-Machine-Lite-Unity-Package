@@ -1,5 +1,6 @@
 ﻿using System;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements;
 using Unity.Properties;
@@ -186,9 +187,21 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.Description), index);
         }
 
-        private static void DoBindTriggerNameCell(VisualElement visualElement, int index)
+        private void DoBindTriggerNameCell(VisualElement visualElement, int index)
         {
+            ApplyTriggerValidationIcon(visualElement, index);
             BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.Name), index);
+        }
+
+        private void ApplyTriggerValidationIcon(VisualElement visualElement, int index)
+        {
+            var icon = ValidationIconHelper.GetOrCreateValidationIcon(visualElement);
+            var triggerVm = (_triggerListView.dataSource as TriggerConfigurationViewModel)?.Triggers[index];
+
+            if (triggerVm != null)
+            {
+                ValidationIconHelper.UpdateValidationIconVisibility(icon, triggerVm.IsValid);
+            }
         }
 
         private static void DoBindTriggerIdCell(VisualElement visualElement, int index)
@@ -208,10 +221,23 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
                 nameof(StateMachineDefinitionViewModel.Description), index);
         }
 
-        private static void DoBindStateMachineNameCell(VisualElement visualElement, int index)
+        private void DoBindStateMachineNameCell(VisualElement visualElement, int index)
         {
+            ApplyStateValidationIcon(visualElement, index);
             BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.Name),
                 index);
+        }
+
+        private void ApplyStateValidationIcon(VisualElement visualElement, int index)
+        {
+            var icon = ValidationIconHelper.GetOrCreateValidationIcon(visualElement);
+
+            var smVm = (_stateMachineListView.dataSource as StateMachineConfigurationViewModel)?.StateMachines[index];
+
+            if (smVm != null)
+            {
+                ValidationIconHelper.UpdateValidationIconVisibility(icon, smVm.IsValid);
+            }
         }
 
         private static void DoBindStateMachineIdCell(VisualElement visualElement, int index)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
 using System.Diagnostics;
 using Unity.Properties;
@@ -244,6 +245,18 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
                 listView.bindItem = (element, itemIndex) => DoBindTransitionItemEntry(element, stateVm, itemIndex);
                 listView.unbindItem = (element, itemIndex) => DoUnbindTransitionItemEntry(element);
             }
+
+            // Add validation icon for state in the foldout header
+            if (stateVm != null && foldout != null)
+            {
+                // Get the toggle element within the foldout to insert the icon
+                var toggle = foldout.Q<Toggle>();
+                if (toggle != null)
+                {
+                    var stateIcon = ValidationIconHelper.GetOrCreateValidationIcon(toggle);
+                    ValidationIconHelper.UpdateValidationIconVisibility(stateIcon, stateVm.IsValid);
+                }
+            }
         }
 
         private void DoBindTransitionItemEntry(VisualElement visualElement,
@@ -308,11 +321,24 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
                 visualElement.userData = rowClick;
                 visualElement.RegisterCallback(rowClick);
             }
+
+            // Add validation icon for transition
+            var transitionVm = stateDefinitionViewModel.Transitions[index];
+            var transitionIcon = ValidationIconHelper.GetOrCreateValidationIcon(visualElement);
+            ValidationIconHelper.UpdateValidationIconVisibility(transitionIcon, transitionVm.IsValid);
         }
 
-        private static void DoBindStateNameCell(VisualElement visualElement, int index)
+        private void DoBindStateNameCell(VisualElement visualElement, int index)
         {
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.Name), index);
+
+            // Add validation icon next to name
+            var icon = ValidationIconHelper.GetOrCreateValidationIcon(visualElement);
+            var stateVm = _stateMachineDefinitionViewModel.States[index];
+            if (stateVm != null)
+            {
+                ValidationIconHelper.UpdateValidationIconVisibility(icon, stateVm.IsValid);
+            }
         }
 
         private static void DoBindStateDescriptionCell(VisualElement visualElement, int index)
