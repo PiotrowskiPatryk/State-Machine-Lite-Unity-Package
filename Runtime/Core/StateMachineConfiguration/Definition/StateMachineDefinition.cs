@@ -98,7 +98,8 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
                    !string.IsNullOrWhiteSpace(_name) &&
                    !string.IsNullOrWhiteSpace(_stateMachineTypeName) &&
                    !string.IsNullOrWhiteSpace(_transitionSolverTypeName) &&
-                   _initialState != null &&
+                   _initialState?.IsValid() == true &&
+                   _states.Count > 0 &&
                    _states.TrueForAll(state => state?.IsValid() == true) &&
                    _payload?.IsValid() == true;
         }
@@ -131,5 +132,3 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         }
     }
 }
-
-
