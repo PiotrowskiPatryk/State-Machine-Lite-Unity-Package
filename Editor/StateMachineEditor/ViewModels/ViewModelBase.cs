@@ -92,6 +92,52 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             propertyChanged?.Invoke(this, new BindablePropertyChangedEventArgs(property));
         }
 
+        /// <summary>
+        /// Applies a type name and its corresponding script GUID to serialized properties.
+        /// This centralizes the pattern of storing both the type name and GUID for resilient type tracking.
+        /// </summary>
+        /// <param name="typeName">The AssemblyQualifiedName of the type.</param>
+        /// <param name="typeNamePropertyPath">The property path for storing the type name.</param>
+        /// <param name="guidPropertyPath">The property path for storing the script GUID.</param>
+        /// <param name="callerProperty">The caller property name for notification.</param>
+        protected void ApplyTypeWithGuid(
+            string typeName,
+            string typeNamePropertyPath,
+            string guidPropertyPath,
+            [CallerMemberName] string callerProperty = "")
+        {
+            ApplyPropertyValue(typeNamePropertyPath, typeName, callerProperty);
+
+            var type = Type.GetType(typeName);
+
+            if (type != null)
+            {
+                var guid = Utilities.ScriptGuidResolver.GetGuidForType(type);
+                ApplyPropertyValue(guidPropertyPath, guid, callerProperty);
+            }
+        }
+
+        /// <summary>
+        /// Stores a script GUID for a given type without storing the type name.
+        /// Useful for payload types where only the GUID needs to be tracked.
+        /// </summary>
+        /// <param name="type">The type to get the GUID for.</param>
+        /// <param name="guidPropertyPath">The property path for storing the script GUID.</param>
+        /// <param name="callerProperty">The caller property name for notification.</param>
+        protected void ApplyGuidForType(
+            Type type,
+            string guidPropertyPath,
+            [CallerMemberName] string callerProperty = "")
+        {
+            if (type == null)
+            {
+                return;
+            }
+
+            var guid = Utilities.ScriptGuidResolver.GetGuidForType(type);
+            ApplyPropertyValue(guidPropertyPath, guid, callerProperty);
+        }
+
         #region Generic Property Application
 
         /// <summary>

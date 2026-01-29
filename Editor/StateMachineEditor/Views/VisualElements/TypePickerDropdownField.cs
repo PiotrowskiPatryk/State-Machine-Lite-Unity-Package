@@ -47,7 +47,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
         /// Use this when loading a stored type name.
         /// </summary>
         /// <param name="assemblyQualifiedName">The AssemblyQualifiedName of the type to select.</param>
-        public void SetSelectionByAssemblyQualifiedName(string assemblyQualifiedName)
+        internal void SetSelectionByAssemblyQualifiedName(string assemblyQualifiedName)
         {
             if (string.IsNullOrEmpty(assemblyQualifiedName))
             {

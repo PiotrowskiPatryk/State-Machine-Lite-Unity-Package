@@ -55,25 +55,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 var statePayloadType = StateMachineReflectionUtilities.GetStatePayloadType(value);
 
-                ApplyPropertyValueString(StateDefinition.TYPE_NAME_PROPERTY_NAME, value);
-
-                // Store the script GUID for resilient type tracking
-                var type = Type.GetType(value);
-
-                if (type != null)
-                {
-                    var guid = ScriptGuidResolver.GetGuidForType(type);
-                    ApplyPropertyValueString(StateDefinition.SCRIPT_GUID_PROPERTY_NAME, guid);
-                }
+                ApplyTypeWithGuid(
+                    value,
+                    StateDefinition.TYPE_NAME_PROPERTY_NAME,
+                    StateDefinition.SCRIPT_GUID_PROPERTY_NAME);
 
                 _payloadSwitcher.SwitchTo(statePayloadType);
 
                 // Store the payload GUID for resilient payload type tracking
-                if (statePayloadType != null)
-                {
-                    var payloadGuid = ScriptGuidResolver.GetGuidForType(statePayloadType);
-                    ApplyPropertyValueString(StateDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME, payloadGuid);
-                }
+                ApplyGuidForType(statePayloadType, StateDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME);
             }
         }
 
@@ -82,19 +72,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get => SerializedProperty.FindPropertyRelative(StateDefinition.STATE_MACHINE_TYPE_NAME_PROPERTY_NAME).
                 stringValue;
-            set
-            {
-                ApplyPropertyValueString(StateDefinition.STATE_MACHINE_TYPE_NAME_PROPERTY_NAME, value);
-
-                // Store the script GUID for resilient type tracking
-                var type = Type.GetType(value);
-
-                if (type != null)
-                {
-                    var guid = ScriptGuidResolver.GetGuidForType(type);
-                    ApplyPropertyValueString(StateDefinition.STATE_MACHINE_SCRIPT_GUID_PROPERTY_NAME, guid);
-                }
-            }
+            set => ApplyTypeWithGuid(
+                value,
+                StateDefinition.STATE_MACHINE_TYPE_NAME_PROPERTY_NAME,
+                StateDefinition.STATE_MACHINE_SCRIPT_GUID_PROPERTY_NAME);
         }
 
         [CreateProperty]

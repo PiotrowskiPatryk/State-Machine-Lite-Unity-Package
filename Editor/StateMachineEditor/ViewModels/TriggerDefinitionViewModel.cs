@@ -48,25 +48,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 var triggerPayloadType = StateMachineReflectionUtilities.GetTriggerPayloadType(value);
 
-                ApplyPropertyValueString(TriggerDefinition.TYPE_NAME_PROPERTY_NAME, value);
-
-                // Store the script GUID for resilient type tracking
-                var type = Type.GetType(value);
-
-                if (type != null)
-                {
-                    var guid = ScriptGuidResolver.GetGuidForType(type);
-                    ApplyPropertyValueString(TriggerDefinition.SCRIPT_GUID_PROPERTY_NAME, guid);
-                }
+                ApplyTypeWithGuid(
+                    value,
+                    TriggerDefinition.TYPE_NAME_PROPERTY_NAME,
+                    TriggerDefinition.SCRIPT_GUID_PROPERTY_NAME);
 
                 _payloadSwitcher.SwitchTo(triggerPayloadType);
 
                 // Store the payload GUID for resilient payload type tracking
-                if (triggerPayloadType != null)
-                {
-                    var payloadGuid = ScriptGuidResolver.GetGuidForType(triggerPayloadType);
-                    ApplyPropertyValueString(TriggerDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME, payloadGuid);
-                }
+                ApplyGuidForType(triggerPayloadType, TriggerDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME);
             }
         }
 

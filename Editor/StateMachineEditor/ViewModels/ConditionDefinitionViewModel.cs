@@ -52,25 +52,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 var conditionPayload = StateMachineReflectionUtilities.GetConditionPayloadType(value);
 
-                ApplyPropertyValueString(ConditionDefinition.TYPE_NAME_PROPERTY_NAME, value);
-
-                // Store the script GUID for resilient type tracking
-                var type = Type.GetType(value);
-
-                if (type != null)
-                {
-                    var guid = ScriptGuidResolver.GetGuidForType(type);
-                    ApplyPropertyValueString(ConditionDefinition.SCRIPT_GUID_PROPERTY_NAME, guid);
-                }
+                ApplyTypeWithGuid(
+                    value,
+                    ConditionDefinition.TYPE_NAME_PROPERTY_NAME,
+                    ConditionDefinition.SCRIPT_GUID_PROPERTY_NAME);
 
                 _payloadSwitcher.SwitchTo(conditionPayload);
 
                 // Store the payload GUID for resilient payload type tracking
-                if (conditionPayload != null)
-                {
-                    var payloadGuid = ScriptGuidResolver.GetGuidForType(conditionPayload);
-                    ApplyPropertyValueString(ConditionDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME, payloadGuid);
-                }
+                ApplyGuidForType(conditionPayload, ConditionDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME);
             }
         }
 

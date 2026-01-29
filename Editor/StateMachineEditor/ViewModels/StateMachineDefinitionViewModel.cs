@@ -57,16 +57,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 var stateMachinePayload = StateMachineReflectionUtilities.GetStateMachinePayloadType(value);
 
-                ApplyPropertyValueString(StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME, value);
-
-                // Store the script GUID for resilient type tracking
-                var type = Type.GetType(value);
-
-                if (type != null)
-                {
-                    var guid = ScriptGuidResolver.GetGuidForType(type);
-                    ApplyPropertyValueString(StateMachineDefinition.STATE_MACHINE_SCRIPT_GUID_PROPERTY_NAME, guid);
-                }
+                ApplyTypeWithGuid(
+                    value,
+                    StateMachineDefinition.STATE_MACHINE_TYPE_PROPERTY_NAME,
+                    StateMachineDefinition.STATE_MACHINE_SCRIPT_GUID_PROPERTY_NAME);
 
                 foreach (var state in States)
                 {
@@ -76,11 +70,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 _payloadSwitcher.SwitchTo(stateMachinePayload);
 
                 // Store the payload GUID for resilient payload type tracking
-                if (stateMachinePayload != null)
-                {
-                    var payloadGuid = ScriptGuidResolver.GetGuidForType(stateMachinePayload);
-                    ApplyPropertyValueString(StateMachineDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME, payloadGuid);
-                }
+                ApplyGuidForType(stateMachinePayload, StateMachineDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME);
             }
         }
 
@@ -89,19 +79,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get => SerializedProperty.
                 FindPropertyRelative(StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME).stringValue;
-            set
-            {
-                ApplyPropertyValueString(StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME, value);
-
-                // Store the script GUID for resilient type tracking
-                var type = Type.GetType(value);
-
-                if (type != null)
-                {
-                    var guid = ScriptGuidResolver.GetGuidForType(type);
-                    ApplyPropertyValueString(StateMachineDefinition.TRANSITION_SOLVER_SCRIPT_GUID_PROPERTY_NAME, guid);
-                }
-            }
+            set => ApplyTypeWithGuid(
+                value,
+                StateMachineDefinition.TRANSITION_SOLVER_TYPE_PROPERTY_NAME,
+                StateMachineDefinition.TRANSITION_SOLVER_SCRIPT_GUID_PROPERTY_NAME);
         }
 
         [CreateProperty]
