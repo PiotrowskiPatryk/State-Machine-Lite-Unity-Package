@@ -10,6 +10,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 {
     public class TransitionRuleDefinitionViewModel : ViewModelBase
     {
+        [CreateProperty]
         public bool IsValid => ((TransitionRuleDefinition)SerializedProperty.boxedValue).IsValid();
 
         [CreateProperty]

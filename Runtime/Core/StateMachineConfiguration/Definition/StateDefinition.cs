@@ -108,9 +108,16 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
             {
                 _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
             }
+
+            UpdateTypeName();
         }
 
         public void OnAfterDeserialize()
+        {
+            UpdateTypeName();
+        }
+
+        private void UpdateTypeName()
         {
             var resolvedType = ScriptGuidUtility.GetTypeFromGuid(_scriptGuid);
 
@@ -125,10 +132,6 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
             {
                 _stateMachineTypeName = resolvedStateMachineType.AssemblyQualifiedName;
             }
-
-            _payload = ScriptGuidUtility.TryRecoverPayload(_payloadScriptGuid, _payload);
         }
     }
 }
-
-

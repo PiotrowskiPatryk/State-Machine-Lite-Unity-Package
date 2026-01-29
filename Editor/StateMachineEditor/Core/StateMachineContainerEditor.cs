@@ -43,19 +43,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
             CreateMainMenuView();
             InitializeEventListeners();
 
-            // Rehydrate from singleton after domain reload or when window is created without Show(serializedObject)
-            var working = StateMachineContainerSingleton.instance.WorkingSerializedObject;
-
-            if (working != null)
+            // Ensure SerializedObject is valid after domain reload from persisted OriginalContainer
+            if (StateMachineContainerSingleton.instance.EnsureWorkingSerializedObject())
             {
+                var working = StateMachineContainerSingleton.instance.WorkingSerializedObject;
                 Initialize(working);
-            }
-
-            // If Initialize was not called (working is null), BindData will no-op if registry is null
-            if (_stateMachineContainerViewModelRegistry != null)
-            {
                 BindData();
             }
+            // If no valid container, window will show empty/default state
         }
 
         private void CreateMainMenuView()

@@ -13,7 +13,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
     /// Tests that the trigger sets IsTriggered to true for one frame/yield and then resets.
     /// </summary>
     [TestFixture]
-    public sealed class OneFrameTriggerTests
+    public sealed class DefaultTriggerTests
     {
         #region TriggerValueAsync Tests
 
@@ -21,7 +21,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         public IEnumerator TriggerValueAsync_WhenTargetTrue_IsTrueForOneFrame_ThenFalse()
         {
             // Arrange
-            var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
+            var trigger = new DefaultTrigger("trigger-1", "Test Trigger", "Desc");
             using var cts = new CancellationTokenSource();
             var wasTrueAtSomePoint = false;
 
@@ -46,7 +46,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         public async Task TriggerValueAsync_WhenTargetTrue_SetsTriggeredAndResetsAfterYield()
         {
             // Arrange
-            var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
+            var trigger = new DefaultTrigger("trigger-1", "Test Trigger", "Desc");
             using var cts = new CancellationTokenSource();
 
             // Act
@@ -60,7 +60,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         public async Task TriggerValueAsync_WhenTargetFalse_ResetsTrigger()
         {
             // Arrange
-            var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
+            var trigger = new DefaultTrigger("trigger-1", "Test Trigger", "Desc");
             trigger.IsTriggered = true; // Manually set to true
             using var cts = new CancellationTokenSource();
 
@@ -75,7 +75,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         public async Task TriggerValueAsync_WhenAlreadyTargetValue_ReturnsTrue()
         {
             // Arrange
-            var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
+            var trigger = new DefaultTrigger("trigger-1", "Test Trigger", "Desc");
             trigger.IsTriggered = true;
             using var cts = new CancellationTokenSource();
 
@@ -91,7 +91,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         public async Task TriggerValueAsync_ReturnsTrue()
         {
             // Arrange
-            var trigger = new OneFrameTrigger("trigger-1", "Test Trigger", "Desc");
+            var trigger = new DefaultTrigger("trigger-1", "Test Trigger", "Desc");
             using var cts = new CancellationTokenSource();
 
             // Act

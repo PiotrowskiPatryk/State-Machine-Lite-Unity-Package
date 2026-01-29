@@ -12,6 +12,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
     {
         private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
 
+        [CreateProperty]
         public bool IsValid => ((TriggerDefinition)SerializedProperty.boxedValue).IsValid();
 
         [CreateProperty]

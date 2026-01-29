@@ -14,6 +14,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
     {
         private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
 
+        [CreateProperty]
         public bool IsValid => ((StateMachineDefinition)SerializedProperty.boxedValue).IsValid();
 
         [CreateProperty]
@@ -158,7 +159,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             // NOTE: Call Dispose() when done to clean up the ScriptableObject wrapper
             var definitionWrapper = ScriptableObject.CreateInstance<StateMachineDefinitionEditorWrapper>();
             SerializedProperty =
-                new SerializedObject(definitionWrapper).FindProperty(StateMachineDefinitionEditorWrapper.DATA_PROPERTY_NAME);
+                new SerializedObject(definitionWrapper).FindProperty(StateMachineDefinitionEditorWrapper.
+                    DATA_PROPERTY_NAME);
             Id = Guid.NewGuid().ToString("N");
             _payloadSwitcher = new SerializedInstanceSwitcher<IPayload>(Payload);
         }
@@ -235,6 +237,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             Notify(nameof(InitialStateIndex));
             Notify(nameof(AvailableStates));
         }
-
     }
 }

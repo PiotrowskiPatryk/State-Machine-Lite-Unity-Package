@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dev.Cortez.StateMachines.Core.ReferencePicker;
+using Dev.Cortez.StateMachines.Core.ReferencePicker.Trigger;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using UnityEditor;
 
