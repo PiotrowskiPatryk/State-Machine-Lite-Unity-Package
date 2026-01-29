@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dev.Cortez.StateMachines.Core.Attributes;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -14,11 +15,21 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
         private readonly List<Type> _types = new();
         private readonly Dictionary<string, Type> _displayToType = new(StringComparer.Ordinal);
         private readonly Dictionary<Type, string> _typeToDisplay = new();
+        private readonly Dictionary<string, Type> _assemblyQualifiedNameToType = new(StringComparer.Ordinal);
 
         [UxmlAttribute("base-type")]
         public string BaseTypeName { get; set; }
 
+        /// <summary>
+        /// Gets the currently selected Type, or null if "(None)" is selected.
+        /// </summary>
         public Type SelectedType => _displayToType.TryGetValue(value, out var t) ? t : null;
+
+        /// <summary>
+        /// Gets the AssemblyQualifiedName of the currently selected type, for storage.
+        /// Returns null if no type is selected.
+        /// </summary>
+        public string SelectedTypeAssemblyQualifiedName => SelectedType?.AssemblyQualifiedName;
 
         public TypePickerDropdownField()
         {
@@ -31,17 +42,52 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             TryPopulate(initialSelection);
         }
 
+        /// <summary>
+        /// Sets the selected type by its AssemblyQualifiedName.
+        /// Use this when loading a stored type name.
+        /// </summary>
+        /// <param name="assemblyQualifiedName">The AssemblyQualifiedName of the type to select.</param>
+        internal void SetSelectionByAssemblyQualifiedName(string assemblyQualifiedName)
+        {
+            if (string.IsNullOrEmpty(assemblyQualifiedName))
+            {
+                SetValueWithoutNotify(NoneLabel);
+
+                return;
+            }
+
+            if (_assemblyQualifiedNameToType.TryGetValue(assemblyQualifiedName, out var type) &&
+                _typeToDisplay.TryGetValue(type, out var display))
+            {
+                SetValueWithoutNotify(display);
+            }
+            else
+            {
+                SetValueWithoutNotify(NoneLabel);
+            }
+        }
+
         public void SetTypes(IEnumerable<Type> types, Type initialSelection = null)
         {
             _types.Clear();
             _displayToType.Clear();
             _typeToDisplay.Clear();
+            _assemblyQualifiedNameToType.Clear();
             choices.Clear();
 
             var concrete = types.Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false }).Distinct().
                 ToList();
 
             _types.AddRange(concrete);
+
+            // Build reverse lookup for AssemblyQualifiedName -> Type
+            foreach (var t in _types)
+            {
+                if (!string.IsNullOrEmpty(t.AssemblyQualifiedName))
+                {
+                    _assemblyQualifiedNameToType[t.AssemblyQualifiedName] = t;
+                }
+            }
 
             // Build labels: short names, disambiguate duplicates with namespace in parentheses.
             var byShort = _types.GroupBy(type => type.Name);
@@ -53,12 +99,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
                 foreach (var t in group)
                 {
                     var namespaceName = string.IsNullOrEmpty(t.Namespace) ? "global" : t.Namespace;
-                    var labelValue = hasCollision
-                        ? $"{t.AssemblyQualifiedName} ({namespaceName})"
-                        : t.AssemblyQualifiedName;
+                    // Display short name, disambiguate with namespace if collision
+                    var displayLabel = hasCollision
+                        ? $"{t.Name} ({namespaceName})"
+                        : t.Name;
 
-                    _typeToDisplay[t] = labelValue;
-                    _displayToType[labelValue!] = t;
+                    _typeToDisplay[t] = displayLabel;
+                    _displayToType[displayLabel!] = t;
                 }
             }
 
@@ -94,10 +141,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
                            ?? typeof(object);
 
             var assignables = TypeCache.GetTypesDerivedFrom(baseType).
-                Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition);
+                Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition).
+                Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false));
 
-            // Optionally include baseType itself if concrete
-            if (!baseType.IsAbstract && !baseType.IsInterface && !baseType.IsGenericTypeDefinition)
+            // Optionally include baseType itself if concrete and not excluded
+            if (!baseType.IsAbstract && !baseType.IsInterface && !baseType.IsGenericTypeDefinition &&
+                !baseType.IsDefined(typeof(ExcludeFromTypePickerAttribute), false))
             {
                 assignables = assignables.Append(baseType);
             }

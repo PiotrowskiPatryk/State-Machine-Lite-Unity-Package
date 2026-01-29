@@ -55,9 +55,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 var statePayloadType = StateMachineReflectionUtilities.GetStatePayloadType(value);
 
-                ApplyPropertyValueString(StateDefinition.TYPE_NAME_PROPERTY_NAME, value);
+                ApplyTypeWithGuid(
+                    value,
+                    StateDefinition.TYPE_NAME_PROPERTY_NAME,
+                    StateDefinition.SCRIPT_GUID_PROPERTY_NAME);
 
                 _payloadSwitcher.SwitchTo(statePayloadType);
+
+                // Store the payload GUID for resilient payload type tracking
+                ApplyGuidForType(statePayloadType, StateDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME);
             }
         }
 
@@ -66,7 +72,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get => SerializedProperty.FindPropertyRelative(StateDefinition.STATE_MACHINE_TYPE_NAME_PROPERTY_NAME).
                 stringValue;
-            set => ApplyPropertyValueString(StateDefinition.STATE_MACHINE_TYPE_NAME_PROPERTY_NAME, value);
+            set => ApplyTypeWithGuid(
+                value,
+                StateDefinition.STATE_MACHINE_TYPE_NAME_PROPERTY_NAME,
+                StateDefinition.STATE_MACHINE_SCRIPT_GUID_PROPERTY_NAME);
         }
 
         [CreateProperty]

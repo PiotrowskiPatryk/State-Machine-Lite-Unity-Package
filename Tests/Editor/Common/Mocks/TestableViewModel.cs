@@ -1,5 +1,4 @@
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
-using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Data;
 using UnityEditor;
 using UnityEngine;
 

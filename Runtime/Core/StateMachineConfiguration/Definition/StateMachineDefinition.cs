@@ -1,21 +1,25 @@
 using System;
 using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Core.Utilities;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
     [Serializable]
-    public sealed class StateMachineDefinition : IValidatable
+    public sealed class StateMachineDefinition : IValidatable, ISerializationCallbackReceiver
     {
         public const string ID_PROPERTY_NAME = nameof(_id);
         public const string NAME_PROPERTY_NAME = nameof(_name);
         public const string DESCRIPTION_PROPERTY_NAME = nameof(_description);
         public const string STATE_MACHINE_TYPE_PROPERTY_NAME = nameof(_stateMachineTypeName);
+        public const string STATE_MACHINE_SCRIPT_GUID_PROPERTY_NAME = nameof(_stateMachineScriptGuid);
         public const string TRANSITION_SOLVER_TYPE_PROPERTY_NAME = nameof(_transitionSolverTypeName);
+        public const string TRANSITION_SOLVER_SCRIPT_GUID_PROPERTY_NAME = nameof(_transitionSolverScriptGuid);
         public const string STATES_PROPERTY_NAME = nameof(_states);
         public const string INITIAL_STATE_PROPERTY_NAME = nameof(_initialState);
         public const string PAYLOAD_PROPERTY_NAME = nameof(_payload);
+        public const string PAYLOAD_SCRIPT_GUID_PROPERTY_NAME = nameof(_payloadScriptGuid);
 
         [SerializeField]
         private string _id;
@@ -30,7 +34,13 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         private string _stateMachineTypeName;
 
         [SerializeField]
+        private string _stateMachineScriptGuid;
+
+        [SerializeField]
         private string _transitionSolverTypeName;
+
+        [SerializeField]
+        private string _transitionSolverScriptGuid;
 
         [SerializeField]
         private StateDefinition _initialState;
@@ -41,14 +51,20 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         [SerializeReference]
         private IPayload _payload;
 
+        [SerializeField]
+        private string _payloadScriptGuid;
+
         public string Id => _id;
         public string Name => _name;
         public string Description => _description;
         public string StateMachineTypeName => _stateMachineTypeName;
+        public string StateMachineScriptGuid => _stateMachineScriptGuid;
         public string TransitionSolverTypeName => _transitionSolverTypeName;
+        public string TransitionSolverScriptGuid => _transitionSolverScriptGuid;
         public StateDefinition InitialState => _initialState;
         public List<StateDefinition> States => _states;
         public IPayload Payload => _payload;
+        public string PayloadScriptGuid => _payloadScriptGuid;
 
 #pragma warning disable S107
         public StateMachineDefinition(
@@ -86,5 +102,34 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
                    _states.TrueForAll(state => state?.IsValid() == true) &&
                    _payload?.IsValid() == true;
         }
+
+        public void OnBeforeSerialize()
+        {
+            if (_payload != null)
+            {
+                _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            var resolvedStateMachineType = ScriptGuidUtility.GetTypeFromGuid(_stateMachineScriptGuid);
+
+            if (resolvedStateMachineType != null)
+            {
+                _stateMachineTypeName = resolvedStateMachineType.AssemblyQualifiedName;
+            }
+
+            var resolvedTransitionSolverType = ScriptGuidUtility.GetTypeFromGuid(_transitionSolverScriptGuid);
+
+            if (resolvedTransitionSolverType != null)
+            {
+                _transitionSolverTypeName = resolvedTransitionSolverType.AssemblyQualifiedName;
+            }
+
+            _payload = ScriptGuidUtility.TryRecoverPayload(_payloadScriptGuid, _payload);
+        }
     }
 }
+
+

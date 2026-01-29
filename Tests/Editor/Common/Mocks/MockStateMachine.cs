@@ -1,7 +1,8 @@
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
-using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Core.Attributes;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
 {
@@ -9,20 +10,13 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     /// A controllable StateMachine implementation for testing purposes.
     /// Exposes internal configuration and tracks lifecycle method calls.
     /// </summary>
+    [ExcludeFromTypePicker]
     public sealed class MockStateMachine : StateMachineBase<MockState>
     {
-        private bool _canActivate = true;
-
         /// <summary>
         /// Configures whether the state machine can be activated.
         /// </summary>
-        public bool ConfigurableCanActivate
-        {
-            get => _canActivate;
-            set => _canActivate = value;
-        }
-
-        protected override bool CanActivate => _canActivate;
+        public bool ConfigurableCanActivate { get; set; } = true;
 
         /// <summary>
         /// Configures whether DoActivateAsync should succeed.
@@ -49,35 +43,40 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         /// </summary>
         public int DoDisposeCallCount { get; private set; }
 
-        protected override UniTask<bool> DoActivateAsync(CancellationToken cancellationToken)
-        {
-            DoActivateCallCount++;
-            return UniTask.FromResult(DoActivateShouldSucceed);
-        }
-
-        protected override UniTask<bool> DoDeactivateAsync(CancellationToken cancellationToken)
-        {
-            DoDeactivateCallCount++;
-            return UniTask.FromResult(DoDeactivateShouldSucceed);
-        }
-
-        protected override System.Threading.Tasks.ValueTask DoDisposeAsync()
-        {
-            DoDisposeCallCount++;
-            return default;
-        }
+        protected override bool CanActivate => ConfigurableCanActivate;
 
         /// <summary>
         /// Resets all tracking counters.
         /// </summary>
         public void ResetTracking()
         {
-            _canActivate = true;
+            ConfigurableCanActivate = true;
             DoActivateShouldSucceed = true;
             DoDeactivateShouldSucceed = true;
             DoActivateCallCount = 0;
             DoDeactivateCallCount = 0;
             DoDisposeCallCount = 0;
+        }
+
+        protected override UniTask<bool> DoActivateAsync(CancellationToken cancellationToken)
+        {
+            DoActivateCallCount++;
+
+            return UniTask.FromResult(DoActivateShouldSucceed);
+        }
+
+        protected override UniTask<bool> DoDeactivateAsync(CancellationToken cancellationToken)
+        {
+            DoDeactivateCallCount++;
+
+            return UniTask.FromResult(DoDeactivateShouldSucceed);
+        }
+
+        protected override ValueTask DoDisposeAsync()
+        {
+            DoDisposeCallCount++;
+
+            return default;
         }
     }
 }

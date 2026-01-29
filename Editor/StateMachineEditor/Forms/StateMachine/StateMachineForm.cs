@@ -14,6 +14,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.StateMachine
         private Button _submitButton;
         private Button _cancelButton;
         private PropertyField _propertyField;
+        private TypePickerDropdownField _typePicker;
+        private TypePickerDropdownField _transitionSolverPicker;
 
         protected override string FORM_PATH => StateMachineEditorViewRepository.STATE_MACHINE_FORM_PATH;
 
@@ -29,14 +31,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.StateMachine
             _propertyField = RootVisualElement.Q<PropertyField>();
             _propertyField.BindProperty(Data.Payload);
 
-            var typePicker = RootVisualElement.Q<TypePickerDropdownField>("TypePicker");
-            typePicker.ChangeType(typeof(IStateMachine), Type.GetType(Data.TypeName));
+            _typePicker = RootVisualElement.Q<TypePickerDropdownField>("TypePicker");
+            _typePicker.ChangeType(typeof(IStateMachine), Type.GetType(Data.TypeName));
 
-            var transitionSolverPicker = RootVisualElement.Q<TypePickerDropdownField>("TransitionSolverPicker");
-            transitionSolverPicker.ChangeType(typeof(ITransitionSolver), Type.GetType(Data.TransitionSolverTypeName));
+            _transitionSolverPicker = RootVisualElement.Q<TypePickerDropdownField>("TransitionSolverPicker");
+            _transitionSolverPicker.ChangeType(typeof(ITransitionSolver), Type.GetType(Data.TransitionSolverTypeName));
 
-            typePicker.RegisterValueChangedCallback(OnTypeValueChanged);
-            transitionSolverPicker.RegisterValueChangedCallback(OnTransitionSolverTypeValueChanged);
+            _typePicker.RegisterValueChangedCallback(OnTypeValueChanged);
+            _transitionSolverPicker.RegisterValueChangedCallback(OnTransitionSolverTypeValueChanged);
 
             _submitButton.clicked += Submit;
             _cancelButton.clicked += Cancel;
@@ -44,12 +46,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.StateMachine
 
         private void OnTransitionSolverTypeValueChanged(ChangeEvent<string> transitionSolverTypeValue)
         {
-            Data.TransitionSolverTypeName = transitionSolverTypeValue.newValue;
+            // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
+            Data.TransitionSolverTypeName = _transitionSolverPicker.SelectedTypeAssemblyQualifiedName;
         }
 
         private void OnTypeValueChanged(ChangeEvent<string> stateMachineTypeValue)
         {
-            Data.TypeName = stateMachineTypeValue.newValue;
+            // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
+            Data.TypeName = _typePicker.SelectedTypeAssemblyQualifiedName;
             _propertyField.BindProperty(Data.Payload);
         }
     }

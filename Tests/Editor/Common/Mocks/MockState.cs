@@ -1,6 +1,8 @@
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
+using Dev.Cortez.StateMachines.Core.Attributes;
 using Dev.Cortez.StateMachines.Core.Data;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
@@ -9,6 +11,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     /// A controllable State implementation for testing purposes.
     /// Extends StateBase to test actual base class behavior while allowing configurable responses.
     /// </summary>
+    [ExcludeFromTypePicker]
     public sealed class MockState : StateBase
     {
         /// <summary>
@@ -66,6 +69,24 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         /// </summary>
         public int ExitDelayMs { get; set; }
 
+        /// <summary>
+        /// Resets all tracking counters and configuration.
+        /// </summary>
+        public void Reset()
+        {
+            EnterCallCount = 0;
+            ExitCallCount = 0;
+            InitializeCallCount = 0;
+            DisposeCallCount = 0;
+            LastEnterContext = null;
+            LastExitContext = null;
+            InitializationShouldSucceed = true;
+            EnterShouldSucceed = true;
+            ExitShouldSucceed = true;
+            EnterDelayMs = 0;
+            ExitDelayMs = 0;
+        }
+
         protected override async UniTask DoEnterAsync(EmptyContext context, CancellationToken cancellationToken)
         {
             EnterCallCount++;
@@ -88,34 +109,19 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
             }
         }
 
-        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload, CancellationToken cancellationToken)
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload,
+            CancellationToken cancellationToken)
         {
             InitializeCallCount++;
+
             return UniTask.FromResult(InitializationShouldSucceed);
         }
 
-        protected override System.Threading.Tasks.ValueTask DoDisposeAsync()
+        protected override ValueTask DoDisposeAsync()
         {
             DisposeCallCount++;
-            return default;
-        }
 
-        /// <summary>
-        /// Resets all tracking counters and configuration.
-        /// </summary>
-        public void Reset()
-        {
-            EnterCallCount = 0;
-            ExitCallCount = 0;
-            InitializeCallCount = 0;
-            DisposeCallCount = 0;
-            LastEnterContext = null;
-            LastExitContext = null;
-            InitializationShouldSucceed = true;
-            EnterShouldSucceed = true;
-            ExitShouldSucceed = true;
-            EnterDelayMs = 0;
-            ExitDelayMs = 0;
+            return default;
         }
     }
 }

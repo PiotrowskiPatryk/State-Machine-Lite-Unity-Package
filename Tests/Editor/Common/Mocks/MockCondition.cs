@@ -1,7 +1,5 @@
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
-using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Core.Attributes;
 
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
 {
@@ -9,6 +7,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
     /// A controllable Condition implementation for testing purposes.
     /// Extends ConditionBase to test actual base class behavior while allowing configurable responses.
     /// </summary>
+    [ExcludeFromTypePicker]
     public sealed class MockCondition : ConditionBase
     {
         private bool _isSatisfied;
@@ -30,7 +29,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
         public void SetSatisfied(bool value)
         {
             SetSatisfiedCallCount++;
-            
+
             if (_isSatisfied == value)
             {
                 return;

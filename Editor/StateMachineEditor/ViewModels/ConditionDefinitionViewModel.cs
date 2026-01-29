@@ -52,9 +52,15 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 var conditionPayload = StateMachineReflectionUtilities.GetConditionPayloadType(value);
 
-                ApplyPropertyValueString(ConditionDefinition.TYPE_NAME_PROPERTY_NAME, value);
+                ApplyTypeWithGuid(
+                    value,
+                    ConditionDefinition.TYPE_NAME_PROPERTY_NAME,
+                    ConditionDefinition.SCRIPT_GUID_PROPERTY_NAME);
 
                 _payloadSwitcher.SwitchTo(conditionPayload);
+
+                // Store the payload GUID for resilient payload type tracking
+                ApplyGuidForType(conditionPayload, ConditionDefinition.PAYLOAD_SCRIPT_GUID_PROPERTY_NAME);
             }
         }
 
