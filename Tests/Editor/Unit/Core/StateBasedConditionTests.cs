@@ -5,6 +5,7 @@ using Dev.Cortez.StateMachines.Core.Condition.Payload;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.ReferencePicker;
+using Dev.Cortez.StateMachines.Core.ReferencePicker.State;
 using Dev.Cortez.StateMachines.Core.Registry;
 using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Builders;
 using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks;
@@ -32,28 +33,18 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             _mockState = new MockState();
 
             // Initialize state with definition so it has an ID
-            var stateDefinition = StateDefinitionBuilder.Create()
-                .WithId("test-state-1")
-                .WithName("Test State")
-                .WithType<MockState>()
-                .Build();
+            var stateDefinition = StateDefinitionBuilder.Create().WithId("test-state-1").WithName("Test State").
+                WithType<MockState>().Build();
             await _mockState.InitializeAsync(stateDefinition, _cts.Token);
 
             // Create state machine with the state
             _mockStateMachine = new MockStateMachine();
-            var smDefinition = StateMachineDefinitionBuilder.Create()
-                .WithId("test-sm-1")
-                .WithName("Test SM")
-                .WithType<MockStateMachine>()
-                .WithInitialState(stateDefinition)
-                .Build();
+            var smDefinition = StateMachineDefinitionBuilder.Create().WithId("test-sm-1").WithName("Test SM").
+                WithType<MockStateMachine>().WithInitialState(stateDefinition).Build();
 
-            var settings = StateMachineSettingsBuilder.Create()
-                .WithStateMachineDefinition(smDefinition)
-                .WithTransitionSolver(new MockTransitionSolver())
-                .WithInitialState(_mockState)
-                .WithState(_mockState)
-                .Build();
+            var settings = StateMachineSettingsBuilder.Create().WithStateMachineDefinition(smDefinition).
+                WithTransitionSolver(new MockTransitionSolver()).WithInitialState(_mockState).WithState(_mockState).
+                Build();
 
             await _mockStateMachine.InitializeAsync(settings, _cts.Token);
 
@@ -70,6 +61,65 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             _cts?.Cancel();
             _cts?.Dispose();
         }
+
+        #region Event Tests
+
+        [Test]
+        public async Task StateStatusChanged_FiresSatisfiedChanged()
+        {
+            // Arrange
+            var condition = new StateBasedCondition();
+            var payload = new StateBasedConditionPayload(
+                new StateReferencePicker("test-state-1"),
+                StateSatisfiedConditionType.WhenActivated);
+
+            await condition.InitializeAsync(payload, CancellationToken.None);
+
+            var eventFired = false;
+            ICondition eventCondition = null;
+            condition.SatisfiedChanged += (cond, _) =>
+            {
+                eventFired = true;
+                eventCondition = cond;
+            };
+
+            // Act
+            await _mockState.EnterAsync(new EmptyContext(), _cts.Token);
+
+            // Assert
+            Assert.That(eventFired, Is.True);
+            Assert.That(eventCondition, Is.SameAs(condition));
+
+            await condition.DisposeAsync();
+        }
+
+        #endregion
+
+        #region Dispose Tests
+
+        [Test]
+        public async Task DisposeAsync_UnsubscribesFromState()
+        {
+            // Arrange
+            var condition = new StateBasedCondition();
+            var payload = new StateBasedConditionPayload(
+                new StateReferencePicker("test-state-1"),
+                StateSatisfiedConditionType.WhenActivated);
+
+            await condition.InitializeAsync(payload, CancellationToken.None);
+
+            var eventCount = 0;
+            condition.SatisfiedChanged += (_, __) => eventCount++;
+
+            // Act
+            await condition.DisposeAsync();
+            await _mockState.EnterAsync(new EmptyContext(), _cts.Token);
+
+            // Assert - Event should NOT fire after disposal
+            Assert.That(eventCount, Is.EqualTo(0));
+        }
+
+        #endregion
 
         #region Initialization Tests
 
@@ -169,65 +219,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             Assert.That(condition.IsSatisfied, Is.True); // Now active
 
             await condition.DisposeAsync();
-        }
-
-        #endregion
-
-        #region Event Tests
-
-        [Test]
-        public async Task StateStatusChanged_FiresSatisfiedChanged()
-        {
-            // Arrange
-            var condition = new StateBasedCondition();
-            var payload = new StateBasedConditionPayload(
-                new StateReferencePicker("test-state-1"),
-                StateSatisfiedConditionType.WhenActivated);
-
-            await condition.InitializeAsync(payload, CancellationToken.None);
-
-            bool eventFired = false;
-            ICondition eventCondition = null;
-            condition.SatisfiedChanged += (cond, _) =>
-            {
-                eventFired = true;
-                eventCondition = cond;
-            };
-
-            // Act
-            await _mockState.EnterAsync(new EmptyContext(), _cts.Token);
-
-            // Assert
-            Assert.That(eventFired, Is.True);
-            Assert.That(eventCondition, Is.SameAs(condition));
-
-            await condition.DisposeAsync();
-        }
-
-        #endregion
-
-        #region Dispose Tests
-
-        [Test]
-        public async Task DisposeAsync_UnsubscribesFromState()
-        {
-            // Arrange
-            var condition = new StateBasedCondition();
-            var payload = new StateBasedConditionPayload(
-                new StateReferencePicker("test-state-1"),
-                StateSatisfiedConditionType.WhenActivated);
-
-            await condition.InitializeAsync(payload, CancellationToken.None);
-
-            int eventCount = 0;
-            condition.SatisfiedChanged += (_, __) => eventCount++;
-
-            // Act
-            await condition.DisposeAsync();
-            await _mockState.EnterAsync(new EmptyContext(), _cts.Token);
-
-            // Assert - Event should NOT fire after disposal
-            Assert.That(eventCount, Is.EqualTo(0));
         }
 
         #endregion

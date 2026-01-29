@@ -4,6 +4,7 @@ using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Core.Condition.Payload;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.ReferencePicker;
+using Dev.Cortez.StateMachines.Core.ReferencePicker.Trigger;
 using Dev.Cortez.StateMachines.Core.Registry;
 using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks;
 using NUnit.Framework;
@@ -35,6 +36,65 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
         {
             StateMachineContainerRegistry.Instance.UnregisterStateMachineContainer(_containerEntry);
         }
+
+        #region Event Tests
+
+        [Test]
+        public async Task TriggerValueChanged_FiresSatisfiedChanged()
+        {
+            // Arrange
+            var condition = new TriggerBasedCondition();
+            var payload = new TriggerBasedConditionPayload(
+                new TriggerReferencePicker("test-trigger-1"),
+                TriggerSatisfiedConditionType.WhenTriggered);
+
+            await condition.InitializeAsync(payload, CancellationToken.None);
+
+            bool? lastEventValue = null;
+            ICondition eventCondition = null;
+            condition.SatisfiedChanged += (cond, val) =>
+            {
+                eventCondition = cond;
+                lastEventValue = val;
+            };
+
+            // Act
+            _mockTrigger.IsTriggered = true;
+
+            // Assert
+            Assert.That(lastEventValue, Is.True);
+            Assert.That(eventCondition, Is.SameAs(condition));
+
+            await condition.DisposeAsync();
+        }
+
+        #endregion
+
+        #region Dispose Tests
+
+        [Test]
+        public async Task DisposeAsync_UnsubscribesFromTrigger()
+        {
+            // Arrange
+            var condition = new TriggerBasedCondition();
+            var payload = new TriggerBasedConditionPayload(
+                new TriggerReferencePicker("test-trigger-1"),
+                TriggerSatisfiedConditionType.WhenTriggered);
+
+            await condition.InitializeAsync(payload, CancellationToken.None);
+
+            var eventFired = false;
+            condition.SatisfiedChanged += (_, __) => eventFired = true;
+
+            // Act
+            await condition.DisposeAsync();
+            _mockTrigger.IsTriggered = true;
+
+            // Assert - Event should NOT fire after disposal
+            Assert.That(eventFired, Is.False);
+        }
+
+        #endregion
 
         #region Initialization Tests
 
@@ -175,65 +235,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             Assert.That(condition.IsSatisfied, Is.False);
 
             await condition.DisposeAsync();
-        }
-
-        #endregion
-
-        #region Event Tests
-
-        [Test]
-        public async Task TriggerValueChanged_FiresSatisfiedChanged()
-        {
-            // Arrange
-            var condition = new TriggerBasedCondition();
-            var payload = new TriggerBasedConditionPayload(
-                new TriggerReferencePicker("test-trigger-1"),
-                TriggerSatisfiedConditionType.WhenTriggered);
-
-            await condition.InitializeAsync(payload, CancellationToken.None);
-
-            bool? lastEventValue = null;
-            ICondition eventCondition = null;
-            condition.SatisfiedChanged += (cond, val) =>
-            {
-                eventCondition = cond;
-                lastEventValue = val;
-            };
-
-            // Act
-            _mockTrigger.IsTriggered = true;
-
-            // Assert
-            Assert.That(lastEventValue, Is.True);
-            Assert.That(eventCondition, Is.SameAs(condition));
-
-            await condition.DisposeAsync();
-        }
-
-        #endregion
-
-        #region Dispose Tests
-
-        [Test]
-        public async Task DisposeAsync_UnsubscribesFromTrigger()
-        {
-            // Arrange
-            var condition = new TriggerBasedCondition();
-            var payload = new TriggerBasedConditionPayload(
-                new TriggerReferencePicker("test-trigger-1"),
-                TriggerSatisfiedConditionType.WhenTriggered);
-
-            await condition.InitializeAsync(payload, CancellationToken.None);
-
-            bool eventFired = false;
-            condition.SatisfiedChanged += (_, __) => eventFired = true;
-
-            // Act
-            await condition.DisposeAsync();
-            _mockTrigger.IsTriggered = true;
-
-            // Assert - Event should NOT fire after disposal
-            Assert.That(eventFired, Is.False);
         }
 
         #endregion

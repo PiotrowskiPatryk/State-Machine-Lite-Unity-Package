@@ -9,6 +9,7 @@ namespace Dev.Cortez.StateMachines.Core.Registry
         private readonly ObserverTopic<IStateMachine> _stateMachineTopic = new();
         private readonly ObserverTopic<IState> _stateTopic = new();
         private readonly ObserverTopic<ITrigger> _triggerTopic = new();
+
         public static StateMachineContainerRegistry Instance { get; } = new();
 
         public void SubscribeStateMachine(IdentifiableObserver<IStateMachine> observer)

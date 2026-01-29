@@ -2,7 +2,7 @@
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.Registry;
 
-namespace Dev.Cortez.StateMachines.Core.ReferencePicker
+namespace Dev.Cortez.StateMachines.Core.ReferencePicker.State
 {
     [Serializable]
     public sealed class StateReferencePicker : ReferencePickerBase<IState>
@@ -11,7 +11,7 @@ namespace Dev.Cortez.StateMachines.Core.ReferencePicker
         {
         }
 
-        public StateReferencePicker(string selectedItemId, string selectedStateMachineContainerGuid = null) 
+        public StateReferencePicker(string selectedItemId, string selectedStateMachineContainerGuid = null)
             : base(selectedItemId, selectedStateMachineContainerGuid)
         {
         }

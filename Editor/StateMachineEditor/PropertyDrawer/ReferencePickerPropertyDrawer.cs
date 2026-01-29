@@ -17,11 +17,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
 
         protected SerializedProperty SerializedProperty { get; private set; }
 
-        protected StateMachines.Core.StateMachineConfiguration.StateMachineContainer SelectedStateMachineContainer
-        {
-            get;
-            private set;
-        }
+        protected StateMachineContainer SelectedStateMachineContainer { get; private set; }
 
         private string SelectedItemReferenceId
         {
