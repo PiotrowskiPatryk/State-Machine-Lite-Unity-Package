@@ -67,7 +67,7 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
         public bool IsValid()
         {
             return !string.IsNullOrWhiteSpace(_id) && !string.IsNullOrWhiteSpace(_name) &&
-                   !string.IsNullOrWhiteSpace(_typeName) && Payload != null;
+                   !string.IsNullOrWhiteSpace(_typeName) && Payload?.IsValid() == true;
         }
 
         public void OnBeforeSerialize()
