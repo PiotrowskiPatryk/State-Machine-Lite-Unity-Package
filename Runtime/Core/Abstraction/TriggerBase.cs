@@ -15,6 +15,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
         protected TriggerBase(string id, string name, string description) : base(id, name, description)
         {
+            InitializationStatus = InitializationStatus.NotInitialized;
         }
 
         public async UniTask<bool> InitializeAsync(IPayload payload, CancellationToken cancellationToken)
@@ -23,10 +24,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
 
             if (!InitializationStatus.CanInitialize())
             {
-                LoggerService.Logger.LogError("Unable to initialize trigger base");
+                LoggerService.Logger.LogError($"Unable to initialize trigger: [id:{Id}, name:{Name}]");
+
                 return false;
             }
-            
+
             InitializationStatus = InitializationStatus.Initializing;
 
             if (payload is not TPayload tPayload)
@@ -72,9 +74,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 }
 
                 _isTriggered = value;
-             
+
                 LoggerService.Logger.LogTrace($"Trigger [{Id}: {Name}] is now {_isTriggered}");
-                
+
                 TriggeredValueChanged?.Invoke(this, value);
             }
         }

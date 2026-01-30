@@ -1,11 +1,14 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 
 namespace Dev.Cortez.StateMachines.Core.Trigger
 {
-    public sealed class DefaultTrigger : TriggerBase
+    public sealed class DefaultTrigger : TriggerBase<DefaultTriggerPayload>
     {
+        private DefaultTriggerPayload _payload;
+
         public DefaultTrigger(string id, string name, string description) : base(id, name, description)
         {
         }
@@ -19,13 +22,72 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
 
             if (targetValue)
             {
+                await HandleActivationDelay(cancellationToken);
                 IsTriggered = true;
-                await UniTask.Yield();
+
+                if (_payload.DeactivationRule == TriggerDeactivationRule.Never)
+                {
+                    return true;
+                }
+
+                await HandleDeactivationDelay(cancellationToken);
             }
 
             IsTriggered = false;
 
             return true;
+        }
+
+        protected override UniTask<bool> InitializeAsync(DefaultTriggerPayload payload,
+            CancellationToken cancellationToken)
+        {
+            _payload = payload;
+
+            return UniTask.FromResult(true);
+        }
+
+        private UniTask HandleActivationDelay(CancellationToken cancellationToken)
+        {
+            switch (_payload.ActivationRule)
+            {
+                case TriggerActivationRule.AfterFixedFrame:
+                    return UniTask.DelayFrame(_payload.ActivationFrameDelay, PlayerLoopTiming.FixedUpdate,
+                        cancellationToken);
+                case TriggerActivationRule.AfterTime:
+                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.ActivationTimeDelay),
+                        cancellationToken: cancellationToken);
+                case TriggerActivationRule.AfterTimeUnscaled:
+                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.ActivationTimeDelay), true,
+                        cancellationToken: cancellationToken);
+                case TriggerActivationRule.Immediately:
+                    return UniTask.CompletedTask;
+                case TriggerActivationRule.Undefined:
+                    throw new ArgumentOutOfRangeException(nameof(_payload.ActivationRule));
+            }
+
+            return UniTask.CompletedTask;
+        }
+
+        private UniTask HandleDeactivationDelay(CancellationToken cancellationToken)
+        {
+            switch (_payload.DeactivationRule)
+            {
+                case TriggerDeactivationRule.NextFrame:
+                    return UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                case TriggerDeactivationRule.AfterFixedFrame:
+                    return UniTask.DelayFrame(_payload.DeactivationFrameDelay, PlayerLoopTiming.FixedUpdate,
+                        cancellationToken);
+                case TriggerDeactivationRule.AfterTime:
+                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.DeactivationTimeDelay),
+                        cancellationToken: cancellationToken);
+                case TriggerDeactivationRule.AfterTimeUnscaled:
+                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.DeactivationTimeDelay), true,
+                        cancellationToken: cancellationToken);
+                case TriggerDeactivationRule.Never:
+                    return UniTask.CompletedTask;
+            }
+
+            return UniTask.CompletedTask;
         }
     }
 }
