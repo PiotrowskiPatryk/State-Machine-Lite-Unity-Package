@@ -107,23 +107,25 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 
         public void OnBeforeSerialize()
         {
+#if UNITY_EDITOR
             if (_payload != null)
             {
                 _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
             }
 
             UpdateTypeName();
+#endif
         }
 
         public void OnAfterDeserialize()
         {
 #if UNITY_EDITOR
+            EditorApplication.delayCall -= UpdateTypeName;
             EditorApplication.delayCall += UpdateTypeName;
-#else
-            UpdateTypeName();
 #endif
         }
 
+#if UNITY_EDITOR
         private void UpdateTypeName()
         {
             var resolvedType = ScriptGuidUtility.GetTypeFromGuid(_scriptGuid);
@@ -140,5 +142,6 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
                 _stateMachineTypeName = resolvedStateMachineType.AssemblyQualifiedName;
             }
         }
+#endif
     }
 }
