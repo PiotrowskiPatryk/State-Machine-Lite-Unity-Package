@@ -34,15 +34,8 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
 
         public bool IsValid()
         {
-            if (_triggerActivationRule == TriggerActivationRule.Undefined ||
-                _triggerDeactivationRule == TriggerDeactivationRule.Undefined)
-            {
-                return false;
-            }
-
             var isActivationValid = _triggerActivationRule switch
             {
-                TriggerActivationRule.Undefined => false,
                 TriggerActivationRule.Immediately => true,
                 TriggerActivationRule.AfterFixedFrame => _triggerActivationFrameDelay >= 1,
                 TriggerActivationRule.AfterTime or TriggerActivationRule.AfterTimeUnscaled =>
@@ -52,7 +45,7 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
 
             var isDeactivationValid = _triggerDeactivationRule switch
             {
-                TriggerDeactivationRule.Undefined => false,
+                TriggerDeactivationRule.Never => true,
                 TriggerDeactivationRule.NextFrame => true,
                 TriggerDeactivationRule.AfterFixedFrame => _triggerDeactivationFrameDelay >= 1,
                 TriggerDeactivationRule.AfterTime or TriggerDeactivationRule.AfterTimeUnscaled =>

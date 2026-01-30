@@ -23,9 +23,7 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
                 return true;
             }
 
-            _lifecycleCts?.Cancel();
-            _lifecycleCts?.Dispose();
-            _lifecycleCts = null;
+            CancelAndDisposeLifecycleToken();
 
             if (targetValue)
             {
@@ -59,9 +57,7 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
 
         protected override ValueTask DoDisposeAsync()
         {
-            _lifecycleCts?.Cancel();
-            _lifecycleCts?.Dispose();
-            _lifecycleCts = null;
+            CancelAndDisposeLifecycleToken();
 
             return base.DoDisposeAsync();
         }
@@ -72,6 +68,13 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
             _payload = payload;
 
             return UniTask.FromResult(true);
+        }
+
+        private void CancelAndDisposeLifecycleToken()
+        {
+            _lifecycleCts?.Cancel();
+            _lifecycleCts?.Dispose();
+            _lifecycleCts = null;
         }
 
         private UniTask HandleActivationDelay(CancellationToken cancellationToken)
