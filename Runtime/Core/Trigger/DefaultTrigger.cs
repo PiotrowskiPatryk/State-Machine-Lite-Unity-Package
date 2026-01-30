@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 
@@ -8,6 +9,8 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
     public sealed class DefaultTrigger : TriggerBase<DefaultTriggerPayload>
     {
         private DefaultTriggerPayload _payload;
+
+        private CancellationTokenSource _lifecycleCts;
 
         public DefaultTrigger(string id, string name, string description) : base(id, name, description)
         {
@@ -20,22 +23,47 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
                 return true;
             }
 
+            _lifecycleCts?.Cancel();
+            _lifecycleCts?.Dispose();
+            _lifecycleCts = null;
+
             if (targetValue)
             {
-                await HandleActivationDelay(cancellationToken);
-                IsTriggered = true;
+                _lifecycleCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-                if (_payload.DeactivationRule == TriggerDeactivationRule.Never)
+                try
                 {
-                    return true;
-                }
+                    await HandleActivationDelay(_lifecycleCts.Token);
+                    IsTriggered = true;
 
-                await HandleDeactivationDelay(cancellationToken);
+                    if (_payload.DeactivationRule == TriggerDeactivationRule.Never)
+                    {
+                        return true;
+                    }
+
+                    await HandleDeactivationDelay(_lifecycleCts.Token);
+                    IsTriggered = false;
+                }
+                catch (OperationCanceledException)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                IsTriggered = false;
             }
 
-            IsTriggered = false;
-
             return true;
+        }
+
+        protected override ValueTask DoDisposeAsync()
+        {
+            _lifecycleCts?.Cancel();
+            _lifecycleCts?.Dispose();
+            _lifecycleCts = null;
+
+            return base.DoDisposeAsync();
         }
 
         protected override UniTask<bool> InitializeAsync(DefaultTriggerPayload payload,
@@ -61,8 +89,6 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
                         cancellationToken: cancellationToken);
                 case TriggerActivationRule.Immediately:
                     return UniTask.CompletedTask;
-                case TriggerActivationRule.Undefined:
-                    throw new ArgumentOutOfRangeException(nameof(_payload.ActivationRule));
             }
 
             return UniTask.CompletedTask;
