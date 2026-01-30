@@ -79,44 +79,39 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
 
         private UniTask HandleActivationDelay(CancellationToken cancellationToken)
         {
-            switch (_payload.ActivationRule)
+            return _payload.ActivationRule switch
             {
-                case TriggerActivationRule.AfterFixedFrame:
-                    return UniTask.DelayFrame(_payload.ActivationFrameDelay, PlayerLoopTiming.FixedUpdate,
-                        cancellationToken);
-                case TriggerActivationRule.AfterTime:
-                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.ActivationTimeDelay),
-                        cancellationToken: cancellationToken);
-                case TriggerActivationRule.AfterTimeUnscaled:
-                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.ActivationTimeDelay), true,
-                        cancellationToken: cancellationToken);
-                case TriggerActivationRule.Immediately:
-                    return UniTask.CompletedTask;
-            }
-
-            return UniTask.CompletedTask;
+                TriggerActivationRule.AfterFixedFrame => UniTask.DelayFrame(_payload.ActivationFrameDelay,
+                    PlayerLoopTiming.Update, cancellationToken),
+                TriggerActivationRule.AfterTime => UniTask.Delay(TimeSpan.FromSeconds(_payload.ActivationTimeDelay),
+                    cancellationToken: cancellationToken),
+                TriggerActivationRule.AfterTimeUnscaled => UniTask.Delay(
+                    TimeSpan.FromSeconds(_payload.ActivationTimeDelay), true, cancellationToken: cancellationToken),
+                TriggerActivationRule.Immediately => UniTask.CompletedTask,
+#pragma warning disable S3928
+                _ => throw new ArgumentOutOfRangeException(nameof(_payload.ActivationRule),
+                    "Unsupported activation rule.")
+#pragma warning restore S3928
+            };
         }
 
         private UniTask HandleDeactivationDelay(CancellationToken cancellationToken)
         {
-            switch (_payload.DeactivationRule)
+            return _payload.DeactivationRule switch
             {
-                case TriggerDeactivationRule.NextFrame:
-                    return UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-                case TriggerDeactivationRule.AfterFixedFrame:
-                    return UniTask.DelayFrame(_payload.DeactivationFrameDelay, PlayerLoopTiming.FixedUpdate,
-                        cancellationToken);
-                case TriggerDeactivationRule.AfterTime:
-                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.DeactivationTimeDelay),
-                        cancellationToken: cancellationToken);
-                case TriggerDeactivationRule.AfterTimeUnscaled:
-                    return UniTask.Delay(TimeSpan.FromSeconds(_payload.DeactivationTimeDelay), true,
-                        cancellationToken: cancellationToken);
-                case TriggerDeactivationRule.Never:
-                    return UniTask.CompletedTask;
-            }
-
-            return UniTask.CompletedTask;
+                TriggerDeactivationRule.NextFrame => UniTask.Yield(PlayerLoopTiming.Update, cancellationToken),
+                TriggerDeactivationRule.AfterFixedFrame => UniTask.DelayFrame(_payload.DeactivationFrameDelay,
+                    PlayerLoopTiming.Update, cancellationToken),
+                TriggerDeactivationRule.AfterTime => UniTask.Delay(TimeSpan.FromSeconds(_payload.DeactivationTimeDelay),
+                    cancellationToken: cancellationToken),
+                TriggerDeactivationRule.AfterTimeUnscaled => UniTask.Delay(
+                    TimeSpan.FromSeconds(_payload.DeactivationTimeDelay), true, cancellationToken: cancellationToken),
+                TriggerDeactivationRule.Never => UniTask.CompletedTask,
+#pragma warning disable S3928
+                _ => throw new ArgumentOutOfRangeException(nameof(_payload.DeactivationRule), _payload.DeactivationRule,
+                    "Unsupported deactivation rule.")
+#pragma warning restore S3928
+            };
         }
     }
 }
