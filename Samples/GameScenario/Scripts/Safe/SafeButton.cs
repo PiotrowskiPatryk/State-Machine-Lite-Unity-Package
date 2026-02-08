@@ -18,6 +18,16 @@ namespace Samples.GameScenario.Scripts
         [SerializeField]
         private SafeButtonType _safeButtonType;
 
+        public void Activate()
+        {
+            _interactable.Activate();
+        }
+
+        public void Deactivate()
+        {
+            _interactable.Deactivate();
+        }
+
         private void OnValidate()
         {
             if (!_audioSource)

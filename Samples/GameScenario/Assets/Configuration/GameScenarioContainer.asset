@@ -16,8 +16,7 @@ MonoBehaviour:
     _triggers:
     - _id: ad511460dddb46629622ef36c50b0c88
       _name: Safe is opened
-      _description: This trigger is only used to inform that the safe is opened.
-        It sends an event only for one frame period
+      _description: This trigger is only used to inform that the safe is opened
       _typeName: Dev.Cortez.StateMachines.Core.Trigger.DefaultTrigger, Dev.Cortez.StateMachines,
         Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       _scriptGuid: bdfdae4c6e4f4d3dae9415456f94eb8b
@@ -41,6 +40,24 @@ MonoBehaviour:
       _scriptGuid: bdfdae4c6e4f4d3dae9415456f94eb8b
       _payload:
         rid: 8738052195904913503
+      _payloadScriptGuid: ac0acb7b2eb34667b6b55915b212febd
+    - _id: 6b4d50181b18469d9c1995949e2c65a4
+      _name: Picked the key
+      _description: 
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.DefaultTrigger, Dev.Cortez.StateMachines,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _scriptGuid: bdfdae4c6e4f4d3dae9415456f94eb8b
+      _payload:
+        rid: 8738052196338761918
+      _payloadScriptGuid: ac0acb7b2eb34667b6b55915b212febd
+    - _id: b0f962694ceb4a38878b248a16956199
+      _name: StartedOpeningDoor
+      _description: 
+      _typeName: Dev.Cortez.StateMachines.Core.Trigger.DefaultTrigger, Dev.Cortez.StateMachines,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _scriptGuid: bdfdae4c6e4f4d3dae9415456f94eb8b
+      _payload:
+        rid: 8738052196338761989
       _payloadScriptGuid: ac0acb7b2eb34667b6b55915b212febd
   _stateMachineConfiguration:
     _stateMachines:
@@ -70,7 +87,7 @@ MonoBehaviour:
         _transitionRules: []
       _states:
       - _id: 52ad23818e3942098784ac50aa345ad9
-        _nodePosition: {x: -100, y: 0}
+        _nodePosition: {x: -200, y: 0}
         _name: Locked Safe
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.LockedSafeState,
@@ -84,9 +101,9 @@ MonoBehaviour:
         _payloadScriptGuid: 956e5e24010944e3b24588d395ba5d5f
         _transitionRules:
         - _targetState:
-            _id: 2133530559f64e50940044ce3338072c
-            _nodePosition: {x: 600, y: 300}
-            _name: Unlocking Safe
+            _id: 7244351fa3064a568dff8cb6a1878651
+            _nodePosition: {x: 270, y: 190}
+            _name: Unlocking
             _description: 
             _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockingSafeState,
               StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -95,7 +112,7 @@ MonoBehaviour:
               StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
             _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
             _payload:
-              rid: 8738052175591112793
+              rid: 8738052196338761871
             _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
             _transitionRules: []
           _priority: 0
@@ -110,22 +127,8 @@ MonoBehaviour:
               rid: 8738052175591112806
             _payloadScriptGuid: 398ff2e1a60d40bb8e5b9cf6b1bea0f0
           _conditionFilterType: 1
-      - _id: 96a05df0f5ef463eaaf43164407f9587
-        _nodePosition: {x: 600, y: 300}
-        _name: Locking Safe
-        _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.LockingSafeState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _scriptGuid: 4b5ac3bd26494d71803ff773634d14c4
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
-        _payload:
-          rid: 8738052174556430430
-        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
-        _transitionRules: []
       - _id: 107e6613acfa46ceb361875d111ae546
-        _nodePosition: {x: 600, y: 0}
+        _nodePosition: {x: 690, y: 200}
         _name: Unlocked Safe
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockedSafeState,
@@ -138,8 +141,8 @@ MonoBehaviour:
           rid: 8738052195904913511
         _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
         _transitionRules: []
-      - _id: 2133530559f64e50940044ce3338072c
-        _nodePosition: {x: 280, y: 100}
+      - _id: 7244351fa3064a568dff8cb6a1878651
+        _nodePosition: {x: 270, y: 190}
         _name: Unlocking Safe
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockingSafeState,
@@ -149,24 +152,461 @@ MonoBehaviour:
           StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
         _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
         _payload:
-          rid: 8738052175591112793
-        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
-        _transitionRules: []
+          rid: 8738052196338761882
+        _payloadScriptGuid: 970d53367c604fd19334adeffe37256d
+        _transitionRules:
+        - _targetState:
+            _id: 107e6613acfa46ceb361875d111ae546
+            _nodePosition: {x: 690, y: 200}
+            _name: Unlocked Safe
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockedSafeState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: 441913713c9947d0974dedf9f140a61a
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
+            _payload:
+              rid: 8738052195904913511
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: f35d749c9b444665981ef19ffb84d86e
+            _name: Safe is opened
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.TriggerBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: d06c59c369b94c94b7fc83f0feb38a33
+            _payload:
+              rid: 8738052196338761879
+            _payloadScriptGuid: 398ff2e1a60d40bb8e5b9cf6b1bea0f0
+          _conditionFilterType: 1
       _payload:
         rid: 8738052174556430437
       _payloadScriptGuid: 00bd7cd91c194dc1adee98bbb94aae07
+    - _id: 6b8d74e032924b61969fee2718bc5fe1
+      _name: Scenario
+      _description: 
+      _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverScriptGuid: ca3067e8e48142e7859c192810f527ff
+      _initialState:
+        _id: 9c53fc6b54b447a58d62e766ab78e5c2
+        _nodePosition: {x: 0, y: 0}
+        _name: Open Safe
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenSafeScenarioState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 1d7b907ba5504db38cadccbca6dfd96d
+        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+        _payload:
+          rid: 8738052196338761860
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules: []
+      _states:
+      - _id: 9c53fc6b54b447a58d62e766ab78e5c2
+        _nodePosition: {x: 0, y: 0}
+        _name: Open Safe
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenSafeScenarioState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 1d7b907ba5504db38cadccbca6dfd96d
+        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+        _payload:
+          rid: 8738052196338761853
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules:
+        - _targetState:
+            _id: 9a7a86b87659487fa1a06599a8e846d5
+            _nodePosition: {x: 470, y: 0}
+            _name: Pickup The Key
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.PickupTheKeyScenarioState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: 2561320b17bd4d4aa070e1877f73cc79
+            _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+            _payload:
+              rid: 8738052196338761857
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: 8c6e41ba9ed642f5803cf9efb6df46ba
+            _name: When safe is unlocked
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.StateBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: b5d16cd4e6334f009e9f8b1a7953ac79
+            _payload:
+              rid: 8738052196338761868
+            _payloadScriptGuid: bda8049af4fa4851a5452ad2725875a7
+          _conditionFilterType: 1
+      - _id: 636669744753438c9face7b11ee69625
+        _nodePosition: {x: 800, y: 0}
+        _name: Open The Door
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenTheDoorScenarioState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 5e193e0dc2584619a8e23eea0ec49115
+        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+        _payload:
+          rid: 8738052196338761855
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules:
+        - _targetState:
+            _id: c9376e82289b4b4880de22ad9bb2dd0d
+            _nodePosition: {x: 1200, y: 0}
+            _name: Scenario Completed
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.ScenarioCompletedState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: bc565ad5530c4e82bd1625c2e24d45f2
+            _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+            _payload:
+              rid: 8738052196338761859
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: 32580453a84e444aa3653554f6660700
+            _name: When door opened
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.StateBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: b5d16cd4e6334f009e9f8b1a7953ac79
+            _payload:
+              rid: 8738052196338762023
+            _payloadScriptGuid: bda8049af4fa4851a5452ad2725875a7
+          _conditionFilterType: 1
+      - _id: 9a7a86b87659487fa1a06599a8e846d5
+        _nodePosition: {x: 400, y: 0}
+        _name: Pickup The Key
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.PickupTheKeyScenarioState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 2561320b17bd4d4aa070e1877f73cc79
+        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+        _payload:
+          rid: 8738052196338761857
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules:
+        - _targetState:
+            _id: 636669744753438c9face7b11ee69625
+            _nodePosition: {x: 900, y: 0}
+            _name: Open The Door
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenTheDoorScenarioState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: 5e193e0dc2584619a8e23eea0ec49115
+            _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+            _payload:
+              rid: 8738052196338761855
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: 52147fd0f57b4330aef9c6ca86dc41f9
+            _name: When key was picked
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.StateBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: b5d16cd4e6334f009e9f8b1a7953ac79
+            _payload:
+              rid: 8738052196338761935
+            _payloadScriptGuid: bda8049af4fa4851a5452ad2725875a7
+          _conditionFilterType: 1
+      - _id: c9376e82289b4b4880de22ad9bb2dd0d
+        _nodePosition: {x: 1200, y: 0}
+        _name: Scenario Completed
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.ScenarioCompletedState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: bc565ad5530c4e82bd1625c2e24d45f2
+        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
+        _payload:
+          rid: 8738052196338761859
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules: []
+      _payload:
+        rid: 8738052196338761846
+      _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+    - _id: fcd335d7c58b48188202f546105bab35
+      _name: Key State Machine
+      _description: 
+      _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverScriptGuid: ca3067e8e48142e7859c192810f527ff
+      _initialState:
+        _id: 1601e33b860b42528228056918133532
+        _nodePosition: {x: 0, y: 20}
+        _name: Not interactable
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.NonInteractableKeyState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 3ee8f8222bdc4a0889db57e943f46e14
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+        _payload:
+          rid: 8738052196338761860
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules: []
+      _states:
+      - _id: 1601e33b860b42528228056918133532
+        _nodePosition: {x: -30, y: 100}
+        _name: Not interactable
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.NonInteractableKeyState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 3ee8f8222bdc4a0889db57e943f46e14
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+        _payload:
+          rid: 8738052196338761904
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules:
+        - _targetState:
+            _id: e3442b52348e4af6a95d31df1446e362
+            _nodePosition: {x: 500, y: 100}
+            _name: Ready to pick
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Key.ReadyToPickKeyState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: cb35d6ac9ee24ed4afc2e364425f0754
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+            _payload:
+              rid: 8738052196338761906
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: f807407462844eaf8e5cfcd495842bdf
+            _name: When scenario is entering to pickup the key state
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.StateBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: b5d16cd4e6334f009e9f8b1a7953ac79
+            _payload:
+              rid: 8738052196338761916
+            _payloadScriptGuid: bda8049af4fa4851a5452ad2725875a7
+          _conditionFilterType: 1
+      - _id: e3442b52348e4af6a95d31df1446e362
+        _nodePosition: {x: 500, y: 100}
+        _name: Ready to pick
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.ReadyToPickKeyState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: cb35d6ac9ee24ed4afc2e364425f0754
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+        _payload:
+          rid: 8738052196338761954
+        _payloadScriptGuid: 0e9dc6ea678744c69cb7965d7103fb96
+        _transitionRules:
+        - _targetState:
+            _id: 0e1cedc26d5344ed84daf81a935febf5
+            _nodePosition: {x: 900, y: 100}
+            _name: Picked
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyPickedState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: 9950f249dc024b479db5d2dbf252f940
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+            _payload:
+              rid: 8738052196338761908
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: 788a4b5411d34dfdad25d1d688e4ea86
+            _name: When the key is picked
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.TriggerBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: d06c59c369b94c94b7fc83f0feb38a33
+            _payload:
+              rid: 8738052196338761926
+            _payloadScriptGuid: 398ff2e1a60d40bb8e5b9cf6b1bea0f0
+          _conditionFilterType: 1
+      - _id: 0e1cedc26d5344ed84daf81a935febf5
+        _nodePosition: {x: 900, y: 100}
+        _name: Picked
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyPickedState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 9950f249dc024b479db5d2dbf252f940
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
+        _payload:
+          rid: 8738052196338761908
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules: []
+      _payload:
+        rid: 8738052196338761901
+      _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+    - _id: d086d6aa796e4c47a4ae827f921ef388
+      _name: Door State Machine
+      _description: 
+      _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+      _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
+        Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _transitionSolverScriptGuid: ca3067e8e48142e7859c192810f527ff
+      _initialState:
+        _id: e02e84eee2b347228774758ca6f6f2a8
+        _nodePosition: {x: 0, y: 0}
+        _name: NonInteractable
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.NonInteractableDoorState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 63d727f7cb8447ee9f78d648d3885366
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+        _payload:
+          rid: 8738052196338761860
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules: []
+      _states:
+      - _id: e02e84eee2b347228774758ca6f6f2a8
+        _nodePosition: {x: -140, y: 0}
+        _name: NonInteractable
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.NonInteractableDoorState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: 63d727f7cb8447ee9f78d648d3885366
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+        _payload:
+          rid: 8738052196338761982
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules:
+        - _targetState:
+            _id: 30a2a0909a3f437da0a114464a1245dc
+            _nodePosition: {x: 300, y: 0}
+            _name: Interactable
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.InteractableDoorState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: aef6fcc7e02c43a78edbe9be5e1d3b6d
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+            _payload:
+              rid: 8738052196338761984
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: f32da4125f6a410f9e46bac7c1c03a1b
+            _name: When open the door state entered
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.StateBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: b5d16cd4e6334f009e9f8b1a7953ac79
+            _payload:
+              rid: 8738052196338761997
+            _payloadScriptGuid: bda8049af4fa4851a5452ad2725875a7
+          _conditionFilterType: 1
+      - _id: 30a2a0909a3f437da0a114464a1245dc
+        _nodePosition: {x: 300, y: 0}
+        _name: Interactable
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.InteractableDoorState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: aef6fcc7e02c43a78edbe9be5e1d3b6d
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+        _payload:
+          rid: 8738052196338762015
+        _payloadScriptGuid: 3f1a854889d248d8914200f7188a0a80
+        _transitionRules:
+        - _targetState:
+            _id: ebe2a44890774b758e4bb613a5b02f6f
+            _nodePosition: {x: 700, y: 0}
+            _name: Opened
+            _description: 
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.OpenedDoorState,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: fbcbf8dfeb3640e68adddbcee079a7d6
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+            _payload:
+              rid: 8738052196338761986
+            _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+            _transitionRules: []
+          _priority: 0
+          _conditionDefinitions:
+          - _id: f20f9ddd319e46f5b6ea6f5da497bb2c
+            _name: Started opening door
+            _description: 
+            _typeName: Dev.Cortez.StateMachines.Core.Condition.TriggerBasedCondition,
+              Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _scriptGuid: d06c59c369b94c94b7fc83f0feb38a33
+            _payload:
+              rid: 8738052196338762005
+            _payloadScriptGuid: 398ff2e1a60d40bb8e5b9cf6b1bea0f0
+          _conditionFilterType: 1
+      - _id: ebe2a44890774b758e4bb613a5b02f6f
+        _nodePosition: {x: 700, y: 0}
+        _name: Opened
+        _description: 
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.OpenedDoorState,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _scriptGuid: fbcbf8dfeb3640e68adddbcee079a7d6
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
+          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
+        _payload:
+          rid: 8738052196338761986
+        _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
+        _transitionRules: []
+      _payload:
+        rid: 8738052196338761979
+      _payloadScriptGuid: f65fc57f83fb42bbbf7e4ff2316c4cb8
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8738052174556430430
-      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
-      data: {}
     - rid: 8738052174556430437
       type: {class: SafePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe, asm: StateMachineExamples.Scenario}
       data:
-        _openSafeSequence: 0100000002000000
+        _openSafeSequence: 03000000020000000100000004000000
     - rid: 8738052175591112791
       type: {class: DefaultTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
       data:
@@ -176,9 +616,6 @@ MonoBehaviour:
         _triggerDeactivationRule: 2
         _triggerDeactivationFrameDelay: 0
         _triggerDeactivationTimeDelayInSeconds: 0
-    - rid: 8738052175591112793
-      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
-      data: {}
     - rid: 8738052175591112798
       type: {class: DefaultTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
       data:
@@ -221,4 +658,141 @@ MonoBehaviour:
           _selectedItemId: 5e10f66383d54f91817e76a43b68b5a8
     - rid: 8738052195904913511
       type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
-      data: {}
+      data: 
+    - rid: 8738052196338761846
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761853
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761855
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761857
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761859
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761860
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761868
+      type: {class: StateBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _stateReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 107e6613acfa46ceb361875d111ae546
+        _stateSatisfiedConditionType: 2
+    - rid: 8738052196338761871
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761879
+      type: {class: TriggerBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _triggerReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: ad511460dddb46629622ef36c50b0c88
+        _triggerSatisfiedConditionType: 1
+    - rid: 8738052196338761882
+      type: {class: UnlockingSafeStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe, asm: StateMachineExamples.Scenario}
+      data:
+        _triggeredOpenedSafe:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: ad511460dddb46629622ef36c50b0c88
+    - rid: 8738052196338761901
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761904
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761906
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761908
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761916
+      type: {class: StateBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _stateReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 9a7a86b87659487fa1a06599a8e846d5
+        _stateSatisfiedConditionType: 2
+    - rid: 8738052196338761918
+      type: {class: DefaultTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+      data:
+        _triggerActivationRule: 1
+        _triggerActivationFrameDelay: 0
+        _triggerActivationTimeDelayInSeconds: 0
+        _triggerDeactivationRule: 2
+        _triggerDeactivationFrameDelay: 0
+        _triggerDeactivationTimeDelayInSeconds: 0
+    - rid: 8738052196338761926
+      type: {class: TriggerBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _triggerReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 6b4d50181b18469d9c1995949e2c65a4
+        _triggerSatisfiedConditionType: 1
+    - rid: 8738052196338761935
+      type: {class: StateBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _stateReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 0e1cedc26d5344ed84daf81a935febf5
+        _stateSatisfiedConditionType: 2
+    - rid: 8738052196338761954
+      type: {class: ReadyToPickKeyStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Key.Payload, asm: StateMachineExamples.Scenario}
+      data:
+        _keyPickedTrigger:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 6b4d50181b18469d9c1995949e2c65a4
+    - rid: 8738052196338761979
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761982
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761984
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761986
+      type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
+      data: 
+    - rid: 8738052196338761989
+      type: {class: DefaultTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
+      data:
+        _triggerActivationRule: 1
+        _triggerActivationFrameDelay: 0
+        _triggerActivationTimeDelayInSeconds: 0
+        _triggerDeactivationRule: 2
+        _triggerDeactivationFrameDelay: 0
+        _triggerDeactivationTimeDelayInSeconds: 0
+    - rid: 8738052196338761997
+      type: {class: StateBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _stateReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 636669744753438c9face7b11ee69625
+        _stateSatisfiedConditionType: 2
+    - rid: 8738052196338762005
+      type: {class: TriggerBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _triggerReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: b0f962694ceb4a38878b248a16956199
+        _triggerSatisfiedConditionType: 1
+    - rid: 8738052196338762015
+      type: {class: InteractableDoorPayload, ns: Samples.GameScenario.Scripts.StateMachines.Door.Payload, asm: StateMachineExamples.Scenario}
+      data:
+        _doorInteractedTrigger:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: b0f962694ceb4a38878b248a16956199
+    - rid: 8738052196338762023
+      type: {class: StateBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
+      data:
+        _stateReferencePicker:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: ebe2a44890774b758e4bb613a5b02f6f
+        _stateSatisfiedConditionType: 2

@@ -25,6 +25,7 @@ namespace Samples.GameScenario.Scripts.StateMachines.Safe
         {
             SubscribeToEvents(context);
             InitializeSafeButtonsQueue(context.UnlockSafeButtonSequence);
+            ActivateSafeButtons(context);
 
             return UniTask.CompletedTask;
         }
@@ -32,8 +33,19 @@ namespace Samples.GameScenario.Scripts.StateMachines.Safe
         protected override UniTask DoExitAsync(StateContext context, CancellationToken cancellationToken)
         {
             UnsubscribeFromEvents(context);
+            DeactivateSafeButtons(context);
 
             return UniTask.CompletedTask;
+        }
+
+        private void ActivateSafeButtons(StateContext context)
+        {
+            context.SafeController.ActivateSafeButtons();
+        }
+
+        private void DeactivateSafeButtons(StateContext context)
+        {
+            context.SafeController.DeactivateSafeButtons();
         }
 
         private void InitializeSafeButtonsQueue(IReadOnlyCollection<SafeButtonType> contextUnlockSafeButtonSequence)

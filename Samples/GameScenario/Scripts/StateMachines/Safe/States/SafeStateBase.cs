@@ -6,9 +6,6 @@ using Dev.Cortez.StateMachines.Core.Interfaces;
 
 namespace Samples.GameScenario.Scripts.StateMachines.Safe
 {
-    /// <summary>
-    /// Base class for Safe states that don't require initialization payload.
-    /// </summary>
     public abstract class SafeStateBase : SafeStateBase<EmptyPayload>
     {
         protected override UniTask<bool> DoInitializeAsync(EmptyPayload payload,
@@ -18,10 +15,6 @@ namespace Samples.GameScenario.Scripts.StateMachines.Safe
         }
     }
 
-    /// <summary>
-    /// Base class for Safe states with a specific payload type.
-    /// All SafeStateBase&lt;T&gt; classes implement ISafeState for common type matching.
-    /// </summary>
     public abstract class SafeStateBase<TStatePayload> : StateBase<StateContext, TStatePayload>, ISafeState
         where TStatePayload : IPayload
     {

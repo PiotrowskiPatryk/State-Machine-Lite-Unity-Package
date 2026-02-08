@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Samples.GameScenario.Scripts.Interaction
 {
@@ -8,9 +7,12 @@ namespace Samples.GameScenario.Scripts.Interaction
         [SerializeField]
         private Camera _camera;
 
+        [SerializeField]
+        private float _interactDistanceInMeters = 1.0f;
+
         private Interactable _currentInteractable;
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (!Physics.Raycast(_camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)), out var hit) ||
                 !hit.collider.TryGetComponent(out Interactable interactable))
@@ -23,6 +25,11 @@ namespace Samples.GameScenario.Scripts.Interaction
                 return;
             }
 
+            if (!IsWithinInteractionRange(hit))
+            {
+                return;
+            }
+
             if (_currentInteractable && interactable != _currentInteractable)
             {
                 TriggerHoverEnterForNewInteractable(interactable);
@@ -32,6 +39,11 @@ namespace Samples.GameScenario.Scripts.Interaction
             {
                 interactable.TriggerClickInteraction();
             }
+        }
+
+        private bool IsWithinInteractionRange(RaycastHit hit)
+        {
+            return hit.distance <= _interactDistanceInMeters;
         }
 
         private void TriggerHoverEnterForNewInteractable(Interactable interactable)

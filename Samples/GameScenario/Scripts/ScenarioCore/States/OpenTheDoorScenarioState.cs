@@ -2,9 +2,9 @@
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
 
-namespace StateMachineExamples.Scenario.Scripts.ScenarioCore.States
+namespace Samples.GameScenario.Scripts.ScenarioCore.States
 {
-    public class FinishScenarioState : MainGameScenarioStateBase
+    public sealed class OpenTheDoorScenarioState : MainGameScenarioStateBase
     {
         protected override UniTask DoEnterAsync(EmptyContext context, CancellationToken cancellationToken)
         {

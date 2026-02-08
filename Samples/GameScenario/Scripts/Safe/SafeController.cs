@@ -31,11 +31,20 @@ namespace Samples.GameScenario.Scripts
             return UniTask.Delay(TimeSpan.FromSeconds(_showHideDoorDurationInSeconds), cancellationToken: token);
         }
 
-        public UniTask CloseSafeAsync(CancellationToken token)
+        public void ActivateSafeButtons()
         {
-            _animator.SetTrigger(CLOSE_SAFE);
+            foreach (var safeButton in _safeButtons)
+            {
+                safeButton.Activate();
+            }
+        }
 
-            return UniTask.Delay(TimeSpan.FromSeconds(_showHideDoorDurationInSeconds), cancellationToken: token);
+        public void DeactivateSafeButtons()
+        {
+            foreach (var safeButton in _safeButtons)
+            {
+                safeButton.Deactivate();
+            }
         }
 
         private void Awake()

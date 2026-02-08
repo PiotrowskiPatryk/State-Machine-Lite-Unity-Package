@@ -1,5 +1,5 @@
 ﻿using Dev.Cortez.StateMachines.Core.Abstraction;
-using StateMachineExamples.Scenario.Scripts.ScenarioCore.States;
+using Samples.GameScenario.Scripts.ScenarioCore.States;
 
 namespace StateMachineExamples.Scenario.Scripts.ScenarioCore
 {

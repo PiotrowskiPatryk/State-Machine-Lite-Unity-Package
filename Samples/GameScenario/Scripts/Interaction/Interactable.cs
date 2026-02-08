@@ -9,19 +9,40 @@ namespace Samples.GameScenario.Scripts.Interaction
         public UnityEvent triggeredHoverEnter;
         public UnityEvent triggeredHoverExit;
 
+        private bool _isActive;
+
         public void TriggerHoverEnter()
         {
-            triggeredHoverEnter?.Invoke();
+            if (_isActive)
+            {
+                triggeredHoverEnter?.Invoke();
+            }
         }
 
         public void TriggerHoverExit()
         {
-            triggeredHoverExit?.Invoke();
+            if (_isActive)
+            {
+                triggeredHoverExit?.Invoke();
+            }
         }
 
         public void TriggerClickInteraction()
         {
-            triggeredInteraction?.Invoke();
+            if (_isActive)
+            {
+                triggeredInteraction?.Invoke();
+            }
+        }
+
+        public void Deactivate()
+        {
+            _isActive = false;
+        }
+
+        public void Activate()
+        {
+            _isActive = true;
         }
     }
 }
