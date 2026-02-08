@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core.Attributes;
+using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -140,9 +141,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
                                FirstOrDefault(t => t != null)
                            ?? typeof(object);
 
-            var assignables = TypeCache.GetTypesDerivedFrom(baseType).
-                Where(t => !t.IsAbstract && !t.IsGenericTypeDefinition).
-                Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false));
+            // Use StateMachineReflectionUtilities for proper generic type resolution
+            var assignables = StateMachineReflectionUtilities.GetConcreteTypeCandidates(baseType);
 
             // Optionally include baseType itself if concrete and not excluded
             if (!baseType.IsAbstract && !baseType.IsInterface && !baseType.IsGenericTypeDefinition &&

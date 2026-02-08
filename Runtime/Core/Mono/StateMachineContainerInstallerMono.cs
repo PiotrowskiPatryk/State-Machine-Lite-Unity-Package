@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.Mono
 {
+    [DefaultExecutionOrder(1000)]
     public class StateMachineContainerInstallerMono : MonoBehaviour
     {
         private readonly StateMachineContainerInstaller _stateMachineContainerInstaller = new();
