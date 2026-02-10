@@ -3,7 +3,7 @@ using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.ReferencePicker.Trigger;
 using UnityEngine;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.Payload
 {
     [Serializable]
     public sealed class LockedSafeStatePayload : IPayload

@@ -2,8 +2,12 @@
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using JetBrains.Annotations;
+using Samples.GameScenario.Scripts.Safe;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Context;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Payload;
+using Samples.GameScenario.Scripts.StateMachines.Safe.States;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine
 {
     [UsedImplicitly]
     public sealed class SafeStateMachine : StateMachineBase<ISafeState, SafePayload, StateContext>

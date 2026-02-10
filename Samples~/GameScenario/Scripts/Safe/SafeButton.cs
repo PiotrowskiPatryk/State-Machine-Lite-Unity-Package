@@ -2,7 +2,7 @@
 using Samples.GameScenario.Scripts.Interaction;
 using UnityEngine;
 
-namespace Samples.GameScenario.Scripts
+namespace Samples.GameScenario.Scripts.Safe
 {
     [RequireComponent(typeof(Interactable)), RequireComponent(typeof(AudioSource))]
     public sealed class SafeButton : MonoBehaviour

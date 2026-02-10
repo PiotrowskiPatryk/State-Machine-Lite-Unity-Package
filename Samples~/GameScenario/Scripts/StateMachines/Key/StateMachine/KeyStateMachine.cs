@@ -1,14 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using Dev.Cortez.StateMachines.Core.Data;
+using JetBrains.Annotations;
 using Samples.GameScenario.Scripts.Key;
-using UnityEngine;
+using Samples.GameScenario.Scripts.StateMachines.Key.Context;
+using Samples.GameScenario.Scripts.StateMachines.Key.States;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Key
+namespace Samples.GameScenario.Scripts.StateMachines.Key.StateMachine
 {
+    [UsedImplicitly]
     public class KeyStateMachine : StateMachineBase<IKeyState, KeyContext>
     {
         private KeyContext _keyContext;

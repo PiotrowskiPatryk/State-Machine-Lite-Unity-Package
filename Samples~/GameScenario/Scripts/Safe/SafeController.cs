@@ -2,9 +2,8 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Samples.GameScenario.Scripts
+namespace Samples.GameScenario.Scripts.Safe
 {
     public sealed class SafeController : MonoBehaviour
     {

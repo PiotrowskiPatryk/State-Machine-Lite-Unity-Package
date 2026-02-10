@@ -3,8 +3,9 @@ using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Context;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.States
 {
     public abstract class SafeStateBase : SafeStateBase<EmptyPayload>
     {

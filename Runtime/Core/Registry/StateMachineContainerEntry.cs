@@ -47,8 +47,8 @@ namespace Dev.Cortez.StateMachines.Core.Registry
 
         public async ValueTask DisposeAsync()
         {
-            await _stateMachines.Select(stateMachine => stateMachine.Value.DisposeAsync().AsUniTask());
-            await _triggers.Select(trigger => trigger.Value.DisposeAsync().AsUniTask());
+            await UniTask.WhenAll(_stateMachines.Select(stateMachine => stateMachine.Value.DisposeAsync().AsUniTask()));
+            await UniTask.WhenAll(_triggers.Select(trigger => trigger.Value.DisposeAsync().AsUniTask()));
         }
     }
 }

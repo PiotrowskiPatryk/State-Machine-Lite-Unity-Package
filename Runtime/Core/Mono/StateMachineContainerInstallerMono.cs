@@ -86,9 +86,9 @@ namespace Dev.Cortez.StateMachines.Core.Mono
 
         private void OnDestroy()
         {
-            if (_stateMachineContainerInstaller != null)
+            if (_stateMachineContainerInstaller != null && StateMachineContainerEntry != null)
             {
-                _stateMachineContainerInstaller.UninstallAsync(StateMachineContainerEntry).GetAwaiter().GetResult();
+                _stateMachineContainerInstaller.UninstallAsync(StateMachineContainerEntry).Forget();
                 StateMachineContainerEntry = null;
             }
         }

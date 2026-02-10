@@ -1,6 +1,7 @@
 ﻿using Dev.Cortez.StateMachines.Core.Interfaces;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Context;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.States
 {
     /// <summary>
     /// Marker interface for all Safe state machine states.

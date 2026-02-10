@@ -1,8 +1,10 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Context;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Payload;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.States
 {
     [UsedImplicitly]
     public sealed class UnlockingSafeState : SafeStateBase<UnlockingSafeStatePayload>

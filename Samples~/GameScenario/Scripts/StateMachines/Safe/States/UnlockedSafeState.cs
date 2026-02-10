@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
-using Dev.Cortez.StateMachines.Core.ReferencePicker.Trigger;
 using JetBrains.Annotations;
+using Samples.GameScenario.Scripts.StateMachines.Safe.Context;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.States
 {
     [UsedImplicitly]
     public sealed class UnlockedSafeState : SafeStateBase

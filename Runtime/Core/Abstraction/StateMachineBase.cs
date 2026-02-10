@@ -364,7 +364,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             try
             {
                 await DoDisposeAsync();
-                await _states.Select(state => state.DisposeAsync().AsUniTask());
+                await UniTask.WhenAll(_states.Select(state => state.DisposeAsync().AsUniTask()));
 
                 _states.Clear();
                 _activeState = default;

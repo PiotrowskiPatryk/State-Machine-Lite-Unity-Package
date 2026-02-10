@@ -1,10 +1,12 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using Samples.GameScenario.Scripts.StateMachines.Door.Context;
 using Samples.GameScenario.Scripts.StateMachines.Door.Payload;
 
 namespace Samples.GameScenario.Scripts.StateMachines.Door.States
 {
+    [UsedImplicitly]
     public sealed class InteractableDoorState : DoorStateBase<InteractableDoorPayload>
     {
         private InteractableDoorPayload _payload;

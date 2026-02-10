@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using Samples.GameScenario.Scripts.Safe;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.Context
 {
     public sealed class StateContext
     {

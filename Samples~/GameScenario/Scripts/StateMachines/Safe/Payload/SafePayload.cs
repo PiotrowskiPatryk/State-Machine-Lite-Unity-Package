@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Samples.GameScenario.Scripts.Safe;
 using UnityEngine;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Safe
+namespace Samples.GameScenario.Scripts.StateMachines.Safe.Payload
 {
     [Serializable]
     public sealed class SafePayload : IPayload

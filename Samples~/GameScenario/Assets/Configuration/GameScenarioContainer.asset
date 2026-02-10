@@ -64,8 +64,9 @@ MonoBehaviour:
     - _id: bc169e122afa441c8f6e4daf2216ee33
       _name: Safe State Machine
       _description: 
-      _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+        Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
       _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
       _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -75,11 +76,13 @@ MonoBehaviour:
         _nodePosition: {x: -100, y: 0}
         _name: Locked Safe
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.LockedSafeState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.States.LockedSafeState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 36eb6d8f548341888f2948c9cb89f200
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
         _payload:
           rid: 8738052175591112811
@@ -90,14 +93,16 @@ MonoBehaviour:
         _nodePosition: {x: -200, y: 0}
         _name: Locked Safe
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.LockedSafeState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.States.LockedSafeState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 36eb6d8f548341888f2948c9cb89f200
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
         _payload:
-          rid: 8738052195904913507
+          rid: 8738052247571136515
         _payloadScriptGuid: 956e5e24010944e3b24588d395ba5d5f
         _transitionRules:
         - _targetState:
@@ -105,11 +110,13 @@ MonoBehaviour:
             _nodePosition: {x: 270, y: 190}
             _name: Unlocking
             _description: 
-            _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockingSafeState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.States.UnlockingSafeState,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: ac2b80cdb7ba4a4b9aa9175994e3217b
-            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
             _payload:
               rid: 8738052196338761871
@@ -131,11 +138,13 @@ MonoBehaviour:
         _nodePosition: {x: 690, y: 200}
         _name: Unlocked Safe
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockedSafeState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.States.UnlockedSafeState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 441913713c9947d0974dedf9f140a61a
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
         _payload:
           rid: 8738052195904913511
@@ -145,14 +154,16 @@ MonoBehaviour:
         _nodePosition: {x: 270, y: 190}
         _name: Unlocking Safe
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockingSafeState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.States.UnlockingSafeState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: ac2b80cdb7ba4a4b9aa9175994e3217b
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
         _payload:
-          rid: 8738052196338761882
+          rid: 8738052247571136517
         _payloadScriptGuid: 970d53367c604fd19334adeffe37256d
         _transitionRules:
         - _targetState:
@@ -160,11 +171,13 @@ MonoBehaviour:
             _nodePosition: {x: 690, y: 200}
             _name: Unlocked Safe
             _description: 
-            _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.UnlockedSafeState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Safe.States.UnlockedSafeState,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: 441913713c9947d0974dedf9f140a61a
-            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.SafeStateMachine,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Safe.StateMachine.SafeStateMachine,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: 50ab3e8313cb4f4c9ae47fa967952f45
             _payload:
               rid: 8738052195904913511
@@ -183,13 +196,14 @@ MonoBehaviour:
             _payloadScriptGuid: 398ff2e1a60d40bb8e5b9cf6b1bea0f0
           _conditionFilterType: 1
       _payload:
-        rid: 8738052174556430437
+        rid: 8738052247571136513
       _payloadScriptGuid: 00bd7cd91c194dc1adee98bbb94aae07
     - _id: 6b8d74e032924b61969fee2718bc5fe1
       _name: Scenario
       _description: 
-      _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+        Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
       _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
       _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -200,10 +214,12 @@ MonoBehaviour:
         _name: Open Safe
         _description: 
         _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenSafeScenarioState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 1d7b907ba5504db38cadccbca6dfd96d
-        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
         _payload:
           rid: 8738052196338761860
@@ -215,10 +231,12 @@ MonoBehaviour:
         _name: Open Safe
         _description: 
         _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenSafeScenarioState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 1d7b907ba5504db38cadccbca6dfd96d
-        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
         _payload:
           rid: 8738052196338761853
@@ -230,10 +248,12 @@ MonoBehaviour:
             _name: Pickup The Key
             _description: 
             _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.PickupTheKeyScenarioState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: 2561320b17bd4d4aa070e1877f73cc79
-            _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
             _payload:
               rid: 8738052196338761857
@@ -256,10 +276,12 @@ MonoBehaviour:
         _name: Open The Door
         _description: 
         _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenTheDoorScenarioState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 5e193e0dc2584619a8e23eea0ec49115
-        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
         _payload:
           rid: 8738052196338761855
@@ -271,10 +293,12 @@ MonoBehaviour:
             _name: Scenario Completed
             _description: 
             _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.ScenarioCompletedState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: bc565ad5530c4e82bd1625c2e24d45f2
-            _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
             _payload:
               rid: 8738052196338761859
@@ -297,10 +321,12 @@ MonoBehaviour:
         _name: Pickup The Key
         _description: 
         _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.PickupTheKeyScenarioState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 2561320b17bd4d4aa070e1877f73cc79
-        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
         _payload:
           rid: 8738052196338761857
@@ -312,10 +338,12 @@ MonoBehaviour:
             _name: Open The Door
             _description: 
             _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.OpenTheDoorScenarioState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: 5e193e0dc2584619a8e23eea0ec49115
-            _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
             _payload:
               rid: 8738052196338761855
@@ -338,10 +366,12 @@ MonoBehaviour:
         _name: Scenario Completed
         _description: 
         _typeName: Samples.GameScenario.Scripts.ScenarioCore.States.ScenarioCompletedState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: bc565ad5530c4e82bd1625c2e24d45f2
-        _stateMachineTypeName: StateMachineExamples.Scenario.Scripts.ScenarioCore.MainGameScenario,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.ScenarioCore.MainGameScenario,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: b6e5db4f95b6434ab641e6873168ddcf
         _payload:
           rid: 8738052196338761859
@@ -353,8 +383,9 @@ MonoBehaviour:
     - _id: fcd335d7c58b48188202f546105bab35
       _name: Key State Machine
       _description: 
-      _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+        Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
       _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
       _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -364,11 +395,13 @@ MonoBehaviour:
         _nodePosition: {x: 0, y: 20}
         _name: Not interactable
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.NonInteractableKeyState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.States.NonInteractableKeyState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 3ee8f8222bdc4a0889db57e943f46e14
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
         _payload:
           rid: 8738052196338761860
@@ -379,11 +412,13 @@ MonoBehaviour:
         _nodePosition: {x: -30, y: 100}
         _name: Not interactable
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.NonInteractableKeyState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.States.NonInteractableKeyState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 3ee8f8222bdc4a0889db57e943f46e14
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
         _payload:
           rid: 8738052196338761904
@@ -394,11 +429,13 @@ MonoBehaviour:
             _nodePosition: {x: 500, y: 100}
             _name: Ready to pick
             _description: 
-            _typeName: Samples.GameScenario.Scripts.StateMachines.Key.ReadyToPickKeyState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Key.States.ReadyToPickKeyState,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: cb35d6ac9ee24ed4afc2e364425f0754
-            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
             _payload:
               rid: 8738052196338761906
@@ -420,14 +457,16 @@ MonoBehaviour:
         _nodePosition: {x: 500, y: 100}
         _name: Ready to pick
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.ReadyToPickKeyState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.States.ReadyToPickKeyState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: cb35d6ac9ee24ed4afc2e364425f0754
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
         _payload:
-          rid: 8738052196338761954
+          rid: 8738052247571136519
         _payloadScriptGuid: 0e9dc6ea678744c69cb7965d7103fb96
         _transitionRules:
         - _targetState:
@@ -435,11 +474,13 @@ MonoBehaviour:
             _nodePosition: {x: 900, y: 100}
             _name: Picked
             _description: 
-            _typeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyPickedState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _typeName: Samples.GameScenario.Scripts.StateMachines.Key.States.KeyPickedState,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: 9950f249dc024b479db5d2dbf252f940
-            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+            _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
             _payload:
               rid: 8738052196338761908
@@ -461,11 +502,13 @@ MonoBehaviour:
         _nodePosition: {x: 900, y: 100}
         _name: Picked
         _description: 
-        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyPickedState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _typeName: Samples.GameScenario.Scripts.StateMachines.Key.States.KeyPickedState,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 9950f249dc024b479db5d2dbf252f940
-        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.KeyStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Key.StateMachine.KeyStateMachine,
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 59f17fd412d6435ca0f9fb2c521265f2
         _payload:
           rid: 8738052196338761908
@@ -478,7 +521,8 @@ MonoBehaviour:
       _name: Door State Machine
       _description: 
       _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-        StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null
       _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
       _transitionSolverTypeName: Dev.Cortez.StateMachines.Core.TransitionSolver.DefaultTransitionSolver,
         Dev.Cortez.StateMachines, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -489,10 +533,12 @@ MonoBehaviour:
         _name: NonInteractable
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.NonInteractableDoorState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 63d727f7cb8447ee9f78d648d3885366
         _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
         _payload:
           rid: 8738052196338761860
@@ -504,10 +550,12 @@ MonoBehaviour:
         _name: NonInteractable
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.NonInteractableDoorState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: 63d727f7cb8447ee9f78d648d3885366
         _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
         _payload:
           rid: 8738052196338761982
@@ -519,10 +567,12 @@ MonoBehaviour:
             _name: Interactable
             _description: 
             _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.InteractableDoorState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: aef6fcc7e02c43a78edbe9be5e1d3b6d
             _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
             _payload:
               rid: 8738052196338761984
@@ -545,13 +595,15 @@ MonoBehaviour:
         _name: Interactable
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.InteractableDoorState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: aef6fcc7e02c43a78edbe9be5e1d3b6d
         _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
         _payload:
-          rid: 8738052196338762015
+          rid: 8738052247571136521
         _payloadScriptGuid: 3f1a854889d248d8914200f7188a0a80
         _transitionRules:
         - _targetState:
@@ -560,10 +612,12 @@ MonoBehaviour:
             _name: Opened
             _description: 
             _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.OpenedDoorState,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _scriptGuid: fbcbf8dfeb3640e68adddbcee079a7d6
             _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-              StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+              Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+              PublicKeyToken=null
             _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
             _payload:
               rid: 8738052196338761986
@@ -586,10 +640,12 @@ MonoBehaviour:
         _name: Opened
         _description: 
         _typeName: Samples.GameScenario.Scripts.StateMachines.Door.States.OpenedDoorState,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _scriptGuid: fbcbf8dfeb3640e68adddbcee079a7d6
         _stateMachineTypeName: Samples.GameScenario.Scripts.StateMachines.Door.StateMachine.DoorStateMachine,
-          StateMachineExamples.Scenario, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          Dev.Cortez.StateMachines.Samples.GameScenario, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
         _stateMachineScriptGuid: 3ba9e13ed7304c258bb36848a9d4eec7
         _payload:
           rid: 8738052196338761986
@@ -603,10 +659,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 8738052174556430437
-      type: {class: SafePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe, asm: StateMachineExamples.Scenario}
-      data:
-        _openSafeSequence: 03000000020000000100000004000000
     - rid: 8738052175591112791
       type: {class: DefaultTriggerPayload, ns: Dev.Cortez.StateMachines.Core.Trigger, asm: Dev.Cortez.StateMachines}
       data:
@@ -647,15 +699,6 @@ MonoBehaviour:
         _triggerDeactivationRule: 2
         _triggerDeactivationFrameDelay: 0
         _triggerDeactivationTimeDelayInSeconds: 0
-    - rid: 8738052195904913507
-      type: {class: LockedSafeStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe, asm: StateMachineExamples.Scenario}
-      data:
-        _triggeredValidSafeButtonSequence:
-          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
-          _selectedItemId: 5acafee247cd4dee8b0abb6031a1cc9f
-        _triggeredInvalidSafeButtonSequence:
-          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
-          _selectedItemId: 5e10f66383d54f91817e76a43b68b5a8
     - rid: 8738052195904913511
       type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
       data: 
@@ -694,12 +737,6 @@ MonoBehaviour:
           _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
           _selectedItemId: ad511460dddb46629622ef36c50b0c88
         _triggerSatisfiedConditionType: 1
-    - rid: 8738052196338761882
-      type: {class: UnlockingSafeStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe, asm: StateMachineExamples.Scenario}
-      data:
-        _triggeredOpenedSafe:
-          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
-          _selectedItemId: ad511460dddb46629622ef36c50b0c88
     - rid: 8738052196338761901
       type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
       data: 
@@ -742,12 +779,6 @@ MonoBehaviour:
           _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
           _selectedItemId: 0e1cedc26d5344ed84daf81a935febf5
         _stateSatisfiedConditionType: 2
-    - rid: 8738052196338761954
-      type: {class: ReadyToPickKeyStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Key.Payload, asm: StateMachineExamples.Scenario}
-      data:
-        _keyPickedTrigger:
-          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
-          _selectedItemId: 6b4d50181b18469d9c1995949e2c65a4
     - rid: 8738052196338761979
       type: {class: EmptyPayload, ns: Dev.Cortez.StateMachines.Core.Data, asm: Dev.Cortez.StateMachines}
       data: 
@@ -783,12 +814,6 @@ MonoBehaviour:
           _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
           _selectedItemId: b0f962694ceb4a38878b248a16956199
         _triggerSatisfiedConditionType: 1
-    - rid: 8738052196338762015
-      type: {class: InteractableDoorPayload, ns: Samples.GameScenario.Scripts.StateMachines.Door.Payload, asm: StateMachineExamples.Scenario}
-      data:
-        _doorInteractedTrigger:
-          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
-          _selectedItemId: b0f962694ceb4a38878b248a16956199
     - rid: 8738052196338762023
       type: {class: StateBasedConditionPayload, ns: Dev.Cortez.StateMachines.Core.Condition.Payload, asm: Dev.Cortez.StateMachines}
       data:
@@ -796,3 +821,34 @@ MonoBehaviour:
           _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
           _selectedItemId: ebe2a44890774b758e4bb613a5b02f6f
         _stateSatisfiedConditionType: 2
+    - rid: 8738052247571136513
+      type: {class: SafePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe.Payload, asm: Dev.Cortez.StateMachines.Samples.GameScenario}
+      data:
+        _openSafeSequence: 03000000020000000100000004000000
+    - rid: 8738052247571136515
+      type: {class: LockedSafeStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe.Payload, asm: Dev.Cortez.StateMachines.Samples.GameScenario}
+      data:
+        _triggeredValidSafeButtonSequence:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 5acafee247cd4dee8b0abb6031a1cc9f
+        _triggeredInvalidSafeButtonSequence:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 5e10f66383d54f91817e76a43b68b5a8
+    - rid: 8738052247571136517
+      type: {class: UnlockingSafeStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Safe.Payload, asm: Dev.Cortez.StateMachines.Samples.GameScenario}
+      data:
+        _triggeredOpenedSafe:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: ad511460dddb46629622ef36c50b0c88
+    - rid: 8738052247571136519
+      type: {class: ReadyToPickKeyStatePayload, ns: Samples.GameScenario.Scripts.StateMachines.Key.Payload, asm: Dev.Cortez.StateMachines.Samples.GameScenario}
+      data:
+        _keyPickedTrigger:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: 6b4d50181b18469d9c1995949e2c65a4
+    - rid: 8738052247571136521
+      type: {class: InteractableDoorPayload, ns: Samples.GameScenario.Scripts.StateMachines.Door.Payload, asm: Dev.Cortez.StateMachines.Samples.GameScenario}
+      data:
+        _doorInteractedTrigger:
+          _selectedStateMachineContainerGuid: b729e9b8b504b574495d07dce81b185f
+          _selectedItemId: b0f962694ceb4a38878b248a16956199

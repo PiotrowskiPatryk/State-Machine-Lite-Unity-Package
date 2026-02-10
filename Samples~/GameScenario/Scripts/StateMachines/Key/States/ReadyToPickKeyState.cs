@@ -1,9 +1,12 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
+using Samples.GameScenario.Scripts.StateMachines.Key.Context;
 using Samples.GameScenario.Scripts.StateMachines.Key.Payload;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Key
+namespace Samples.GameScenario.Scripts.StateMachines.Key.States
 {
+    [UsedImplicitly]
     public sealed class ReadyToPickKeyState : KeyStateBase<ReadyToPickKeyStatePayload>
     {
         private ReadyToPickKeyStatePayload _payload;

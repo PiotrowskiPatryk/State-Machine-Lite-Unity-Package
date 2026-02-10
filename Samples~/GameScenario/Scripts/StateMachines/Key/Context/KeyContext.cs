@@ -1,6 +1,6 @@
 ﻿using Samples.GameScenario.Scripts.Key;
 
-namespace Samples.GameScenario.Scripts.StateMachines.Key
+namespace Samples.GameScenario.Scripts.StateMachines.Key.Context
 {
     public sealed class KeyContext
     {

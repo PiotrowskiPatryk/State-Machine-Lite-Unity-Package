@@ -1,4 +1,4 @@
-﻿namespace Samples.GameScenario.Scripts
+﻿namespace Samples.GameScenario.Scripts.Safe
 {
     public enum SafeButtonType
     {
