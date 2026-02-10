@@ -19,7 +19,9 @@
   "changelogUrl": "CHANGELOG.md",
   "licensesUrl": "LICENSE.md",
   "type": "library",
-  "dependencies": {},
+  "dependencies": {
+    "com.cysharp.unitask": "2.5.10"
+  },
   "samples": [
     {
       "displayName": "Game Scenario",
