@@ -415,7 +415,7 @@ MonoBehaviour:
             _payload:
               rid: 8738052196338761916
             _payloadScriptGuid: bda8049af4fa4851a5452ad2725875a7
-          _conditionFilterType: 1
+          _conditionFilterType: 2
       - _id: e3442b52348e4af6a95d31df1446e362
         _nodePosition: {x: 500, y: 100}
         _name: Ready to pick

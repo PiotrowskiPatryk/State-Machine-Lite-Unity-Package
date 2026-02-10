@@ -83,6 +83,15 @@ namespace Dev.Cortez.StateMachines.Core.Mono
                 Debug.LogException(exception);
             }
         }
+
+        private void OnDestroy()
+        {
+            if (_stateMachineContainerInstaller != null)
+            {
+                _stateMachineContainerInstaller.UninstallAsync(StateMachineContainerEntry).GetAwaiter().GetResult();
+                StateMachineContainerEntry = null;
+            }
+        }
     }
 #pragma warning restore S3168
 }

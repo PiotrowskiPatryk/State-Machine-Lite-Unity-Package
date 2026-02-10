@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 6781343466567510189}
-  _interactDistanceInMeters: 2
+  _interactDistanceInMeters: 3
 --- !u!1 &4116555254146825924
 GameObject:
   m_ObjectHideFlags: 0
