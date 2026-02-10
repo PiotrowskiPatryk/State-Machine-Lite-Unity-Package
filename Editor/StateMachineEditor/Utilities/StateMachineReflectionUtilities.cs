@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core;
+using Dev.Cortez.StateMachines.Core.Attributes;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using UnityEditor;
 using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
@@ -178,6 +181,108 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             Debug.LogWarning("Provided type does not have generic arguments. Using EmptyPayload.");
 
             return typeof(EmptyPayload);
+        }
+
+        /// <summary>
+        /// Gets all concrete types that can be assigned to the given base type.
+        /// Handles both concrete types and open generic type definitions.
+        /// </summary>
+        /// <param name="baseType">The base type to find implementations for.</param>
+        /// <returns>Enumerable of concrete types assignable to the base type.</returns>
+        public static IEnumerable<Type> GetConcreteTypeCandidates(Type baseType)
+        {
+            if (baseType == null)
+            {
+                return Enumerable.Empty<Type>();
+            }
+
+            // For open generic type definitions, we need to search more broadly
+            // since TypeCache.GetTypesDerivedFrom doesn't work with open generics
+            if (baseType.IsGenericTypeDefinition)
+            {
+                // Get all types from all loaded assemblies and filter
+                var allTypes = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a =>
+                    {
+                        try { return a.GetTypes(); }
+                        catch { return Array.Empty<Type>(); }
+                    })
+                    .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
+                    .Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false))
+                    .Where(t => IsAssignableToGenericType(t, baseType));
+
+                return allTypes;
+            }
+
+            // For constructed generics (e.g., SafeStateBase<IPayload>), extract the generic definition
+            if (baseType.IsGenericType && !baseType.IsGenericTypeDefinition)
+            {
+                var genericDefinition = baseType.GetGenericTypeDefinition();
+
+                var allTypes = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(a =>
+                    {
+                        try { return a.GetTypes(); }
+                        catch { return Array.Empty<Type>(); }
+                    })
+                    .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
+                    .Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false))
+                    .Where(t => IsAssignableToGenericType(t, genericDefinition));
+
+                return allTypes;
+            }
+
+            // For concrete (non-generic) base types, use TypeCache for better performance
+            var derivedTypes = TypeCache.GetTypesDerivedFrom(baseType)
+                .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
+                .Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false));
+
+            return derivedTypes;
+        }
+
+        /// <summary>
+        /// Checks if a given type is assignable to an open generic type definition
+        /// by walking up the inheritance hierarchy.
+        /// </summary>
+        /// <param name="givenType">The concrete type to check.</param>
+        /// <param name="genericTypeDefinition">The open generic type definition to match against.</param>
+        /// <returns>True if givenType inherits from a closed construction of genericTypeDefinition.</returns>
+        public static bool IsAssignableToGenericType(Type givenType, Type genericTypeDefinition)
+        {
+            if (givenType == null || genericTypeDefinition == null)
+            {
+                return false;
+            }
+
+            if (!genericTypeDefinition.IsGenericTypeDefinition)
+            {
+                return genericTypeDefinition.IsAssignableFrom(givenType);
+            }
+
+            // Check the type itself and walk up inheritance chain
+            var currentType = givenType;
+
+            while (currentType != null && currentType != typeof(object))
+            {
+                if (currentType.IsGenericType &&
+                    currentType.GetGenericTypeDefinition() == genericTypeDefinition)
+                {
+                    return true;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            // Also check implemented interfaces
+            foreach (var iface in givenType.GetInterfaces())
+            {
+                if (iface.IsGenericType && iface.GetGenericTypeDefinition() == genericTypeDefinition)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

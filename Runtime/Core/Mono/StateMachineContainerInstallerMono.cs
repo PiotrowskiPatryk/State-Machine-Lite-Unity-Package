@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Dev.Cortez.StateMachines.Core.Mono
 {
+    [DefaultExecutionOrder(1000)]
     public class StateMachineContainerInstallerMono : MonoBehaviour
     {
         private readonly StateMachineContainerInstaller _stateMachineContainerInstaller = new();
@@ -80,6 +81,15 @@ namespace Dev.Cortez.StateMachines.Core.Mono
             {
                 Debug.LogError("An error occurred during installing state machine container");
                 Debug.LogException(exception);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_stateMachineContainerInstaller != null && StateMachineContainerEntry != null)
+            {
+                _stateMachineContainerInstaller.UninstallAsync(StateMachineContainerEntry).Forget();
+                StateMachineContainerEntry = null;
             }
         }
     }

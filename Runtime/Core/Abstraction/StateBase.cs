@@ -37,7 +37,7 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
     /// </remarks>
     public abstract class StateBase<TStateContext> : StateBase<TStateContext, EmptyPayload>
     {
-        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload,
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload payload,
             CancellationToken cancellationToken)
         {
             return UniTask.FromResult(true);
@@ -283,13 +283,13 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
         /// <summary>
         ///     Performs the initialization of the state with the given payload and cancellation token.
         /// </summary>
-        /// <param name="uiStatePayload">The payload required for the state initialization.</param>
+        /// <param name="payload">The payload required for the state initialization.</param>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <returns>
         ///     A UniTask representing the asynchronous initialization operation. Returns true if initialization is
         ///     successful; otherwise, false.
         /// </returns>
-        protected abstract UniTask<bool> DoInitializeAsync(TStatePayload uiStatePayload,
+        protected abstract UniTask<bool> DoInitializeAsync(TStatePayload payload,
             CancellationToken cancellationToken);
 
         private async UniTask<bool> InitializeAsyncInternal(StateDefinition stateDefinition, TStatePayload payload,

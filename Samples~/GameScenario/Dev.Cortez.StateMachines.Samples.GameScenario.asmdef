@@ -1,0 +1,17 @@
+{
+    "name": "Dev.Cortez.StateMachines.Samples.GameScenario",
+    "rootNamespace": "",
+    "references": [
+        "Dev.Cortez.StateMachines",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

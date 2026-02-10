@@ -204,6 +204,9 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                         await DoDeactivateAsync(linkedCancellationTokenSource.Token);
                     }
 
+                    LoggerService.Logger.LogError(
+                        $"State machine {Name} failed to activate. Default state is null! Skipping deactivation.");
+
                     return false;
                 }
 
@@ -361,6 +364,8 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
             try
             {
                 await DoDisposeAsync();
+                await UniTask.WhenAll(_states.Select(state => state.DisposeAsync().AsUniTask()));
+
                 _states.Clear();
                 _activeState = default;
                 IsActive = false;
@@ -563,6 +568,11 @@ namespace Dev.Cortez.StateMachines.Core.Abstraction
                 if (state is TState typedState)
                 {
                     _states.Add(typedState);
+                }
+                else
+                {
+                    LoggerService.Logger.LogError(
+                        $"Unable to initialize state machine. {state} is not of type {typeof(TState).Name}.");
                 }
             }
 

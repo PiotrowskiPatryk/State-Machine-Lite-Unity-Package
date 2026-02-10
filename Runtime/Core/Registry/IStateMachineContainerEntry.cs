@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 
 namespace Dev.Cortez.StateMachines.Core.Registry
@@ -7,7 +8,7 @@ namespace Dev.Cortez.StateMachines.Core.Registry
     /// Represents a registry that holds and provides access to state machines and their associated triggers
     /// within a specific container or scope.
     /// </summary>
-    public interface IStateMachineContainerEntry
+    public interface IStateMachineContainerEntry : IAsyncDisposable
     {
         /// <summary>
         /// Gets the unique identifier for this state machine container registry.

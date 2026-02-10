@@ -109,7 +109,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks
             }
         }
 
-        protected override UniTask<bool> DoInitializeAsync(EmptyPayload uiStatePayload,
+        protected override UniTask<bool> DoInitializeAsync(EmptyPayload payload,
             CancellationToken cancellationToken)
         {
             InitializeCallCount++;
