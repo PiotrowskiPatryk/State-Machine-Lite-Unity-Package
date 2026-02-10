@@ -1,0 +1,8 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Foldout text="Foldout" name="Foldout">
+        <ui:VisualElement class="background-main" style="flex-grow: 1;">
+            <ui:DropdownField label="State machine container" name="StateMachineContainerDropdownField" />
+            <ui:DropdownField label="Reference" name="ReferenceDropdownField" choices="None" />
+        </ui:VisualElement>
+    </ui:Foldout>
+</ui:UXML>

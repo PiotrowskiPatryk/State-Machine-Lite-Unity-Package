@@ -1,7 +1,7 @@
 ﻿{
   "name": "dev.cortez.state-machines",
-  "displayName": "State Machines",
-  "version": "0.1.0",
+  "displayName": "State Machines Lite",
+  "version": "0.0.1",
   "unity": "6000.0",
   "description": "A lightweight, extensible set of utilities to build state machines for Unity projects.",
   "keywords": [
@@ -11,20 +11,22 @@
     "utility"
   ],
   "author": {
-    "name": "Cortez Dev",
-    "email": "dev@cortez.dev",
-    "url": "https://example.com"
+    "name": "Cortez Dev - Patryk Piotrowski",
+    "email": "patryk.piotrowski19@gmail.com",
+    "url": "https://github.com/PiotrowskiPatryk"
   },
   "documentationUrl": "Documentation~/index.md",
   "changelogUrl": "CHANGELOG.md",
   "licensesUrl": "LICENSE.md",
   "type": "library",
-  "dependencies": {},
+  "dependencies": {
+    "com.cysharp.unitask": "2.5.10"
+  },
   "samples": [
     {
-      "displayName": "Example",
-      "description": "Minimal sample to verify the package imports correctly.",
-      "path": "Samples~/Example"
+      "displayName": "Game Scenario",
+      "description": "A complete game scenario demonstrating multiple interconnected state machines (safe, door, key) with custom contexts, payloads, triggers, and an objective tracking system.",
+      "path": "Samples~/GameScenario"
     }
   ]
 }

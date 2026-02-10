@@ -1,8 +1,10 @@
-﻿{
+{
   "name": "Dev.Cortez.StateMachines",
   "rootNamespace": "Dev.Cortez.StateMachines",
-  "references": [],
-  "optionalUnityReferences": [],
+  "references": [
+    "UniTask",
+    "Unity.InputSystem"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
@@ -10,5 +12,6 @@
   "precompiledReferences": [],
   "autoReferenced": true,
   "defineConstraints": [],
+  "versionDefines": [],
   "noEngineReferences": false
 }

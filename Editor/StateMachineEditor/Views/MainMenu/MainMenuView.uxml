@@ -1,0 +1,47 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="StateMachineListView" src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/MainMenu/StateMachines/StateMachineListView.uxml?fileID=9197481963319205126&amp;guid=0ae449b01631aef40b6c5a7045026339&amp;type=3#StateMachineListView" />
+    <ui:Template name="TriggerListView" src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/MainMenu/Triggers/TriggerListView.uxml?fileID=9197481963319205126&amp;guid=a3d6df4fc64be05419c8cbe493f1f662&amp;type=3#TriggerListView" />
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/Styling/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement class="background-main" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0;">
+        <ui:VisualElement name="Header" style="flex-direction: row; max-height: 64px; height: 64px; align-self: auto; border-bottom-color: rgba(17, 115, 212, 0.5); border-bottom-width: 1px; padding-right: 40px; padding-left: 40px; -unity-text-align: upper-left; align-items: center;">
+            <ui:Label tabindex="-1" text="State Machine Container Editor" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" class="header text" style="color: rgb(255, 255, 255); -unity-font: url(&apos;project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&amp;guid=cd98b80116b484ae09e16718ab2aea43&amp;type=3#Inter-VariableFont_opsz,wght&apos;); font-size: 16px; -unity-font-style: bold;" />
+            <ui:VisualElement name="Separator" style="flex-grow: 1; max-width: 0; min-width: 20px;" />
+            <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StateMachinesCountLabel" text="State machines:" class="header text" style="color: rgb(137, 137, 137); -unity-font: url(&apos;row&apos;); font-size: 14px; -unity-font-style: normal;" />
+            <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StateMachinesCountValue" text="0" class="header text" style="color: rgb(138, 138, 138); -unity-font: url(&apos;row&apos;); font-size: 14px; -unity-font-style: normal;">
+                <Bindings>
+                    <ui:DataBinding property="text" data-source-path="StateMachinesCount" binding-mode="ToTarget" />
+                </Bindings>
+            </ui:Label>
+            <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Separator" text="•" class="header text" style="color: rgb(138, 138, 138); -unity-font: url(&apos;row&apos;); font-size: 10px; -unity-font-style: normal; min-width: 25px; -unity-text-align: upper-center;" />
+            <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggersCountLabel" text="Triggers:" class="header text" style="color: rgb(138, 138, 138); -unity-font: url(&apos;row&apos;); font-size: 14px; -unity-font-style: normal;" />
+            <ui:Label tabindex="-1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="TriggersCountValue" text="0" class="header text" style="color: rgb(138, 138, 138); -unity-font: url(&apos;row&apos;); font-size: 14px; -unity-font-style: normal;">
+                <Bindings>
+                    <ui:DataBinding property="text" data-source-path="TriggersCount" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.TriggerConfigurationViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="ToTarget" />
+                </Bindings>
+            </ui:Label>
+        </ui:VisualElement>
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding-top: 20px; padding-right: 40px; padding-bottom: 20px; padding-left: 40px;">
+            <ui:TabView name="TabView" style="padding-bottom: 20px; flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; flex-direction: column;">
+                <ui:Tab label="State Machines" name="StateMachinesTab" enabled="true" closeable="false" style="flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; justify-content: space-evenly;">
+                    <ui:VisualElement name="StateMachinesContainer" style="flex-grow: 1; flex-shrink: 1; min-height: 0; justify-content: center; flex-direction: column;" />
+                    <ui:Instance template="StateMachineListView" name="StateMachineListView" />
+                    <ui:VisualElement name="Spacer" style="flex-grow: 1; min-height: 40px;" />
+                    <ui:Button text="New State Machine" name="NewStateMachineButton" style="align-self: flex-end; min-height: 40px; max-height: 40px;" />
+                </ui:Tab>
+                <ui:Tab label="Triggers" name="TriggersTab" style="flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0;">
+                    <ui:VisualElement name="TriggersContainer" style="flex-grow: 1; flex-shrink: 1; min-height: 0; justify-content: center; flex-direction: column;">
+                        <ui:ScrollView style="flex-grow: 1;">
+                            <ui:Instance template="TriggerListView" name="TriggerListView" />
+                        </ui:ScrollView>
+                        <ui:VisualElement name="Spacer" style="flex-grow: 1; min-height: 40px;" />
+                        <ui:Button text="New Trigger" name="NewTriggerButton" style="align-self: flex-end; min-height: 40px; max-height: 40px;" />
+                    </ui:VisualElement>
+                </ui:Tab>
+            </ui:TabView>
+            <ui:VisualElement name="CustomContentContainer" enabled="true" picking-mode="Ignore" style="flex-grow: 1; position: absolute; flex-shrink: 0; right: 0; left: 0; bottom: 0; top: 0; background-color: rgba(0, 0, 0, 0);" />
+            <ui:VisualElement name="FormContainer" enabled="true" picking-mode="Ignore" style="flex-grow: 1; position: absolute; flex-shrink: 0; right: 0; left: 0; bottom: 0; top: 0; background-color: rgba(0, 0, 0, 0);">
+                <ui:Label name="FormLabel" class="text-bold" style="color: rgb(255, 255, 255); -unity-text-align: upper-center; font-size: 18px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

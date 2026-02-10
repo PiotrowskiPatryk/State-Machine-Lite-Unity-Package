@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
+    <ui:VisualElement name="ConditionRuleFieldTemplate" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineContainerEditor.ViewModels.ConditionDefinitionViewModel, Dev.Cortez.StateMachines.Editor" style="flex-grow: 1;">
+        <ui:Label text="When:" class="text-normal" />
+        <uie:PropertyField name="PropertyField" />
+    </ui:VisualElement>
+</ui:UXML>
