@@ -76,6 +76,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         }
 
         [CreateProperty]
+        public string TypeNameShort => StateMachineReflectionUtilities.ToClassNameOnly(TypeName);
+
+        [CreateProperty]
         public string TransitionSolverTypeName
         {
             get => SerializedProperty.

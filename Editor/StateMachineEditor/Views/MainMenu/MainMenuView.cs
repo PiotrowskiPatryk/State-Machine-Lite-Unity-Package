@@ -196,7 +196,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 
         private static void DoBindTriggerTypeCell(VisualElement visualElement, int index)
         {
-            BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.TypeName), index);
+            BindTriggerTablePropertyCell(visualElement, nameof(TriggerDefinitionViewModel.TypeNameShort), index);
         }
 
         private static void DoBindTriggerDescriptionCell(VisualElement visualElement, int index)
@@ -228,7 +228,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 
         private static void DoBindStateMachineTypeCell(VisualElement visualElement, int index)
         {
-            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.TypeName),
+            BindStateMachineTablePropertyCell(visualElement, nameof(StateMachineDefinitionViewModel.TypeNameShort),
                 index);
         }
 
