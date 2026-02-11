@@ -237,5 +237,21 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             Notify(nameof(InitialStateIndex));
             Notify(nameof(AvailableStates));
         }
+
+        public void MoveStateAtIndex(int sourceIndex, int destinationIndex)
+        {
+            var statesProperty =
+                SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
+
+            Undo.RecordObject(statesProperty.serializedObject.targetObject, "Reorder state");
+
+            statesProperty.serializedObject.Update();
+            statesProperty.MoveArrayElement(sourceIndex, destinationIndex);
+            statesProperty.serializedObject.ApplyModifiedProperties();
+
+            Notify(nameof(States));
+            Notify(nameof(StatesCount));
+            Notify(nameof(AvailableStates));
+        }
     }
 }

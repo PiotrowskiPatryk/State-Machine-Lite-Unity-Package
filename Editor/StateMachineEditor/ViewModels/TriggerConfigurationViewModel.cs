@@ -109,5 +109,20 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             Notify(nameof(Triggers));
             Notify(nameof(TriggersCount));
         }
+
+        public void MoveTriggerAtIndex(int sourceIndex, int destinationIndex)
+        {
+            var triggersProperty =
+                SerializedProperty.FindPropertyRelative(TriggerConfiguration.TRIGGERS_PROPERTY_NAME);
+
+            Undo.RecordObject(triggersProperty.serializedObject.targetObject, "Reorder trigger");
+
+            triggersProperty.serializedObject.Update();
+            triggersProperty.MoveArrayElement(sourceIndex, destinationIndex);
+            triggersProperty.serializedObject.ApplyModifiedProperties();
+
+            Notify(nameof(Triggers));
+            Notify(nameof(TriggersCount));
+        }
     }
 }

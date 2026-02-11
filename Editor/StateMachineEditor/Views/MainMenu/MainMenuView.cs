@@ -24,6 +24,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
 
         private MultiColumnListView _stateMachineListView;
         private MultiColumnListView _triggerListView;
+        private StateMachineConfigurationViewModel _stateMachineConfigurationViewModel;
+        private TriggerConfigurationViewModel _triggerConfigurationViewModel;
 
         public MainMenuView()
         {
@@ -73,6 +75,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
         public void Bind(StateMachineConfigurationViewModel stateMachineConfigurationViewModel,
             TriggerConfigurationViewModel triggerConfigurationViewModel)
         {
+            _stateMachineConfigurationViewModel = stateMachineConfigurationViewModel;
+            _triggerConfigurationViewModel = triggerConfigurationViewModel;
+
             _stateMachineListView.dataSource = stateMachineConfigurationViewModel;
             _triggerListView.dataSource = triggerConfigurationViewModel;
 
@@ -95,6 +100,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             _stateMachineListView.columns[3].bindCell = DoBindStateMachineTypeCell;
             _stateMachineListView.columns[4].bindCell = DoBindStateMachineMenuCell;
             _stateMachineListView.columns[4].unbindCell = DoUnbindStateMachineMenuCell;
+            _stateMachineListView.itemIndexChanged += OnStateMachineItemIndexChanged;
+        }
+
+        private void OnStateMachineItemIndexChanged(int sourceIndex, int destinationIndex)
+        {
+            _stateMachineConfigurationViewModel?.MoveStateMachineAtIndex(sourceIndex, destinationIndex);
         }
 
         private static void DoUnbindStateMachineMenuCell(VisualElement visualElement, int index)
@@ -140,6 +151,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             _triggerListView.columns[3].bindCell = DoBindTriggerTypeCell;
             _triggerListView.columns[4].bindCell = DoBindTriggerMenuCell;
             _stateMachineListView.columns[4].unbindCell = DoUnbindTriggerMenuCell;
+            _triggerListView.itemIndexChanged += OnTriggerItemIndexChanged;
+        }
+
+        private void OnTriggerItemIndexChanged(int sourceIndex, int destinationIndex)
+        {
+            _triggerConfigurationViewModel?.MoveTriggerAtIndex(sourceIndex, destinationIndex);
         }
 
         // TODO - investigate method repetition with DoUnbindStateMachineMenuCell

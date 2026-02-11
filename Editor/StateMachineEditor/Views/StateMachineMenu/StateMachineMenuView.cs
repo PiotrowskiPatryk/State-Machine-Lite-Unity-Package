@@ -177,10 +177,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _statesListView.columns[3].bindCell = DoBindStateTypeCell;
             _statesListView.columns[4].bindCell = DoBindStateMenuCell;
             _statesListView.columns[4].unbindCell = DoUnbindStateMenuCell;
+            _statesListView.itemIndexChanged += OnStateItemIndexChanged;
 
             // For the TransitionableStatesListView we assign both bind and unbind handlers to avoid accumulating subscriptions
             _transitionableStatesListView.bindItem = DoBindTransitionableStateItem;
             _transitionableStatesListView.unbindItem = DoUnbindTransitionableStateItem;
+        }
+
+        private void OnStateItemIndexChanged(int sourceIndex, int destinationIndex)
+        {
+            _stateMachineDefinitionViewModel?.MoveStateAtIndex(sourceIndex, destinationIndex);
         }
 
         private static void DoBindStateIdCell(VisualElement visualElement, int index)

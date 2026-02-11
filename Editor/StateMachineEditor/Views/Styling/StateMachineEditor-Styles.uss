@@ -18,6 +18,18 @@
     min-height: 0;
 }
 
+/* ---- ListView: add borders between rows ---- */
+
+.unity-multi-column-list-view__row {
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.unity-list-view__item {
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
 .button-no-border {
     background-color: rgba(0, 0, 0, 0);
     -unity-font: url('project://database/Packages/dev.cortez.state-machines/Runtime/StateMachineEditor/Inter-VariableFont_opsz,wght.ttf?fileID=12800000&guid=cd98b80116b484ae09e16718ab2aea43&type=3#Inter-VariableFont_opsz,wght');

@@ -41,7 +41,7 @@
                 </ui:DropdownField>
                 <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
                 <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false"
-                                        virtualization-method="DynamicHeight" style="flex-grow: 1; min-height: 0;">
+                                        virtualization-method="DynamicHeight" reorderable="true" style="flex-grow: 1; min-height: 0;">
                     <Bindings>
                         <ui:DataBinding property="itemsSource" data-source-path="States"/>
                     </Bindings>
