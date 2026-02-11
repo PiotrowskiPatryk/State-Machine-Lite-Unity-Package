@@ -197,3 +197,24 @@
     border-top-color: rgba(0, 0, 0, 0);
     border-bottom-color: rgba(0, 0, 0, 0);
 }
+
+/* ---- Graph Node Styles ---- */
+
+.state-graph-node:hover {
+    border-left-color: rgb(80, 120, 160);
+    border-right-color: rgb(80, 120, 160);
+    border-top-color: rgb(80, 120, 160);
+    border-bottom-color: rgb(80, 120, 160);
+    transition-duration: 0.15s;
+}
+
+.initial-state .state-graph-node {
+    border-left-color: rgb(76, 175, 80);
+    border-right-color: rgb(76, 175, 80);
+    border-top-color: rgb(76, 175, 80);
+    border-bottom-color: rgb(76, 175, 80);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+}

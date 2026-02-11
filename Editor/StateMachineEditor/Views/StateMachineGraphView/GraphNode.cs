@@ -3,8 +3,13 @@ using UnityEngine.UIElements;
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineGraphView
 {
+    /// <summary>
+    ///     Abstract base class for draggable graph nodes.
+    ///     Handles position, snapping, clamping, and drag manipulation.
+    ///     Subclass to create specialised node types (e.g. state nodes, any-state nodes).
+    /// </summary>
     [UxmlElement]
-    public partial class GraphNode : BindableElement, INotifyValueChanged<Vector2Int>
+    public abstract partial class GraphNodeBase : BindableElement, INotifyValueChanged<Vector2Int>
     {
         private Vector2Int _value;
 
@@ -39,7 +44,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             }
         }
 
-        public GraphNode()
+        protected GraphNodeBase()
         {
             style.position = Position.Absolute; // parent must be Relative
             this.AddManipulator(new DragManipulator(this));
@@ -52,15 +57,22 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             style.top = _value.y * PixelsPerUnit;
         }
 
+        /// <summary>
+        ///     Called after the node position has changed. Override in subclasses for custom behavior.
+        /// </summary>
+        protected virtual void OnPositionChanged(Vector2Int oldPosition, Vector2Int newPosition)
+        {
+        }
+
         // ---------- Dragging ----------
         private sealed class DragManipulator : PointerManipulator
         {
-            private readonly GraphNode _owner;
+            private readonly GraphNodeBase _owner;
             private bool _active;
             private Vector2 _startLocal;
             private Vector2Int _startValue;
 
-            public DragManipulator(GraphNode owner)
+            public DragManipulator(GraphNodeBase owner)
             {
                 _owner = owner;
             }
@@ -151,7 +163,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                     ny = Mathf.Clamp(ny, minY, maxY);
                 }
 
+                var oldValue = _owner.value;
                 _owner.value = new Vector2Int(nx, ny); // fires ChangeEvent<Vector2Int>
+
+                if (oldValue != _owner.value)
+                {
+                    _owner.OnPositionChanged(oldValue, _owner.value);
+                }
+
                 evt.StopPropagation();
             }
 
