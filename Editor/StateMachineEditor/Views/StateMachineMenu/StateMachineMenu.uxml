@@ -2,7 +2,7 @@
          editor-extension-mode="True">
     <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/Styling/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles"/>
     <ui:VisualElement name="Form" class="background-main" style="flex-grow: 1; min-height: 0; min-width: 0;">
-        <ui:TabView style="flex-grow: 1; min-height: 0; min-width: 0;">
+        <ui:TabView style="flex-grow: 1; min-height: 0; min-width: 0; flex-shrink: 1;">
             <ui:Tab label="General" name="GeneralInformationTab"
                     style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; flex-direction: column;">
                 <ui:TextField label="Id" placeholder-text="Id" readonly="true" name="StateMachineId">
@@ -39,7 +39,7 @@
                                         binding-mode="TwoWay"/>
                     </Bindings>
                 </ui:DropdownField>
-                <ui:VisualElement name="Spacer" style="flex-grow: 1; min-height: 20px;"/>
+                <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
                 <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false"
                                         virtualization-method="DynamicHeight" style="flex-grow: 1; min-height: 0;">
                     <Bindings>
@@ -60,8 +60,8 @@
                            style="align-self: flex-end; min-height: 32px; max-height: 32px;"/>
             </ui:Tab>
             <ui:Tab label="Transitions" name="GraphEditor"
-                    style="flex-grow: 1; position: relative; padding: 0; flex-shrink: 0;">
-                <ui:VisualElement style="flex-grow: 1; flex-shrink: 1; flex-direction: row;">
+                    style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding: 0;">
+                <ui:VisualElement style="flex-grow: 1; flex-shrink: 1; flex-direction: row; min-height: 0;">
                     <ui:VisualElement name="VisualElement"
                                       style="flex-grow: 1; flex-shrink: 1; flex-direction: column; background-color: rgb(26, 36, 47); width: 25%; max-width: 30%; min-width: 220px; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); padding-top: 10px; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; align-self: stretch;">
                         <ui:Label text="Transition inspector" name="Header" class="text-header"/>
@@ -78,7 +78,7 @@
                         </ui:ListView>
                     </ui:VisualElement>
                     <ui:VisualElement name="StateMachineGraphContainer"
-                                      style="position: relative; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; flex-grow: 1;"/>
+                                      style="overflow: hidden; flex-grow: 1; flex-shrink: 1; min-height: 0;"/>
                 </ui:VisualElement>
             </ui:Tab>
         </ui:TabView>

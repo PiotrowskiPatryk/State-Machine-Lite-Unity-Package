@@ -22,8 +22,10 @@
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding-top: 20px; padding-right: 40px; padding-bottom: 20px; padding-left: 40px;">
             <ui:TabView name="TabView" style="padding-bottom: 20px; flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; flex-direction: column;">
-                <ui:Tab label="State Machines" name="StateMachinesTab" enabled="true" closeable="false" style="flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; justify-content: space-evenly;">
-                    <ui:VisualElement name="StateMachinesContainer" style="flex-grow: 1; flex-shrink: 1; min-height: 0; justify-content: center; flex-direction: column;" />
+                <ui:Tab label="State Machines" name="StateMachinesTab" enabled="true" closeable="false"
+                        style="flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; justify-content: flex-start;">
+                    <ui:VisualElement name="StateMachinesContainer"
+                                      style="flex-shrink: 1; min-height: 0; justify-content: center; flex-direction: column;"/>
                     <ui:Instance template="StateMachineListView" name="StateMachineListView" />
                     <ui:VisualElement name="Spacer" style="flex-grow: 1; min-height: 40px;" />
                     <ui:Button text="New State Machine" name="NewStateMachineButton" style="align-self: flex-end; min-height: 40px; max-height: 40px;" />

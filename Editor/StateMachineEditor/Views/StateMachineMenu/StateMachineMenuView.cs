@@ -5,7 +5,6 @@ using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Data.Repository;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels;
-using System.Diagnostics;
 using Unity.Properties;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -67,8 +66,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             BindStatesList();
 
             style.flexGrow = 1;
-            style.flexShrink = 0;
-            style.flexBasis = 0;
+            style.flexShrink = 1;
+            style.flexBasis = StyleKeyword.Auto;
 
             RegisterCallback<DetachFromPanelEvent>(OnDetached);
         }
@@ -251,6 +250,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             {
                 // Get the toggle element within the foldout to insert the icon
                 var toggle = foldout.Q<Toggle>();
+
                 if (toggle != null)
                 {
                     var stateIcon = ValidationIconHelper.GetOrCreateValidationIcon(toggle);
@@ -335,6 +335,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             // Add validation icon next to name
             var icon = ValidationIconHelper.GetOrCreateValidationIcon(visualElement);
             var stateVm = _stateMachineDefinitionViewModel.States[index];
+
             if (stateVm != null)
             {
                 ValidationIconHelper.UpdateValidationIconVisibility(icon, stateVm.IsValid);
@@ -369,7 +370,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
         private void OnChangedTransitionSolverTypeDropdown(ChangeEvent<string> changeEvent)
         {
             // Use SelectedTypeAssemblyQualifiedName to get the full type name for storage
-            _stateMachineDefinitionViewModel.TransitionSolverTypeName = _transitionSolverTypeDropdown.SelectedTypeAssemblyQualifiedName;
+            _stateMachineDefinitionViewModel.TransitionSolverTypeName =
+                _transitionSolverTypeDropdown.SelectedTypeAssemblyQualifiedName;
         }
 
         private void OnChangedStateMachineTypeDropdown(ChangeEvent<string> changeEvent)
