@@ -76,6 +76,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         }
 
         [CreateProperty]
+        public string TypeNameShort => StateMachineReflectionUtilities.ToClassNameOnly(TypeName);
+
+        [CreateProperty]
         public string TransitionSolverTypeName
         {
             get => SerializedProperty.
@@ -106,6 +109,36 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 }
 
                 return states;
+            }
+            set
+            {
+                var statesProperty =
+                    SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
+
+                var so = statesProperty.serializedObject;
+                so.Update();
+
+                statesProperty.ClearArray();
+                so.ApplyModifiedProperties();
+
+                if (value != null)
+                {
+                    for (var i = 0; i < value.Count; ++i)
+                    {
+                        statesProperty.InsertArrayElementAtIndex(i);
+                        var elementProperty = statesProperty.GetArrayElementAtIndex(i);
+                        var elementViewModel = new StateDefinitionViewModel(elementProperty);
+                        elementViewModel.CopyFrom(value[i]);
+                    }
+                }
+
+                so.ApplyModifiedProperties();
+
+                Notify();
+                Notify(nameof(StatesCount));
+                Notify(nameof(AvailableStates));
+                Notify(nameof(InitialState));
+                Notify(nameof(InitialStateIndex));
             }
         }
 
@@ -179,6 +212,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             TypeName = other.TypeName;
             TransitionSolverTypeName = other.TransitionSolverTypeName;
             Payload.managedReferenceValue = other.Payload.managedReferenceValue;
+            States = other.States;
+            InitialState = other.InitialState;
         }
 
         public void AddState(StateDefinitionViewModel stateDefinitionViewModel)
@@ -235,6 +270,22 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             Notify(nameof(StatesCount));
             Notify(nameof(InitialState));
             Notify(nameof(InitialStateIndex));
+            Notify(nameof(AvailableStates));
+        }
+
+        public void MoveStateAtIndex(int sourceIndex, int destinationIndex)
+        {
+            var statesProperty =
+                SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
+
+            Undo.RecordObject(statesProperty.serializedObject.targetObject, "Reorder state");
+
+            statesProperty.serializedObject.Update();
+            statesProperty.MoveArrayElement(sourceIndex, destinationIndex);
+            statesProperty.serializedObject.ApplyModifiedProperties();
+
+            Notify(nameof(States));
+            Notify(nameof(StatesCount));
             Notify(nameof(AvailableStates));
         }
     }

@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineGraphView
 {
     /// <summary>
-    ///     Draws a bezier line with an arrow between two VisualElements (typically node ports).
-    ///     Hover & click are handled from the panel root to avoid overlay swallowing.
+    ///     Draws a stepped orthogonal edge (horizontal→vertical→horizontal) between two VisualElements.
+    ///     Mimics Unity Shader Graph edge routing. Hover & click are handled from the panel root.
     /// </summary>
     internal sealed class TransitionEdgeElement : VisualElement
     {
@@ -37,9 +37,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
         public Color LineColor { get; set; } = new(0.45f, 0.70f, 1f, 0.75f);
         public float LineWidth { get; set; } = 2.0f;
-        public float ArrowLength { get; set; } = 10.0f;
-        public float ArrowAngleDeg { get; set; } = 26.0f;
-        public float ControlOffset { get; set; } = 60.0f;
+        public float ArrowLength { get; set; } = 7.0f;
+        public float ArrowAngleDeg { get; set; } = 22.0f;
+
+        /// <summary>
+        ///     Minimum horizontal stub length (in local px) before the vertical connector.
+        /// </summary>
+        public float MinStubLength { get; set; } = 10.0f;
 
         public bool BringToFrontOnSelect { get; set; } = true;
         public bool IsSelected { get; private set; }
@@ -96,7 +100,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         {
             var tol = GetLocalHitTolerance();
 
-            return IsNearCurve(localPoint, tol);
+            return IsNearLine(localPoint, tol);
         }
 
         private void OnAttachToPanel(AttachToPanelEvent _)
@@ -132,7 +136,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private void OnGlobalPointerMove(PointerMoveEvent evt)
         {
             var local = this.WorldToLocal(evt.position);
-            var isNear = IsNearCurve(local, GetLocalHitTolerance());
+            var isNear = IsNearLine(local, GetLocalHitTolerance());
 
             if (isNear != _hovered)
             {
@@ -174,7 +178,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             var local = this.WorldToLocal(evt.position);
 
-            if (IsNearCurve(local, GetLocalHitTolerance()))
+            if (IsNearLine(local, GetLocalHitTolerance()))
             {
                 _pressedNearCurve = true;
                 _pressedPointerId = evt.pointerId;
@@ -195,7 +199,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             var movedFar = (position - _pressWorldPos).sqrMagnitude > _clickPixelThreshold * _clickPixelThreshold;
 
             var local = this.WorldToLocal(evt.position);
-            var isNear = IsNearCurve(local, GetLocalHitTolerance());
+            var isNear = IsNearLine(local, GetLocalHitTolerance());
 
             if (wasPressed && !movedFar && isNear)
             {
@@ -228,6 +232,50 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             return _baseHitTolerance / avgScale;
         }
 
+        // ---- Stepped path computation ----
+
+        /// <summary>
+        ///     Computes the 4 waypoints of the stepped H-V-H path.
+        ///     Returns (start, stubEnd, stubStart, end) where:
+        ///     start → stubEnd   = horizontal stub from source
+        ///     stubEnd → stubStart = vertical connector
+        ///     stubStart → end    = horizontal stub into target
+        /// </summary>
+        private (Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) ComputeSteppedPath()
+        {
+            var start = this.WorldToLocal(_from.worldBound.center);
+            var end = this.WorldToLocal(_to.worldBound.center);
+
+            // Midpoint X for the vertical segment — biased by stub length
+            var midX = (start.x + end.x) * 0.5f;
+
+            // Ensure minimum horizontal stub from each end
+            if (end.x >= start.x)
+            {
+                midX = Mathf.Max(midX, start.x + MinStubLength);
+                midX = Mathf.Min(midX, end.x - MinStubLength);
+
+                // If nodes overlap horizontally, push stubs outward
+                if (midX < start.x + MinStubLength)
+                {
+                    midX = start.x + MinStubLength;
+                }
+            }
+            else
+            {
+                // Target is to the left of source — route around
+                midX = Mathf.Max(start.x + MinStubLength, end.x + MinStubLength);
+                midX = Mathf.Max(midX, start.x + MinStubLength);
+            }
+
+            var p1 = new Vector2(midX, start.y);
+            var p2 = new Vector2(midX, end.y);
+
+            return (start, p1, p2, end);
+        }
+
+        // ---- Rendering ----
+
         private void OnGenerateVisualContent(MeshGenerationContext mgc)
         {
             if (_from == null || _to == null)
@@ -235,74 +283,48 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 return;
             }
 
-            var start = this.WorldToLocal(_from.worldBound.center);
-            var end = this.WorldToLocal(_to.worldBound.center);
-
-            var dx = Mathf.Abs(end.x - start.x);
-            var offset = Mathf.Max(ControlOffset, dx * 0.35f);
-            var c1 = start + new Vector2(offset, 0f);
-            var c2 = end - new Vector2(offset, 0f);
+            var (p0, p1, p2, p3) = ComputeSteppedPath();
 
             var painter = mgc.painter2D;
-
             var active = IsSelected || _hovered;
+
             painter.lineWidth = active ? Mathf.Max(_selectedWidth, LineWidth + 1.5f) : LineWidth;
             painter.strokeColor = active ? _selectedColor : LineColor;
             painter.fillColor = active ? _selectedColor : LineColor;
+            painter.lineJoin = LineJoin.Round;
 
+            // Draw the 3-segment stepped path
             painter.BeginPath();
-            painter.MoveTo(start);
-            const int segments = 20;
-
-            for (var i = 1; i <= segments; i++)
-            {
-                var t = i / (float)segments;
-                var p = Cubic(start, c1, c2, end, t);
-                painter.LineTo(p);
-            }
-
+            painter.MoveTo(p0);
+            painter.LineTo(p1);
+            painter.LineTo(p2);
+            painter.LineTo(p3);
             painter.Stroke();
 
-            var tangent = (end - c2).normalized;
+            // Arrow direction: always pointing along the last horizontal segment into the target
+            var lastDir = (p3 - p2).normalized;
 
-            if (tangent.sqrMagnitude > 0.0001f)
+            if (lastDir.sqrMagnitude > 0.0001f)
             {
-                DrawArrow(painter, end, tangent);
+                DrawArrow(painter, p3, lastDir);
             }
         }
 
-        private bool IsNearCurve(Vector2 localPoint, float maxDistance)
+        // ---- Hit testing ----
+
+        private bool IsNearLine(Vector2 localPoint, float maxDistance)
         {
             if (_from == null || _to == null)
             {
                 return false;
             }
 
-            var start = this.WorldToLocal(_from.worldBound.center);
-            var end = this.WorldToLocal(_to.worldBound.center);
-            var dx = Mathf.Abs(end.x - start.x);
-            var offset = Mathf.Max(ControlOffset, dx * 0.35f);
-            var c1 = start + new Vector2(offset, 0f);
-            var c2 = end - new Vector2(offset, 0f);
+            var (p0, p1, p2, p3) = ComputeSteppedPath();
 
-            const int segments = 20;
-            var prev = start;
-
-            for (var i = 1; i <= segments; i++)
-            {
-                var t = i / (float)segments;
-                var p = Cubic(start, c1, c2, end, t);
-                var d = DistancePointToSegment(localPoint, prev, p);
-
-                if (d <= maxDistance)
-                {
-                    return true;
-                }
-
-                prev = p;
-            }
-
-            return false;
+            // Check against all 3 segments of the stepped path
+            return DistancePointToSegment(localPoint, p0, p1) <= maxDistance
+                   || DistancePointToSegment(localPoint, p1, p2) <= maxDistance
+                   || DistancePointToSegment(localPoint, p2, p3) <= maxDistance;
         }
 
         private static float DistancePointToSegment(Vector2 p, Vector2 a, Vector2 b)
@@ -315,22 +337,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             return Vector2.Distance(p, closest);
         }
 
+        // ---- Arrow (small, modern chevron) ----
+
         private void DrawArrow(Painter2D painter, Vector2 tip, Vector2 direction)
         {
             var rad = ArrowAngleDeg * Mathf.Deg2Rad;
-            var back = tip - direction.normalized * ArrowLength;
-            var dirLeft = Rotate(direction, rad);
-            var dirRight = Rotate(direction, -rad);
-            var left = tip - dirLeft.normalized * ArrowLength * 0.7f;
-            var right = tip - dirRight.normalized * ArrowLength * 0.7f;
+            var left = tip - Rotate(direction, rad).normalized * ArrowLength;
+            var right = tip - Rotate(direction, -rad).normalized * ArrowLength;
 
             painter.BeginPath();
-            painter.MoveTo(tip);
-            painter.LineTo(left);
-            painter.LineTo(back);
+            painter.MoveTo(left);
+            painter.LineTo(tip);
             painter.LineTo(right);
-            painter.ClosePath();
-            painter.Fill();
+            painter.Stroke();
         }
 
         private static Vector2 Rotate(Vector2 v, float radians)
@@ -339,17 +358,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             var sin = Mathf.Sin(radians);
 
             return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
-        }
-
-        private static Vector2 Cubic(Vector2 p0, Vector2 c1, Vector2 c2, Vector2 p1, float t)
-        {
-            var u = 1f - t;
-            var uu = u * u;
-            var uuu = uu * u;
-            var tt = t * t;
-            var ttt = tt * t;
-
-            return p0 * uuu + c1 * (3f * uu * t) + c2 * (3f * u * tt) + p1 * ttt;
         }
     }
 }
