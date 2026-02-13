@@ -110,6 +110,36 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 return states;
             }
+            set
+            {
+                var statesProperty =
+                    SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
+
+                var so = statesProperty.serializedObject;
+                so.Update();
+
+                statesProperty.ClearArray();
+                so.ApplyModifiedProperties();
+
+                if (value != null)
+                {
+                    for (var i = 0; i < value.Count; ++i)
+                    {
+                        statesProperty.InsertArrayElementAtIndex(i);
+                        var elementProperty = statesProperty.GetArrayElementAtIndex(i);
+                        var elementViewModel = new StateDefinitionViewModel(elementProperty);
+                        elementViewModel.CopyFrom(value[i]);
+                    }
+                }
+
+                so.ApplyModifiedProperties();
+
+                Notify();
+                Notify(nameof(StatesCount));
+                Notify(nameof(AvailableStates));
+                Notify(nameof(InitialState));
+                Notify(nameof(InitialStateIndex));
+            }
         }
 
         [CreateProperty]
@@ -182,6 +212,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             TypeName = other.TypeName;
             TransitionSolverTypeName = other.TransitionSolverTypeName;
             Payload.managedReferenceValue = other.Payload.managedReferenceValue;
+            States = other.States;
+            InitialState = other.InitialState;
         }
 
         public void AddState(StateDefinitionViewModel stateDefinitionViewModel)

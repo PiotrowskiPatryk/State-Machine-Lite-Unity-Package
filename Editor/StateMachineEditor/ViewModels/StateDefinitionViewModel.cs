@@ -49,7 +49,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             get => SerializedProperty.FindPropertyRelative(StateDefinition.TYPE_NAME_PROPERTY_NAME).stringValue;
             set
             {
-                if (TypeName.Equals(value))
+                if (TypeName.Equals(value) || string.IsNullOrWhiteSpace(value))
                 {
                     return;
                 }
@@ -338,6 +338,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             so.ApplyModifiedProperties();
             Notify(nameof(Transitions));
         }
-
     }
 }
