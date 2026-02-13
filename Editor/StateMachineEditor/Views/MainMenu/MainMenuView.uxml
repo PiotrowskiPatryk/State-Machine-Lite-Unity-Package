@@ -20,8 +20,10 @@
                 </Bindings>
             </ui:Label>
         </ui:VisualElement>
-        <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding-top: 20px; padding-right: 40px; padding-bottom: 20px; padding-left: 40px;">
-            <ui:TabView name="TabView" style="padding-bottom: 20px; flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; flex-direction: column;">
+        <ui:VisualElement name="VisualElement"
+                          style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+            <ui:TabView name="TabView"
+                        style="padding-bottom: 0; flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; flex-direction: column; padding-top: 0; padding-right: 0; padding-left: 0;">
                 <ui:Tab label="State Machines" name="StateMachinesTab" enabled="true" closeable="false"
                         style="flex-shrink: 1; flex-grow: 1; min-height: 0; min-width: 0; justify-content: flex-start;">
                     <ui:VisualElement name="StateMachinesContainer"
