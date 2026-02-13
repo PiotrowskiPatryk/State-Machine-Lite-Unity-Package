@@ -151,15 +151,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Core
 
             var stateMachineMenuView = new StateMachineMenuView();
 
-            stateMachineMenuView.SaveButtonPressed += newData =>
-            {
-                _stateMachineContainerViewModelRegistry.
-                    StateMachineConfigurationViewModel.UpdateState(newData);
-
-                ShowMainMenuView();
-            };
-
-            stateMachineMenuView.ExitButtonPressed += ShowMainMenuView;
+            stateMachineMenuView.BackButtonPressed += ShowMainMenuView;
             stateMachineMenuView.AddNewStateButtonPressed += OnAddNewStateButtonPressed;
             stateMachineMenuView.EditStateButtonPressed += OnEditStateButtonPressed;
             stateMachineMenuView.DeleteStateButtonPressed += OnDeleteStateButtonPressed;

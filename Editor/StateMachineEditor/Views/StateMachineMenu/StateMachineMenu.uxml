@@ -41,7 +41,8 @@
                 </ui:DropdownField>
                 <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
                 <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false"
-                                        virtualization-method="DynamicHeight" reorderable="true" style="flex-grow: 1; min-height: 0;">
+                                        virtualization-method="DynamicHeight" reorderable="true"
+                                        style="flex-grow: 1; min-height: 0;">
                     <Bindings>
                         <ui:DataBinding property="itemsSource" data-source-path="States"/>
                     </Bindings>
@@ -85,13 +86,9 @@
     </ui:VisualElement>
     <ui:VisualElement name="VisualElement"
                       style="flex-grow: 1; position: absolute; right: 0; top: 2px; flex-direction: row;">
-        <ui:Button text="Save"
-                   icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Save.png?fileID=2800000&amp;guid=7532d6b95cc030e4c9081e3d9830ca63&amp;type=3#Icon_Save"
-                   name="SaveButton"
-                   style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;"/>
-        <ui:Button text="Exit"
-                   icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Exit.png?fileID=2800000&amp;guid=b277c29947dc7124bb50efd0bb362127&amp;type=3#Icon_Exit"
-                   name="ExitButton"
+        <ui:Button text="Back"
+                   icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Back.png?fileID=2800000&amp;guid=f79583d6a4014394a8f671b2de4d4529&amp;type=3#Icon_Back"
+                   name="BackButton"
                    style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;"/>
     </ui:VisualElement>
 </ui:UXML>

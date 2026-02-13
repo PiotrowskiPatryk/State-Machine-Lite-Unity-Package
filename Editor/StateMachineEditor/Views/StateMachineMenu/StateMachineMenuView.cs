@@ -23,7 +23,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
         private readonly Dictionary<string, Foldout> _foldoutByStateId = new();
         private readonly Dictionary<string, ListView> _transitionsListByStateId = new();
 
-        public event Action<StateMachineDefinitionViewModel> SaveButtonPressed;
         public event Action<StateMachineDefinitionViewModel> AddNewStateButtonPressed;
         public event Action<StateMachineDefinitionViewModel, StateDefinitionViewModel> EditStateButtonPressed;
         public event Action<StateMachineDefinitionViewModel, int> DeleteStateButtonPressed;
@@ -37,7 +36,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             Action<StateMachineDefinitionViewModel, StateDefinitionViewModel, TransitionRuleDefinitionViewModel>
             EditTransitionButtonPressed;
 
-        public event Action ExitButtonPressed;
+        public event Action BackButtonPressed;
 
         public event Action<StateMachineDefinitionViewModel, StateDefinitionViewModel, StateDefinitionViewModel>
             CreateTransitionBetweenStatesRequested;
@@ -46,8 +45,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
         private TypePickerDropdownField _stateMachineTypeDropdown;
         private TypePickerDropdownField _transitionSolverTypeDropdown;
         private PropertyField _payloadPropertyField;
-        private Button _saveButton;
-        private Button _exitButton;
+        private Button _backButton;
         private Button _addStateButton;
         private MultiColumnListView _statesListView;
         private VisualElement _stateMachineGraphContainer;
@@ -86,15 +84,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
 
         private void OnDetached(DetachFromPanelEvent detachFromPanelEvent)
         {
-            // Unregister top-level button handlers to avoid leaks
-            if (_saveButton != null)
+            if (_backButton != null)
             {
-                _saveButton.clicked -= OnSaveButtonPressed;
-            }
-
-            if (_exitButton != null)
-            {
-                _exitButton.clicked -= OnExitButtonPressed;
+                _backButton.clicked -= OnBackButtonPressed;
             }
 
             if (_addStateButton != null)
@@ -121,8 +113,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
                 _stateMachineGraphView.CreateTransitionRequested -= OnGraphCreateTransitionRequested;
             }
 
-            SaveButtonPressed = null;
-            ExitButtonPressed = null;
+            BackButtonPressed = null;
             EditStateButtonPressed = null;
             DeleteStateButtonPressed = null;
             AddNewStateButtonPressed = null;
@@ -137,8 +128,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _stateMachineTypeDropdown = this.Q<TypePickerDropdownField>("StateMachineTypeDropdown");
             _transitionSolverTypeDropdown = this.Q<TypePickerDropdownField>("TransitionSolverTypeDropdown");
             _payloadPropertyField = this.Q<PropertyField>("PayloadPropertyField");
-            _saveButton = this.Q<Button>("SaveButton");
-            _exitButton = this.Q<Button>("ExitButton");
+            _backButton = this.Q<Button>("BackButton");
             _addStateButton = this.Q<Button>("AddStateButton");
             _statesListView = this.Q<MultiColumnListView>("StatesListView");
             _stateMachineGraphContainer = this.Q<VisualElement>("StateMachineGraphContainer");
@@ -151,9 +141,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _stateMachineGraphView.NodeClicked += OnGraphNodeClicked;
             _stateMachineGraphView.EdgeClicked += OnGraphEdgeClicked;
             _stateMachineGraphView.CreateTransitionRequested += OnGraphCreateTransitionRequested;
-
-            _saveButton.clicked += OnSaveButtonPressed;
-            _exitButton.clicked += OnExitButtonPressed;
+            _backButton.clicked += OnBackButtonPressed;
             _addStateButton.clicked += OnAddStateButtonPressed;
 
             _stateMachineTypeDropdown.RegisterValueChangedCallback(OnChangedStateMachineTypeDropdown);
@@ -162,8 +150,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             Debug.Assert(_stateMachineTypeDropdown != null, "_stateMachineTypeDropdown should not be null");
             Debug.Assert(_transitionSolverTypeDropdown != null, "_transitionSolverTypeDropdown should not be null");
             Debug.Assert(_payloadPropertyField != null, "_payloadPropertyField should not be null");
-            Debug.Assert(_saveButton != null, "_saveButton should not be null");
-            Debug.Assert(_exitButton != null, "_exitButton should not be null");
+            Debug.Assert(_backButton != null, "_exitButton should not be null");
             Debug.Assert(_addStateButton != null, "_addStateButton should not be null");
             Debug.Assert(_statesListView != null, "_statesListView should not be null");
             Debug.Assert(_initialStateDropdownField != null, "_initialStateDropdownField should not be null");
@@ -358,19 +345,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             BindStateTablePropertyCell(visualElement, nameof(StateDefinitionViewModel.TypeNameShort), index);
         }
 
-        private void OnSaveButtonPressed()
-        {
-            SaveButtonPressed?.Invoke(_stateMachineDefinitionViewModel);
-        }
-
         private void OnAddStateButtonPressed()
         {
             AddNewStateButtonPressed?.Invoke(_stateMachineDefinitionViewModel);
         }
 
-        private void OnExitButtonPressed()
+        private void OnBackButtonPressed()
         {
-            ExitButtonPressed?.Invoke();
+            BackButtonPressed?.Invoke();
         }
 
         private void OnChangedTransitionSolverTypeDropdown(ChangeEvent<string> changeEvent)
