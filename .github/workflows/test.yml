@@ -8,7 +8,7 @@ on:
 
 permissions:
   checks: write
-  contents: read
+  contents: write
 
 jobs:
   editmode-tests:
@@ -65,3 +65,31 @@ jobs:
         with:
           name: editmode-coverage-results
           path: ${{ steps.tests.outputs.coveragePath }}
+
+      - name: Generate badges
+        if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+        run: |
+          mkdir -p badges
+
+          # ── Coverage badge ──
+          COVERAGE_PATH="${{ steps.tests.outputs.coveragePath }}"
+          BADGE_SVG=$(find "$COVERAGE_PATH" -name "badge_linecoverage.svg" | head -1)
+          if [ -f "$BADGE_SVG" ]; then
+            cp "$BADGE_SVG" badges/coverage.svg
+          fi
+
+          # ── Version badge ──
+          VERSION=$(jq -r '.version' package/package.json)
+          curl -s "https://img.shields.io/badge/version-${VERSION}-blue" -o badges/version.svg
+
+      - name: Publish badges to badges branch
+        if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: badges
+          publish_dir: ./badges
+          keep_files: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Update badges'
