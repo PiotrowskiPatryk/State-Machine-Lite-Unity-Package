@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.Utilities;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 {
@@ -104,17 +107,29 @@ namespace Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition
 
         public void OnBeforeSerialize()
         {
-            if (_payload != null)
+#if UNITY_EDITOR
+            try
             {
-                _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
-            }
+                if (_payload != null)
+                {
+                    _payloadScriptGuid = ScriptGuidUtility.GetGuidForType(_payload.GetType());
+                }
 
-            UpdateTypeName();
+                UpdateTypeName();
+            }
+            catch (UnityException)
+            {
+                // AssetDatabase not available during this serialization pass; skip.
+            }
+#endif
         }
 
         public void OnAfterDeserialize()
         {
-            UpdateTypeName();
+#if UNITY_EDITOR
+            // Defer GUID resolution: AssetDatabase is not available during deserialization.
+            EditorApplication.delayCall += UpdateTypeName;
+#endif
         }
 
         private void UpdateTypeName()

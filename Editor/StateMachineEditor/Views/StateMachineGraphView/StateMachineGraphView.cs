@@ -14,7 +14,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
     public class StateMachineGraphView : VisualElement
     {
         private readonly VisualElement _statesContainer;
-        private readonly Dictionary<string, GraphNode> _nodeById = new();
+        private readonly Dictionary<string, StateGraphNode> _nodeById = new();
         private readonly VisualElement _transitionsContainer;
         private readonly VisualTreeAsset _stateNodeTemplate;
         private readonly List<TransitionEdgeElement> _edges = new();
@@ -23,11 +23,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
         private readonly GraphNodeBackgroundVisualElement _background;
 
+        // ---- New node placement ----
+        private static readonly Vector2Int NODE_PLACEMENT_OFFSET = new(250, 0);
+
         // Events
         public event Action<string> NodeClicked; // stateId
         public event Action<string, string> EdgeClicked; // sourceStateId, transitionPropertyPath
         public event Action<string, string> CreateTransitionRequested; // sourceStateId, targetStateId
-        private GraphNode _selectedNode;
+        private StateGraphNode _selectedNode;
         private TransitionEdgeElement _selectedEdge;
 
         private StateMachineDefinitionViewModel _stateMachineDefinitionViewModel;
@@ -46,8 +49,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             visualTreeAsset.CloneTree(this);
 
             style.flexGrow = 1;
-            style.flexShrink = 0;
-            style.flexBasis = 0;
+            style.flexShrink = 1;
+            style.flexBasis = StyleKeyword.Auto;
 
             _background = this.Q<GraphNodeBackgroundVisualElement>();
             _statesContainer = this.Q<VisualElement>("StatesContainer");
@@ -134,11 +137,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             // 2) Add or update nodes
             foreach (var state in states)
             {
-                if (!_nodeById.TryGetValue(state.Id, out var anchor))
+                if (!_nodeById.TryGetValue(state.Id, out var node))
                 {
-                    anchor = AddNode(state);
+                    node = AddNode(state);
+                }
+                else
+                {
+                    // Refresh data source so bindings pick up name/type changes
+                    RefreshNodeDataSource(node, state);
                 }
             }
+
+            // 3) Apply initial state highlighting
+            ApplyInitialStateHighlight();
         }
 
         private void SyncTransitions()
@@ -205,10 +216,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             }
         }
 
-        private GraphNode AddNode(StateDefinitionViewModel state)
+        private StateGraphNode AddNode(StateDefinitionViewModel state)
         {
+            // Auto-position new nodes to avoid stacking at (0,0)
+            if (state.NodePosition == Vector2Int.zero)
+            {
+                state.NodePosition = FindFreePosition(Vector2Int.zero);
+            }
+
             var instance = _stateNodeTemplate.Instantiate();
-            var node = instance.Q<GraphNode>();
+            var node = instance.Q<StateGraphNode>();
             node.dataSource = state;
             instance.dataSource = state;
 
@@ -225,7 +242,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 }
             });
 
-            // Node selection on click: listen on GraphNode at TrickleDown so we still get the event
+            // Node selection on click: listen on StateGraphNode at TrickleDown so we still get the event
             // even if the drag manipulator stops propagation at target phase.
             node.RegisterCallback<PointerUpEvent>(evt =>
             {
@@ -256,7 +273,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             return node;
         }
 
-        private void HandleOutputPortClick(StateDefinitionViewModel state, PointerDownEvent evt, GraphNode node,
+        private void HandleOutputPortClick(StateDefinitionViewModel state, PointerDownEvent evt, StateGraphNode node,
             Button output)
         {
             if (evt.button != 0)
@@ -296,8 +313,50 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             }
         }
 
+        // ---- Data source refresh ----
+        private static void RefreshNodeDataSource(StateGraphNode node, StateDefinitionViewModel state)
+        {
+            node.dataSource = state;
+            var parent = node.parent;
+
+            if (parent != null)
+            {
+                parent.dataSource = state;
+            }
+        }
+
+        // ---- Initial state highlight ----
+        private void ApplyInitialStateHighlight()
+        {
+            if (_stateMachineDefinitionViewModel == null)
+            {
+                return;
+            }
+
+            var initialStateId = _stateMachineDefinitionViewModel.InitialState?.Id;
+
+            foreach (var kvp in _nodeById)
+            {
+                kvp.Value.SetIsInitialState(
+                    !string.IsNullOrEmpty(initialStateId) && kvp.Key == initialStateId);
+            }
+        }
+
+        // ---- Auto-position ----
+        private Vector2Int FindFreePosition(Vector2Int desired)
+        {
+            var occupied = new HashSet<Vector2Int>(_nodeById.Values.Select(n => n.value));
+
+            while (occupied.Contains(desired))
+            {
+                desired += NODE_PLACEMENT_OFFSET;
+            }
+
+            return desired;
+        }
+
         // ---- Selection helpers ----
-        private void SelectNode(GraphNode node, bool center)
+        private void SelectNode(StateGraphNode node, bool center)
         {
             // Deselect any selected edge to keep selection exclusive
             if (_selectedEdge != null)
@@ -308,27 +367,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             if (_selectedNode != null)
             {
-                var prev = _selectedNode.Q<VisualElement>("NodeElement");
-
-                if (prev != null)
-                {
-                    prev.style.borderLeftColor = _nodeBorderDefault;
-                    prev.style.borderRightColor = _nodeBorderDefault;
-                    prev.style.borderTopColor = _nodeBorderDefault;
-                    prev.style.borderBottomColor = _nodeBorderDefault;
-                }
+                SetNodeBorderColor(_selectedNode, _nodeBorderDefault);
             }
 
             _selectedNode = node;
-            var cur = _selectedNode?.Q<VisualElement>("NodeElement");
-
-            if (cur != null)
-            {
-                cur.style.borderLeftColor = _nodeBorderSelected;
-                cur.style.borderRightColor = _nodeBorderSelected;
-                cur.style.borderTopColor = _nodeBorderSelected;
-                cur.style.borderBottomColor = _nodeBorderSelected;
-            }
+            SetNodeBorderColor(_selectedNode, _nodeBorderSelected);
 
             if (center && _selectedNode != null)
             {
@@ -342,16 +385,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             // Deselect any selected node to keep selection exclusive
             if (_selectedNode != null)
             {
-                var prev = _selectedNode.Q<VisualElement>("NodeElement");
-
-                if (prev != null)
-                {
-                    prev.style.borderLeftColor = _nodeBorderDefault;
-                    prev.style.borderRightColor = _nodeBorderDefault;
-                    prev.style.borderTopColor = _nodeBorderDefault;
-                    prev.style.borderBottomColor = _nodeBorderDefault;
-                }
-
+                SetNodeBorderColor(_selectedNode, _nodeBorderDefault);
                 _selectedNode = null;
             }
 
@@ -365,6 +399,24 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             // bring to front so highlight is visible
             _selectedEdge?.BringToFront();
+        }
+
+        /// <summary>
+        ///     Sets the border color on a node's NodeElement. Extracted to avoid repetition (DRY).
+        /// </summary>
+        private static void SetNodeBorderColor(StateGraphNode node, Color color)
+        {
+            var element = node?.Q<VisualElement>("NodeElement");
+
+            if (element == null)
+            {
+                return;
+            }
+
+            element.style.borderLeftColor = color;
+            element.style.borderRightColor = color;
+            element.style.borderTopColor = color;
+            element.style.borderBottomColor = color;
         }
 
         private void OnEdgeClickedInternal(TransitionEdgeElement edge)
@@ -440,9 +492,18 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
                 while (cur != null)
                 {
-                    if (cur.name == "InputNode")
+                    if (cur.name != "InputNode")
                     {
-                        var node = cur.GetFirstOfType<GraphNode>();
+                        if (ReferenceEquals(cur, this))
+                        {
+                            break;
+                        }
+
+                        cur = cur.parent;
+                    }
+                    else
+                    {
+                        var node = cur.GetFirstOfType<StateGraphNode>();
 
                         if (node != null)
                         {
@@ -451,13 +512,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
                         break;
                     }
-
-                    if (ReferenceEquals(cur, this))
-                    {
-                        break;
-                    }
-
-                    cur = cur.parent;
                 }
             }
 

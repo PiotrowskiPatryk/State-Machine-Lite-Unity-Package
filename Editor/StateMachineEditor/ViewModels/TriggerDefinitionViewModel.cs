@@ -62,6 +62,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         }
 
         [CreateProperty]
+        public string TypeNameShort => StateMachineReflectionUtilities.ToClassNameOnly(TypeName);
+
+        [CreateProperty]
         public SerializedProperty Payload =>
             SerializedProperty.FindPropertyRelative(TriggerDefinition.PAYLOAD_PROPERTY_NAME);
 
