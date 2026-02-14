@@ -1,6 +1,7 @@
 ﻿# State Machines Lite
 
-![Version](https://img.shields.io/badge/version-0.0.1-blue)
+![Version](https://raw.githubusercontent.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/badges/version.svg)
+![Coverage](https://raw.githubusercontent.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/badges/coverage.svg)
 ![Preview](https://img.shields.io/badge/status-preview-orange)
 ![Unity](https://img.shields.io/badge/unity-6000.0%2B-black?logo=unity)
 ![License](https://img.shields.io/badge/license-MIT-green)

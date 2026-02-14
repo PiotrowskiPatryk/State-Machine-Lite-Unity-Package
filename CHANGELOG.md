@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 
 ## [Unreleased]
 
+### Added
+- **DefaultTriggerPayloadBuilder** — Reflection-based fluent builder for creating `DefaultTriggerPayload` instances in tests, handling private `[SerializeField]` fields.
+- **DefaultTriggerTests** — Comprehensive coverage across 8 categories: initialization, activation rules (Immediately, AfterFixedFrame), deactivation rules (Never, NextFrame, AfterFixedFrame), early returns, cancellation, disposal, event firing, and payload validation.
+
+### Fixed
+- **DefaultTriggerTests** — Rewrote the entire test suite (33 tests) to properly initialize triggers with `DefaultTriggerPayload`, fixing `NullReferenceException` failures caused by missing `InitializeAsync` calls.
+
 ## [0.0.1] - 2026-02-10
 
 ### Added
