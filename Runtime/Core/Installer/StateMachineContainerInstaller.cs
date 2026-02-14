@@ -1,18 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region
+
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Factories;
 using Dev.Cortez.StateMachines.Core.Interfaces;
+using Dev.Cortez.StateMachines.Core.Registry;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
-using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
-namespace Dev.Cortez.StateMachines.Core.Registry
+#endregion
+
+namespace Dev.Cortez.StateMachines.Core.Installer
 {
-    public class StateMachineContainerInstaller
+    public class StateMachineContainerInstaller : IStateMachineContainerInstaller
     {
+        private readonly IStateMachineFactory _stateMachineFactory;
+
+        public StateMachineContainerInstaller(IStateMachineFactory stateMachineFactory)
+        {
+            _stateMachineFactory = stateMachineFactory;
+        }
+
         [ItemCanBeNull]
         public async UniTask<IStateMachineContainerEntry> InstallAsync(StateMachineContainer stateMachineContainer,
             CancellationToken cancellationToken)
@@ -31,7 +41,7 @@ namespace Dev.Cortez.StateMachines.Core.Registry
 
             var triggers = await triggersDefinitions.
                 Select(triggerDefinition =>
-                    StateMachineFactory.CreateTriggerAsync(triggerDefinition, linkedCancellationToken.Token));
+                    _stateMachineFactory.CreateTriggerAsync(triggerDefinition, linkedCancellationToken.Token));
 
             LoggerService.Logger.LogInfo(
                 $"Creating state machines for state machine container registry {stateMachineContainerEntry.Id}");
@@ -39,7 +49,7 @@ namespace Dev.Cortez.StateMachines.Core.Registry
             var stateMachineDefinitions = stateMachineContainer.StateMachineConfiguration.StateMachines;
 
             var stateMachines = await stateMachineDefinitions.Select(stateMachine =>
-                StateMachineFactory.CreateStateMachineAsync(stateMachine, linkedCancellationToken.Token));
+                _stateMachineFactory.CreateStateMachineAsync(stateMachine, linkedCancellationToken.Token));
 
             var triggersRegistered = TryRegisterTriggers(triggers, stateMachineContainerEntry);
 

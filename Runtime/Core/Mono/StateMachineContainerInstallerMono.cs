@@ -1,16 +1,23 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Dev.Cortez.StateMachines.Core.Factories;
+using Dev.Cortez.StateMachines.Core.Installer;
 using Dev.Cortez.StateMachines.Core.Registry;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration;
 using UnityEngine;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Core.Mono
 {
     [DefaultExecutionOrder(1000)]
     public class StateMachineContainerInstallerMono : MonoBehaviour
     {
-        private readonly StateMachineContainerInstaller _stateMachineContainerInstaller = new();
+        private readonly StateMachineContainerInstaller
+            _stateMachineContainerInstaller = new(StateMachineFactory.Default());
 
         public event Action<IStateMachineContainerEntry> InstallationCompleted;
         public event Action<IStateMachineContainerEntry> StateMachinesActivated;

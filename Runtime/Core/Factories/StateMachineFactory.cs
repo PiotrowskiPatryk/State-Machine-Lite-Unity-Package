@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,17 +8,32 @@ using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Core.Data;
+using Dev.Cortez.StateMachines.Core.Installer;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Dev.Cortez.StateMachines.Logging;
 using JetBrains.Annotations;
 
+#endregion
+
 namespace Dev.Cortez.StateMachines.Core.Factories
 {
-    public static class StateMachineFactory
+    public sealed class StateMachineFactory : IStateMachineFactory
     {
+        private readonly IStateMachineInstanceBuilder _stateMachineInstanceBuilder;
+
+        public StateMachineFactory(IStateMachineInstanceBuilder stateMachineInstanceBuilder)
+        {
+            _stateMachineInstanceBuilder = stateMachineInstanceBuilder;
+        }
+
+        public static IStateMachineFactory Default()
+        {
+            return new StateMachineFactory(new ActivatorBasedStateMachineInstallerBuilder());
+        }
+
         [ItemCanBeNull]
-        public static async UniTask<IStateMachine> CreateStateMachineAsync(
+        public async UniTask<IStateMachine> CreateStateMachineAsync(
             [NotNull] StateMachineDefinition stateMachineDefinition, CancellationToken cancellationToken)
         {
             LoggerService.Logger.LogTrace(
@@ -62,7 +79,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
 
-            var stateMachineInstance = Activator.CreateInstance(stateMachineType) as IStateMachine;
+            var stateMachineInstance = _stateMachineInstanceBuilder.CreateInstance<IStateMachine>(stateMachineType);
 
             if (stateMachineInstance == null)
             {
@@ -71,7 +88,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
 
-            var transitionSolver = Activator.CreateInstance(transitionSolverType) as ITransitionSolver;
+            var transitionSolver = _stateMachineInstanceBuilder.CreateInstance<ITransitionSolver>(transitionSolverType);
             var states = await stateMachineDefinition.States.Select(state =>
                 CreateStateAsync(state, linkedCancellationToken.Token));
 
@@ -87,7 +104,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
         }
 
         [ItemCanBeNull]
-        public static async UniTask<Dictionary<IState, IReadOnlyList<TransitionRule>>> CreateTransitionRules(
+        public async UniTask<Dictionary<IState, IReadOnlyList<TransitionRule>>> CreateTransitionRules(
             List<IState> states,
             [NotNull] StateMachineDefinition stateMachineDefinition, CancellationToken cancellationToken)
         {
@@ -125,7 +142,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
             return transitionRules;
         }
 
-        public static async UniTask<TransitionRule> CreateTransitionRuleAsync(List<IState> states,
+        public async UniTask<TransitionRule> CreateTransitionRuleAsync(List<IState> states,
             IState originState, TransitionRuleDefinition transitionRuleDefinition,
             CancellationToken cancellationToken)
         {
@@ -162,7 +179,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
         }
 
         [ItemCanBeNull]
-        public static async UniTask<ICondition> CreateConditionAsync(ConditionDefinition conditionDefinition,
+        public async UniTask<ICondition> CreateConditionAsync(ConditionDefinition conditionDefinition,
             CancellationToken cancellationToken)
         {
             using var linkedCancellationToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -185,7 +202,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
 
-            if (Activator.CreateInstance(conditionType) is not ICondition conditionInstance)
+            if (_stateMachineInstanceBuilder.CreateInstance(conditionType) is not ICondition conditionInstance)
             {
                 LoggerService.Logger.LogError("Unable to create condition instance");
 
@@ -204,7 +221,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
             return conditionInstance;
         }
 
-        public static async UniTask<IState> CreateStateAsync([NotNull] StateDefinition stateDefinition,
+        public async UniTask<IState> CreateStateAsync([NotNull] StateDefinition stateDefinition,
             CancellationToken cancellationToken)
         {
             LoggerService.Logger.LogTrace($"Creating state: [{stateDefinition.Id} {stateDefinition.Name}]");
@@ -227,7 +244,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                 return null;
             }
 
-            if (Activator.CreateInstance(stateType) is not IState stateInstance)
+            if (_stateMachineInstanceBuilder.CreateInstance(stateType) is not IState stateInstance)
             {
                 LoggerService.Logger.LogError("Unable to create state instance");
 
@@ -239,7 +256,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
             return stateInstance;
         }
 
-        public static async UniTask<ITrigger> CreateTriggerAsync([NotNull] TriggerDefinition triggerDefinition,
+        public async UniTask<ITrigger> CreateTriggerAsync([NotNull] TriggerDefinition triggerDefinition,
             CancellationToken cancellationToken)
         {
             LoggerService.Logger.LogTrace($"Creating trigger: [{triggerDefinition.Id} {triggerDefinition.Name}]");
@@ -269,7 +286,7 @@ namespace Dev.Cortez.StateMachines.Core.Factories
                     $"Type '{type.FullName}' must derive from TriggerBase or TriggerBase<TPayload>.");
             }
 
-            var triggerInstance = (ITrigger)Activator.CreateInstance(type, args);
+            var triggerInstance = _stateMachineInstanceBuilder.CreateInstance<ITrigger>(type, args);
 
             if (triggerInstance is not IAsyncInitializable triggerAsyncInitializable)
             {
