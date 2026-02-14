@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-02-14
+
 ### Added
 - **DefaultTriggerPayloadBuilder** — Reflection-based fluent builder for creating `DefaultTriggerPayload` instances in tests, handling private `[SerializeField]` fields.
 - **DefaultTriggerTests** — Comprehensive coverage across 8 categories: initialization, activation rules (Immediately, AfterFixedFrame), deactivation rules (Never, NextFrame, AfterFixedFrame), early returns, cancellation, disposal, event firing, and payload validation.
@@ -42,5 +44,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 #### Samples
 - **Game Scenario** — Complete sample demonstrating multiple interconnected state machines (safe, door, key) with custom contexts, payloads, triggers, and an objective tracking system.
 
-[Unreleased]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/releases/tag/v0.0.2
 [0.0.1]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/releases/tag/v0.0.1
