@@ -1,12 +1,18 @@
-﻿using System;
+﻿#region
+
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineGraphView
 {
     /// <summary>
-    ///     Draws a stepped orthogonal edge (horizontal→vertical→horizontal) between two VisualElements.
-    ///     Mimics Unity Shader Graph edge routing. Hover & click are handled from the panel root.
+    ///     Draws an orthogonal edge between two port VisualElements, routing around source/target nodes.
+    ///     Supports rounded corners and automatic wrap-around when nodes overlap horizontally.
+    ///     Hover & click are handled from the panel root.
     /// </summary>
     internal sealed class TransitionEdgeElement : VisualElement
     {
@@ -14,6 +20,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
         private readonly VisualElement _from;
         private readonly VisualElement _to;
+        private readonly VisualElement _sourceNode;
+        private readonly VisualElement _targetNode;
 
         private readonly Color _selectedColor = new(0.066f, 0.45f, 0.8313f, 1f);
         private readonly float _selectedWidth = 5.0f;
@@ -31,6 +39,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private int _pressedPointerId = -1;
         private Vector2 _pressWorldPos;
 
+        // Reusable list to avoid GC pressure during path recomputation
+        private readonly List<Vector2> _pathPoints = new(8);
+
         public string SourceStateId { get; }
         public string TargetStateId { get; }
         public object Tag { get; set; }
@@ -43,18 +54,43 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         /// <summary>
         ///     Minimum horizontal stub length (in local px) before the vertical connector.
         /// </summary>
-        public float MinStubLength { get; set; } = 10.0f;
+        public float MinStubLength { get; set; } = 40.0f;
+
+        /// <summary>
+        ///     Padding around node bounds when routing the vertical segment.
+        /// </summary>
+        public float NodePadding { get; set; } = 40.0f;
+
+        /// <summary>
+        ///     Radius for rounded corners at 90-degree bends.
+        /// </summary>
+        public float CornerRadius { get; set; } = 15.0f;
+
+        /// <summary>
+        ///     Lane offset index for this edge within its corridor group.
+        ///     0 = centered, negative = left, positive = right.
+        ///     Assigned by the graph view to separate overlapping edges.
+        /// </summary>
+        public float LaneOffset { get; set; } = 0f;
+
+        /// <summary>
+        ///     Spacing in pixels between adjacent lanes.
+        /// </summary>
+        public float LaneSpacing { get; set; } = 25f;
 
         public bool BringToFrontOnSelect { get; set; } = true;
         public bool IsSelected { get; private set; }
 
-        public TransitionEdgeElement(VisualElement from, VisualElement to, string sourceStateId = null,
-            string targetStateId = null)
+        public TransitionEdgeElement(VisualElement from, VisualElement to,
+            VisualElement sourceNode, VisualElement targetNode,
+            string sourceStateId = null, string targetStateId = null)
         {
             pickingMode = PickingMode.Position;
 
             _from = from;
             _to = to;
+            _sourceNode = sourceNode;
+            _targetNode = targetNode;
             SourceStateId = sourceStateId;
             TargetStateId = targetStateId;
 
@@ -68,6 +104,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             _from?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
             _to?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
+            _sourceNode?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
+            _targetNode?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
             RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
 
             // Global (panel-level) listeners so hover/click work even under overlays
@@ -235,43 +273,81 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         // ---- Stepped path computation ----
 
         /// <summary>
-        ///     Computes the 4 waypoints of the stepped H-V-H path.
-        ///     Returns (start, stubEnd, stubStart, end) where:
-        ///     start → stubEnd   = horizontal stub from source
-        ///     stubEnd → stubStart = vertical connector
-        ///     stubStart → end    = horizontal stub into target
+        ///     Computes an orthogonal path from the right edge of the source port to the left edge of
+        ///     the target port, routing around both source and target node bounds with padding.
+        ///     Returns a variable-length list of waypoints (always orthogonal segments).
         /// </summary>
-        private (Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) ComputeSteppedPath()
+        private List<Vector2> ComputePath()
         {
-            var start = this.WorldToLocal(_from.worldBound.center);
-            var end = this.WorldToLocal(_to.worldBound.center);
+            _pathPoints.Clear();
 
-            // Midpoint X for the vertical segment — biased by stub length
-            var midX = (start.x + end.x) * 0.5f;
+            // Anchor at port edges: right edge of output, left edge of input
+            var fromBound = _from.worldBound;
+            var toBound = _to.worldBound;
 
-            // Ensure minimum horizontal stub from each end
-            if (end.x >= start.x)
+            var startWorld = new Vector2(fromBound.xMax, fromBound.center.y);
+            var endWorld = new Vector2(toBound.xMin, toBound.center.y);
+
+            var start = this.WorldToLocal(startWorld);
+            var end = this.WorldToLocal(endWorld);
+
+            // Get node bounds in local space for avoidance
+            var srcNodeWorld = _sourceNode != null ? _sourceNode.worldBound : fromBound;
+            var tgtNodeWorld = _targetNode != null ? _targetNode.worldBound : toBound;
+
+            var srcRight = this.WorldToLocal(new Vector2(srcNodeWorld.xMax, 0)).x;
+            var tgtLeft = this.WorldToLocal(new Vector2(tgtNodeWorld.xMin, 0)).x;
+            var srcLeft = this.WorldToLocal(new Vector2(srcNodeWorld.xMin, 0)).x;
+            var tgtRight = this.WorldToLocal(new Vector2(tgtNodeWorld.xMax, 0)).x;
+            var srcTop = this.WorldToLocal(new Vector2(0, srcNodeWorld.yMin)).y;
+            var srcBottom = this.WorldToLocal(new Vector2(0, srcNodeWorld.yMax)).y;
+            var tgtTop = this.WorldToLocal(new Vector2(0, tgtNodeWorld.yMin)).y;
+            var tgtBottom = this.WorldToLocal(new Vector2(0, tgtNodeWorld.yMax)).y;
+
+            _pathPoints.Add(start);
+
+            var laneShift = LaneOffset * LaneSpacing;
+            var gap = tgtLeft - srcRight;
+
+            if (gap >= MinStubLength * 2)
             {
-                midX = Mathf.Max(midX, start.x + MinStubLength);
-                midX = Mathf.Min(midX, end.x - MinStubLength);
+                // Normal case: enough horizontal space between nodes
+                // Simple 3-segment H-V-H path through the gap, shifted by lane offset
+                var midX = srcRight + gap * 0.5f + laneShift;
 
-                // If nodes overlap horizontally, push stubs outward
-                if (midX < start.x + MinStubLength)
-                {
-                    midX = start.x + MinStubLength;
-                }
+                _pathPoints.Add(new Vector2(midX, start.y));
+                _pathPoints.Add(new Vector2(midX, end.y));
             }
             else
             {
-                // Target is to the left of source — route around
-                midX = Mathf.Max(start.x + MinStubLength, end.x + MinStubLength);
-                midX = Mathf.Max(midX, start.x + MinStubLength);
+                // Nodes overlap or are too close horizontally — route around
+                // Use a 5-segment path: H → V → H → V → H
+                var stubX = Mathf.Max(srcRight, tgtRight) + NodePadding + laneShift;
+
+                // Choose vertical route: go above or below, whichever is shorter
+                var aboveY = Mathf.Min(srcTop, tgtTop) - NodePadding;
+                var belowY = Mathf.Max(srcBottom, tgtBottom) + NodePadding;
+
+                var midY = Mathf.Abs(start.y - aboveY) < Mathf.Abs(start.y - belowY)
+                    ? aboveY
+                    : belowY;
+
+                // Right stub from source
+                _pathPoints.Add(new Vector2(stubX, start.y));
+                // Vertical to the routing lane
+                _pathPoints.Add(new Vector2(stubX, midY));
+
+                // Left of target
+                var entryX = Mathf.Min(srcLeft, tgtLeft) - NodePadding + laneShift;
+                // Horizontal across
+                _pathPoints.Add(new Vector2(entryX, midY));
+                // Vertical down/up to target
+                _pathPoints.Add(new Vector2(entryX, end.y));
             }
 
-            var p1 = new Vector2(midX, start.y);
-            var p2 = new Vector2(midX, end.y);
+            _pathPoints.Add(end);
 
-            return (start, p1, p2, end);
+            return _pathPoints;
         }
 
         // ---- Rendering ----
@@ -283,7 +359,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 return;
             }
 
-            var (p0, p1, p2, p3) = ComputeSteppedPath();
+            var path = ComputePath();
+
+            if (path.Count < 2)
+            {
+                return;
+            }
 
             var painter = mgc.painter2D;
             var active = IsSelected || _hovered;
@@ -292,21 +373,59 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             painter.strokeColor = active ? _selectedColor : LineColor;
             painter.fillColor = active ? _selectedColor : LineColor;
             painter.lineJoin = LineJoin.Round;
+            painter.lineCap = LineCap.Round;
 
-            // Draw the 3-segment stepped path
             painter.BeginPath();
-            painter.MoveTo(p0);
-            painter.LineTo(p1);
-            painter.LineTo(p2);
-            painter.LineTo(p3);
+            painter.MoveTo(path[0]);
+
+            var r = CornerRadius;
+
+            for (var i = 1; i < path.Count; i++)
+            {
+                if (r > 0.5f && i < path.Count - 1)
+                {
+                    // Rounded corner: shorten the incoming segment and arc into the next
+                    var prev = path[i - 1];
+                    var corner = path[i];
+                    var next = path[i + 1];
+
+                    var toPrev = (prev - corner).normalized;
+                    var toNext = (next - corner).normalized;
+
+                    // Clamp radius to half the length of the shorter adjacent segment
+                    var lenPrev = Vector2.Distance(prev, corner);
+                    var lenNext = Vector2.Distance(corner, next);
+                    var maxR = Mathf.Min(lenPrev, lenNext) * 0.5f;
+                    var cr = Mathf.Min(r, maxR);
+
+                    if (cr > 0.5f)
+                    {
+                        var arcStart = corner + toPrev * cr;
+                        var arcEnd = corner + toNext * cr;
+
+                        painter.LineTo(arcStart);
+                        painter.ArcTo(corner, arcEnd, cr);
+                    }
+                    else
+                    {
+                        painter.LineTo(corner);
+                    }
+                }
+                else
+                {
+                    painter.LineTo(path[i]);
+                }
+            }
+
             painter.Stroke();
 
-            // Arrow direction: always pointing along the last horizontal segment into the target
-            var lastDir = (p3 - p2).normalized;
+            // Arrow direction: along the last segment into the target
+            var lastIdx = path.Count - 1;
+            var lastDir = (path[lastIdx] - path[lastIdx - 1]).normalized;
 
             if (lastDir.sqrMagnitude > 0.0001f)
             {
-                DrawArrow(painter, p3, lastDir);
+                DrawArrow(painter, path[lastIdx], lastDir);
             }
         }
 
@@ -319,12 +438,17 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 return false;
             }
 
-            var (p0, p1, p2, p3) = ComputeSteppedPath();
+            var path = ComputePath();
 
-            // Check against all 3 segments of the stepped path
-            return DistancePointToSegment(localPoint, p0, p1) <= maxDistance
-                   || DistancePointToSegment(localPoint, p1, p2) <= maxDistance
-                   || DistancePointToSegment(localPoint, p2, p3) <= maxDistance;
+            for (var i = 0; i < path.Count - 1; i++)
+            {
+                if (DistancePointToSegment(localPoint, path[i], path[i + 1]) <= maxDistance)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static float DistancePointToSegment(Vector2 p, Vector2 a, Vector2 b)

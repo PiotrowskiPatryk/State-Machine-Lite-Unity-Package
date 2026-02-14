@@ -168,6 +168,55 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             {
                 CreateTransitionEdges(source);
             }
+
+            AssignEdgeLanes();
+        }
+
+        /// <summary>
+        ///     Groups edges sharing the same node-pair corridor (A↔B = B↔A) and assigns
+        ///     symmetric lane offsets so overlapping edges are spread apart.
+        /// </summary>
+        private void AssignEdgeLanes()
+        {
+            // Group edges by order-independent node pair key
+            var corridors = new Dictionary<string, List<TransitionEdgeElement>>();
+
+            foreach (var edge in _edges)
+            {
+                var key = GetCorridorKey(edge.SourceStateId, edge.TargetStateId);
+
+                if (!corridors.TryGetValue(key, out var list))
+                {
+                    list = new List<TransitionEdgeElement>();
+                    corridors[key] = list;
+                }
+
+                list.Add(edge);
+            }
+
+            // For each corridor with multiple edges, assign centered lane offsets
+            foreach (var kvp in corridors)
+            {
+                var list = kvp.Value;
+
+                if (list.Count <= 1)
+                {
+                    continue; // single edge stays at lane 0
+                }
+
+                // Center the group: offsets are -n/2 ... +n/2
+                for (var i = 0; i < list.Count; i++)
+                {
+                    list[i].LaneOffset = i - (list.Count - 1) * 0.5f;
+                }
+            }
+        }
+
+        private static string GetCorridorKey(string a, string b)
+        {
+            return string.Compare(a, b, StringComparison.Ordinal) <= 0
+                ? $"{a}|{b}"
+                : $"{b}|{a}";
         }
 
         private void CreateTransitionEdges(StateDefinitionViewModel source)
@@ -205,7 +254,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                     continue;
                 }
 
-                var edge = new TransitionEdgeElement(fromAnchor, toAnchor, source.Id, targetId)
+                var edge = new TransitionEdgeElement(fromAnchor, toAnchor, sourceNode, targetNode, source.Id, targetId)
                 {
                     Tag = tr.SerializedProperty.propertyPath
                 };
@@ -454,7 +503,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             _transitionsContainer.Add(_cursorAnchor);
 
-            _previewEdge = new TransitionEdgeElement(fromAnchor, _cursorAnchor, sourceStateId);
+            _previewEdge = new TransitionEdgeElement(fromAnchor, _cursorAnchor, null, null, sourceStateId);
             _transitionsContainer.Add(_previewEdge);
 
             // Initial position
