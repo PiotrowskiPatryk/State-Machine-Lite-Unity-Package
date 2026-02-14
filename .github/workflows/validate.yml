@@ -1,0 +1,99 @@
+name: Validate
+
+on:
+  pull_request:
+    branches: [dev, master]
+
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    name: Validate Changelog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enforce changelog update
+        uses: dangoslen/changelog-enforcer@v3
+        with:
+          changeLogPath: CHANGELOG.md
+          skipLabels: 'skip-changelog'
+          missingUpdateErrorMessage: 'Please update CHANGELOG.md with your changes following the Keep a Changelog format.'
+
+  package-structure:
+    name: Validate Package Structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Unity package structure
+        run: |
+          ERRORS=()
+
+          # ── Required files ──
+          for file in package.json README.md CHANGELOG.md LICENSE.md; do
+            if [ ! -f "$file" ]; then
+              ERRORS+=("Missing required file: $file")
+            fi
+          done
+
+          # ── Required directories ──
+          for dir in Runtime Editor; do
+            if [ ! -d "$dir" ]; then
+              ERRORS+=("Missing required directory: $dir/")
+            fi
+          done
+
+          # ── Assembly definitions ──
+          ASMDEF_COUNT=$(find . -name "*.asmdef" -not -path "./.git/*" | wc -l)
+          if [ "$ASMDEF_COUNT" -eq 0 ]; then
+            ERRORS+=("No .asmdef files found — Unity packages require assembly definitions")
+          fi
+
+          # ── package.json validation ──
+          if [ -f "package.json" ]; then
+            # Required fields
+            for field in name version displayName description unity; do
+              VALUE=$(jq -r ".$field // empty" package.json)
+              if [ -z "$VALUE" ]; then
+                ERRORS+=("package.json: missing required field '$field'")
+              fi
+            done
+
+            # Name format (reverse domain notation)
+            NAME=$(jq -r '.name // empty' package.json)
+            if [ -n "$NAME" ] && ! echo "$NAME" | grep -qP '^[a-z][a-z0-9]*(\.[a-z][a-z0-9-]*){2,}$'; then
+              ERRORS+=("package.json: name '$NAME' does not follow reverse domain notation (e.g. com.company.package)")
+            fi
+
+            # Semantic versioning
+            VERSION=$(jq -r '.version // empty' package.json)
+            if [ -n "$VERSION" ] && ! echo "$VERSION" | grep -qP '^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$'; then
+              ERRORS+=("package.json: version '$VERSION' is not valid semantic versioning")
+            fi
+          fi
+
+          # ── Samples folder convention ──
+          if [ -d "Samples" ] && [ ! -d "Samples~" ]; then
+            ERRORS+=("Samples directory should be named 'Samples~' (with tilde) to prevent auto-import")
+          fi
+
+          # ── Report results ──
+          if [ ${#ERRORS[@]} -gt 0 ]; then
+            echo "::error::Unity package structure validation failed:"
+            for err in "${ERRORS[@]}"; do
+              echo "::error::  ✗ $err"
+            done
+            exit 1
+          else
+            echo "✓ Package structure is valid"
+            echo "  Files: package.json, README.md, CHANGELOG.md, LICENSE.md"
+            echo "  Directories: Runtime/, Editor/"
+            echo "  Assembly definitions: $ASMDEF_COUNT found"
+            echo "  package.json: all required fields present, valid name and version"
+          fi
