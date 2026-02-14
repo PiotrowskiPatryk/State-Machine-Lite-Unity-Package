@@ -1,0 +1,53 @@
+name: Badges
+
+on:
+  workflow_run:
+    workflows: ["Tests"]
+    types: [completed]
+    branches: [dev]
+
+permissions:
+  contents: write
+
+jobs:
+  update-badges:
+    name: Update Badges
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: editmode-coverage-results
+          path: coverage
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate badges
+        run: |
+          mkdir -p badges
+
+          # ── Coverage badge ──
+          BADGE_SVG=$(find coverage -name "badge_linecoverage.svg" | head -1)
+          if [ -f "$BADGE_SVG" ]; then
+            cp "$BADGE_SVG" badges/coverage.svg
+          fi
+
+          # ── Version badge ──
+          VERSION=$(jq -r '.version' package.json)
+          curl -s "https://img.shields.io/badge/version-${VERSION}-blue" -o badges/version.svg
+
+      - name: Publish badges to badges branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: badges
+          publish_dir: ./badges
+          keep_files: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Update badges'
