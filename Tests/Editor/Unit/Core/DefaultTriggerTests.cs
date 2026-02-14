@@ -227,9 +227,6 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             var payload = DefaultTriggerPayloadBuilder.Create().Build();
             await _trigger.InitializeAsync(payload, _cts.Token);
 
-            LogAssert.Expect(UnityEngine.LogType.Error,
-                "[StateMachines]: Unable to initialize trigger: [id:trigger-1, name:Test Trigger]");
-
             // Act
             var result = await _trigger.InitializeAsync(payload, _cts.Token);
 
