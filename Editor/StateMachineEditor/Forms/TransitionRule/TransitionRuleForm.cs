@@ -157,6 +157,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
         {
             var condition = Data.TransitionRuleDefinitionViewModel.Conditions[index];
 
+            visualElement.Clear();
             var propertyField = new PropertyField();
             propertyField.BindProperty(condition.Payload);
             propertyField.label = "When";

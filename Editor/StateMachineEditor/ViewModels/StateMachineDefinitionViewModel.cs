@@ -229,6 +229,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             so.ApplyModifiedProperties();
 
             var newStateProperty = statesProperty.GetArrayElementAtIndex(statesProperty.arraySize - 1);
+
+            // Clear cloned transition rules from the previous array element
+            // (InsertArrayElementAtIndex deep-copies the last element including its transitions)
+            var clonedTransitions = newStateProperty.FindPropertyRelative(
+                StateDefinition.TRANSITION_RULES_PROPERTY_NAME);
+            clonedTransitions.ClearArray();
+            so.ApplyModifiedProperties();
+
             var newState = new StateDefinitionViewModel(newStateProperty);
             newState.CopyFrom(stateDefinitionViewModel);
 
