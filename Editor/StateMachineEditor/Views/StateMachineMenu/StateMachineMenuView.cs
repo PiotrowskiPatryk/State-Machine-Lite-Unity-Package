@@ -162,6 +162,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             _statesListView.columns[1].bindCell = DoBindStateNameCell;
             _statesListView.columns[2].bindCell = DoBindStateDescriptionCell;
             _statesListView.columns[3].bindCell = DoBindStateTypeCell;
+            _statesListView.columns[4].makeCell = () => new ItemOptionsMenu();
             _statesListView.columns[4].bindCell = DoBindStateMenuCell;
             _statesListView.columns[4].unbindCell = DoUnbindStateMenuCell;
             _statesListView.itemIndexChanged += OnStateItemIndexChanged;

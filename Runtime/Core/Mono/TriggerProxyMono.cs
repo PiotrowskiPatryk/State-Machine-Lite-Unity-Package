@@ -29,11 +29,6 @@ namespace Dev.Cortez.StateMachines.Core.Mono
             DetachTrigger();
         }
 
-        private void OnTriggerUnresolved()
-        {
-            DetachTrigger();
-        }
-
         private void DetachTrigger()
         {
             if (_trigger != null)
@@ -53,6 +48,11 @@ namespace Dev.Cortez.StateMachines.Core.Mono
         {
             _trigger = trigger;
             _trigger.TriggeredValueChanged += OnTriggeredValueChanged;
+        }
+
+        private void OnTriggerUnresolved()
+        {
+            DetachTrigger();
         }
 
         private void OnTriggeredValueChanged(ITrigger _, bool value)

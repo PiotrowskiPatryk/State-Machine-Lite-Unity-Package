@@ -39,7 +39,7 @@
                         <ui:Column name="Name" title="Name" stretchable="true" />
                         <ui:Column name="Description" title="Description" stretchable="true" />
                         <ui:Column name="Type" title="Type" stretchable="true" />
-                        <ui:Column cell-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/CustomElements/Buttons.uxml?fileID=9197481963319205126&amp;guid=046acd72bf6509e47ae5f22a399e1f20&amp;type=3#Buttons" min-width="100px" max-width="100px" resizable="false" />
+                        <ui:Column min-width="100px" max-width="100px" resizable="false" />
                     </ui:Columns>
                     <ui:SortColumnDescriptions />
                 </ui:MultiColumnListView>
