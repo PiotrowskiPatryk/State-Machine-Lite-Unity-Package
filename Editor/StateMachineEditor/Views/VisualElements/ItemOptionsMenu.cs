@@ -18,11 +18,44 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
         private const string DELETE_ICON_PATH =
             "Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Delete.png";
 
+        private static Texture2D _editIcon;
+        private static Texture2D _deleteIcon;
+
         public event Action DeleteItemButtonClicked;
         public event Action EditItemButtonClicked;
 
         private readonly Button _editButton;
         private readonly Button _deleteButton;
+
+        internal static Texture2D EditIcon
+        {
+            get
+            {
+                if (_editIcon != null)
+                {
+                    return _editIcon;
+                }
+
+                _editIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(EDIT_ICON_PATH);
+
+                return _editIcon;
+            }
+        }
+
+        internal static Texture2D DeleteIcon
+        {
+            get
+            {
+                if (_deleteIcon != null)
+                {
+                    return _deleteIcon;
+                }
+
+                _deleteIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(DELETE_ICON_PATH);
+
+                return _deleteIcon;
+            }
+        }
 
         public ItemOptionsMenu()
         {
@@ -36,7 +69,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             style.alignSelf = Align.Center;
 
             // Edit button
-            _editButton = CreateIconButton("EditItemButton", "Edit", EDIT_ICON_PATH);
+            _editButton = CreateIconButton("EditItemButton", "Edit", EditIcon);
             _editButton.clicked += OnEditClicked;
             Add(_editButton);
 
@@ -53,7 +86,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             Add(spacer);
 
             // Delete button
-            _deleteButton = CreateIconButton("DeleteItemButton", "Delete", DELETE_ICON_PATH);
+            _deleteButton = CreateIconButton("DeleteItemButton", "Delete", DeleteIcon);
             _deleteButton.clicked += OnDeleteClicked;
             Add(_deleteButton);
 
@@ -97,15 +130,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             EditItemButtonClicked?.Invoke();
         }
 
-        private static Button CreateIconButton(string buttonName, string tooltip, string iconPath)
+        private static Button CreateIconButton(string buttonName, string tooltip, Texture2D icon)
         {
             var button = new Button
             {
                 name = buttonName,
                 tooltip = tooltip
             };
-
-            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath);
 
             if (icon != null)
             {
