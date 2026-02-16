@@ -1,12 +1,15 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Dev.Cortez.StateMachines.Core;
 using Dev.Cortez.StateMachines.Core.Attributes;
 using Dev.Cortez.StateMachines.Core.Data;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using UnityEditor;
 using UnityEngine;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
 {
@@ -147,23 +150,23 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
 
         private static Type ResolvePayloadType(string typeName)
         {
-            var stateMachineType = Type.GetType(typeName);
+            var desiredType = Type.GetType(typeName);
 
-            if (stateMachineType == null)
+            if (desiredType == null)
             {
                 Debug.LogError($"Failed to find payload type for '{typeName}'");
 
                 return null;
             }
 
-            if (stateMachineType.IsAbstract || stateMachineType.IsInterface)
+            if (desiredType.IsAbstract || desiredType.IsInterface)
             {
                 Debug.LogError($"Provided type '{typeName}' is abstract or interface.");
 
                 return null;
             }
 
-            var baseType = stateMachineType;
+            var baseType = desiredType;
 
             while (baseType is { IsInterface: false })
             {
@@ -184,8 +187,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
         }
 
         /// <summary>
-        /// Gets all concrete types that can be assigned to the given base type.
-        /// Handles both concrete types and open generic type definitions.
+        ///     Gets all concrete types that can be assigned to the given base type.
+        ///     Handles both concrete types and open generic type definitions.
         /// </summary>
         /// <param name="baseType">The base type to find implementations for.</param>
         /// <returns>Enumerable of concrete types assignable to the base type.</returns>
@@ -201,15 +204,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             if (baseType.IsGenericTypeDefinition)
             {
                 // Get all types from all loaded assemblies and filter
-                var allTypes = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(a =>
+                var allTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a =>
                     {
-                        try { return a.GetTypes(); }
-                        catch { return Array.Empty<Type>(); }
-                    })
-                    .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
-                    .Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false))
-                    .Where(t => IsAssignableToGenericType(t, baseType));
+                        try
+                        {
+                            return a.GetTypes();
+                        }
+                        catch
+                        {
+                            return Array.Empty<Type>();
+                        }
+                    }).Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false }).
+                    Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false)).
+                    Where(t => IsAssignableToGenericType(t, baseType));
 
                 return allTypes;
             }
@@ -219,30 +226,34 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities
             {
                 var genericDefinition = baseType.GetGenericTypeDefinition();
 
-                var allTypes = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(a =>
+                var allTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a =>
                     {
-                        try { return a.GetTypes(); }
-                        catch { return Array.Empty<Type>(); }
-                    })
-                    .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
-                    .Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false))
-                    .Where(t => IsAssignableToGenericType(t, genericDefinition));
+                        try
+                        {
+                            return a.GetTypes();
+                        }
+                        catch
+                        {
+                            return Array.Empty<Type>();
+                        }
+                    }).Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false }).
+                    Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false)).
+                    Where(t => IsAssignableToGenericType(t, genericDefinition));
 
                 return allTypes;
             }
 
             // For concrete (non-generic) base types, use TypeCache for better performance
-            var derivedTypes = TypeCache.GetTypesDerivedFrom(baseType)
-                .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
-                .Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false));
+            var derivedTypes = TypeCache.GetTypesDerivedFrom(baseType).
+                Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false }).
+                Where(t => !t.IsDefined(typeof(ExcludeFromTypePickerAttribute), false));
 
             return derivedTypes;
         }
 
         /// <summary>
-        /// Checks if a given type is assignable to an open generic type definition
-        /// by walking up the inheritance hierarchy.
+        ///     Checks if a given type is assignable to an open generic type definition
+        ///     by walking up the inheritance hierarchy.
         /// </summary>
         /// <param name="givenType">The concrete type to check.</param>
         /// <param name="genericTypeDefinition">The open generic type definition to match against.</param>

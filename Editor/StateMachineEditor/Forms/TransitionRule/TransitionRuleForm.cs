@@ -56,6 +56,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
             _conditionsListView.columns[1].bindCell = DoBindConditionDescriptionValue;
             _conditionsListView.columns[2].bindCell = DoBindConditionTypeValue;
             _conditionsListView.columns[3].bindCell = DoBindConditionRuleValue;
+            _conditionsListView.columns[4].makeCell = () => new ItemOptionsMenu();
             _conditionsListView.columns[4].bindCell = DoBindConditionMenuCell;
             _conditionsListView.columns[4].unbindCell = DoUnbindConditionMenuCell;
             RootVisualElement.dataSource = Data.TransitionRuleDefinitionViewModel;
@@ -156,6 +157,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Forms.TransitionRul
         {
             var condition = Data.TransitionRuleDefinitionViewModel.Conditions[index];
 
+            visualElement.Clear();
             var propertyField = new PropertyField();
             propertyField.BindProperty(condition.Payload);
             propertyField.label = "When";

@@ -9,7 +9,7 @@
             <ui:Column name="Name" title="Name" stretchable="true" />
             <ui:Column name="Description" title="Description" stretchable="true" />
             <ui:Column name="Type" title="Type" stretchable="true" />
-            <ui:Column cell-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/CustomElements/TableItemButtons.uxml?fileID=9197481963319205126&amp;guid=d7807b0c1a28a9645889e99e42ab2369&amp;type=3#TableItemButtons" min-width="80px" max-width="80px" />
+            <ui:Column min-width="80px" max-width="80px" />
         </ui:Columns>
     </ui:MultiColumnListView>
 </ui:UXML>

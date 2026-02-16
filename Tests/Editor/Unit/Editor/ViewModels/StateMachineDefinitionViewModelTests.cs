@@ -392,6 +392,52 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Editor.ViewMode
         }
 
         [Test]
+        public void AddState_AfterExistingStateWithTransitions_NewStateHasNoTransitions()
+        {
+            // Arrange – add a first state that has a transition rule
+            var firstStateVm = new StateDefinitionViewModel(typeof(MockStateMachine).AssemblyQualifiedName);
+            firstStateVm.Name = "First State";
+
+            var transitionVm = new TransitionRuleDefinitionViewModel();
+            transitionVm.Priority = 1;
+
+            try
+            {
+                _viewModel.AddState(firstStateVm);
+                _context.Update();
+
+                // Add a transition to the first (and only) state
+                _viewModel.States[0].AddTransition(transitionVm);
+                _context.Update();
+                Assert.That(_viewModel.States[0].Transitions, Has.Count.EqualTo(1),
+                    "First state should have exactly one transition");
+
+                // Act – add a second state (no transitions in the source VM)
+                var secondStateVm = new StateDefinitionViewModel(typeof(MockStateMachine).AssemblyQualifiedName);
+                secondStateVm.Name = "Second State";
+
+                try
+                {
+                    _viewModel.AddState(secondStateVm);
+                    _context.Update();
+
+                    // Assert – the second state must NOT inherit transitions from the first
+                    Assert.That(_viewModel.States[1].Transitions, Is.Empty,
+                        "Newly added state should have zero transition rules");
+                }
+                finally
+                {
+                    secondStateVm.Dispose();
+                }
+            }
+            finally
+            {
+                firstStateVm.Dispose();
+                transitionVm.Dispose();
+            }
+        }
+
+        [Test]
         public void RemoveStateAtIndex_WithInvalidIndex_LogsError()
         {
             // Act & Assert - Should not throw, just log error

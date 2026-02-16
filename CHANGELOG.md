@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-02-16
+
+### Added
+- **TriggerProxyMono** — A `MonoBehaviour` bridge for bi-directional communication between `ITrigger` references and Unity Events (`UnityEvent<bool>`).
+- **DisplayAsAttribute** — A new attribute to override class display names in `TypePickerDropdownField`, improving type selection organization.
+
+### Changed
+- **Editor Styling** — refined `StateNodeTemplate` styles for improved readability in the Graph View.
+
+### Fixed
+- **StateMachineEditor** — Resolved transition rule cloning issues that occurred when creating new transitions.
+- **GraphView** — optimized `StateMachineGraphView` performance and fixed memory leaks during graph operations.
+
 ## [0.0.2] - 2026-02-14
 
 ### Added
@@ -44,6 +57,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 #### Samples
 - **Game Scenario** — Complete sample demonstrating multiple interconnected state machines (safe, door, key) with custom contexts, payloads, triggers, and an objective tracking system.
 
-[Unreleased]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/compare/v0.0.2...HEAD
+[Unreleased]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/compare/v0.0.3...HEAD
+[0.0.3]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/releases/tag/v0.0.3
 [0.0.2]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/releases/tag/v0.0.2
 [0.0.1]: https://github.com/PiotrowskiPatryk/State-Machine-Lite-Unity-Package/releases/tag/v0.0.1
