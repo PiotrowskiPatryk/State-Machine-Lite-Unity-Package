@@ -40,8 +40,17 @@ namespace Dev.Cortez.StateMachines.Core.Mono
 
         public void TriggerValue(bool value)
         {
-            _triggerReferencePicker.ResolveReferenceAsync(destroyCancellationToken).ContinueWith(trigger =>
-                trigger.TriggerValueAsync(value, destroyCancellationToken).Forget()).Forget();
+            TriggerValueInternal(value).Forget();
+        }
+
+        private async UniTaskVoid TriggerValueInternal(bool value)
+        {
+            var trigger = await _triggerReferencePicker.ResolveReferenceAsync(destroyCancellationToken);
+
+            if (trigger != null)
+            {
+                await trigger.TriggerValueAsync(value, destroyCancellationToken);
+            }
         }
 
         private void OnTriggerResolved(ITrigger trigger)
