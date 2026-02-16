@@ -14,6 +14,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
     {
         private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
 
+        private List<StateDefinitionViewModel> _cachedStates;
+        private StateDefinitionViewModel _cachedInitialState;
+        private bool _statesCacheDirty = true;
+        private bool _initialStateCacheDirty = true;
+
         [CreateProperty]
         public bool IsValid => ((StateMachineDefinition)SerializedProperty.boxedValue).IsValid();
 
@@ -98,17 +103,23 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get
             {
-                var states = new List<StateDefinitionViewModel>();
+                if (!_statesCacheDirty)
+                {
+                    return _cachedStates;
+                }
+
+                _statesCacheDirty = false;
+                _cachedStates = new List<StateDefinitionViewModel>();
                 var statesProperty =
                     SerializedProperty.FindPropertyRelative(StateMachineDefinition.STATES_PROPERTY_NAME);
 
                 for (var i = 0; i < statesProperty.arraySize; ++i)
                 {
                     var state = statesProperty.GetArrayElementAtIndex(i);
-                    states.Add(new StateDefinitionViewModel(state));
+                    _cachedStates.Add(new StateDefinitionViewModel(state));
                 }
 
-                return states;
+                return _cachedStates;
             }
             set
             {
@@ -134,6 +145,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 so.ApplyModifiedProperties();
 
+                InvalidateStatesCache();
+
                 Notify();
                 Notify(nameof(StatesCount));
                 Notify(nameof(AvailableStates));
@@ -147,13 +160,22 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get
             {
+                if (!_initialStateCacheDirty)
+                {
+                    return _cachedInitialState;
+                }
+
+                _initialStateCacheDirty = false;
                 var initialStateProperty =
                     SerializedProperty.FindPropertyRelative(StateMachineDefinition.INITIAL_STATE_PROPERTY_NAME);
 
-                return new StateDefinitionViewModel(initialStateProperty);
+                _cachedInitialState = new StateDefinitionViewModel(initialStateProperty);
+
+                return _cachedInitialState;
             }
             set
             {
+                _initialStateCacheDirty = true;
                 InitialState.CopyFrom(value);
                 Notify();
             }
@@ -167,12 +189,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get
             {
-                if (InitialState == null)
+                var initial = InitialState;
+
+                if (initial == null)
                 {
                     return -1;
                 }
 
-                return States.FindIndex(state => state.Id.Equals(InitialState.Id));
+                var initialId = initial.Id;
+
+                return States.FindIndex(state => state.Id.Equals(initialId));
             }
 
             set
@@ -180,6 +206,17 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 InitialState = States[value];
                 Notify();
             }
+        }
+
+        /// <summary>
+        ///     Invalidates the cached States and InitialState lists.
+        ///     Called automatically by mutating methods; can also be called externally
+        ///     when the underlying SerializedProperty changes outside this ViewModel.
+        /// </summary>
+        public void InvalidateStatesCache()
+        {
+            _statesCacheDirty = true;
+            _initialStateCacheDirty = true;
         }
 
         public SerializedProperty StatesSerializedProperty =>
@@ -242,6 +279,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             so.ApplyModifiedProperties();
 
+            InvalidateStatesCache();
+
             Notify(nameof(States));
             Notify(nameof(StatesCount));
             Notify(nameof(AvailableStates));
@@ -274,6 +313,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             statesProperty.DeleteArrayElementAtIndex(index);
             statesProperty.serializedObject.ApplyModifiedProperties();
 
+            InvalidateStatesCache();
+
             Notify(nameof(States));
             Notify(nameof(StatesCount));
             Notify(nameof(InitialState));
@@ -291,6 +332,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             statesProperty.serializedObject.Update();
             statesProperty.MoveArrayElement(sourceIndex, destinationIndex);
             statesProperty.serializedObject.ApplyModifiedProperties();
+
+            InvalidateStatesCache();
 
             Notify(nameof(States));
             Notify(nameof(StatesCount));

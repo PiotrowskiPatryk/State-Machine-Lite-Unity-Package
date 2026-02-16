@@ -12,7 +12,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
     /// <summary>
     ///     Draws an orthogonal edge between two port VisualElements, routing around source/target nodes.
     ///     Supports rounded corners and automatic wrap-around when nodes overlap horizontally.
-    ///     Hover & click are handled from the panel root.
+    ///     Hover & click detection are driven by the parent StateMachineGraphView via centralized handlers.
     /// </summary>
     internal sealed class TransitionEdgeElement : VisualElement
     {
@@ -22,6 +22,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private readonly VisualElement _to;
         private readonly VisualElement _sourceNode;
         private readonly VisualElement _targetNode;
+        private readonly List<Vector2> _pathPoints = new(8);
+        private readonly List<Vector2> _cachedPath = new(8);
+        private readonly EventCallback<GeometryChangedEvent> _onGeometryChanged;
 
         private readonly Color _selectedColor = new(0.066f, 0.45f, 0.8313f, 1f);
         private readonly float _selectedWidth = 5.0f;
@@ -34,13 +37,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         public event Action<TransitionEdgeElement, bool, bool> SelectionChanged; // (edge, isSelected, additive)
 
         private bool _hovered;
-
         private bool _pressedNearCurve;
         private int _pressedPointerId = -1;
         private Vector2 _pressWorldPos;
-
-        // Reusable list to avoid GC pressure during path recomputation
-        private readonly List<Vector2> _pathPoints = new(8);
+        private bool _pathDirty = true;
 
         public string SourceStateId { get; }
         public string TargetStateId { get; }
@@ -102,15 +102,41 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             generateVisualContent += OnGenerateVisualContent;
 
-            _from?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
-            _to?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
-            _sourceNode?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
-            _targetNode?.RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
-            RegisterCallback<GeometryChangedEvent>(_ => MarkDirtyRepaint());
+            // Use stored delegate so we can unregister later
+            _onGeometryChanged = _ => InvalidatePath();
+            _from?.RegisterCallback(_onGeometryChanged);
+            _to?.RegisterCallback(_onGeometryChanged);
+            _sourceNode?.RegisterCallback(_onGeometryChanged);
+            _targetNode?.RegisterCallback(_onGeometryChanged);
+            RegisterCallback(_onGeometryChanged);
+        }
 
-            // Global (panel-level) listeners so hover/click work even under overlays
-            RegisterCallback<AttachToPanelEvent>(OnAttachToPanel);
-            RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
+        /// <summary>
+        ///     Unregisters all event callbacks from port and node elements.
+        ///     Must be called before removing this element from the hierarchy to prevent leaks.
+        /// </summary>
+        public void Dispose()
+        {
+            generateVisualContent -= OnGenerateVisualContent;
+
+            _from?.UnregisterCallback(_onGeometryChanged);
+            _to?.UnregisterCallback(_onGeometryChanged);
+            _sourceNode?.UnregisterCallback(_onGeometryChanged);
+            _targetNode?.UnregisterCallback(_onGeometryChanged);
+            UnregisterCallback(_onGeometryChanged);
+
+            Clicked = null;
+            HoverChanged = null;
+            SelectionChanged = null;
+        }
+
+        /// <summary>
+        ///     Marks the cached path as stale and triggers a repaint.
+        /// </summary>
+        public void InvalidatePath()
+        {
+            _pathDirty = true;
+            MarkDirtyRepaint();
         }
 
         public void SetSelected(bool selected)
@@ -141,60 +167,43 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             return IsNearLine(localPoint, tol);
         }
 
-        private void OnAttachToPanel(AttachToPanelEvent _)
+        // ---- Centralized hover/click API (called by StateMachineGraphView) ----
+
+        /// <summary>
+        ///     Called by the centralized pointer manager to update hover state.
+        ///     Returns true if hover state changed.
+        /// </summary>
+        public bool UpdateHoverState(Vector2 worldPos)
         {
-            var root = panel?.visualTree;
-
-            if (root == null)
-            {
-                return;
-            }
-
-            root.RegisterCallback<PointerMoveEvent>(OnGlobalPointerMove, TrickleDown.TrickleDown);
-            root.RegisterCallback<MouseLeaveWindowEvent>(OnWindowMouseLeave);
-            root.RegisterCallback<PointerDownEvent>(OnGlobalPointerDown, TrickleDown.TrickleDown);
-            root.RegisterCallback<PointerUpEvent>(OnGlobalPointerUp, TrickleDown.TrickleDown);
-        }
-
-        private void OnDetachFromPanel(DetachFromPanelEvent e)
-        {
-            var root = (e?.originPanel ?? panel)?.visualTree;
-
-            if (root == null)
-            {
-                return;
-            }
-
-            root.UnregisterCallback<PointerMoveEvent>(OnGlobalPointerMove, TrickleDown.TrickleDown);
-            root.UnregisterCallback<MouseLeaveWindowEvent>(OnWindowMouseLeave);
-            root.UnregisterCallback<PointerDownEvent>(OnGlobalPointerDown, TrickleDown.TrickleDown);
-            root.UnregisterCallback<PointerUpEvent>(OnGlobalPointerUp, TrickleDown.TrickleDown);
-        }
-
-        private void OnGlobalPointerMove(PointerMoveEvent evt)
-        {
-            var local = this.WorldToLocal(evt.position);
+            var local = this.WorldToLocal(worldPos);
             var isNear = IsNearLine(local, GetLocalHitTolerance());
 
-            if (isNear != _hovered)
+            if (isNear == _hovered)
             {
-                _hovered = isNear;
-
-                if (_hovered)
-                {
-                    AddToClassList(HOVER_CLASS_NAME);
-                }
-                else
-                {
-                    RemoveFromClassList(HOVER_CLASS_NAME);
-                }
-
-                HoverChanged?.Invoke(this, _hovered);
-                MarkDirtyRepaint();
+                return false;
             }
+
+            _hovered = isNear;
+
+            if (_hovered)
+            {
+                AddToClassList(HOVER_CLASS_NAME);
+            }
+            else
+            {
+                RemoveFromClassList(HOVER_CLASS_NAME);
+            }
+
+            HoverChanged?.Invoke(this, _hovered);
+            MarkDirtyRepaint();
+
+            return true;
         }
 
-        private void OnWindowMouseLeave(MouseLeaveWindowEvent _)
+        /// <summary>
+        ///     Clears hover state when the mouse leaves the panel window.
+        /// </summary>
+        public void ClearHover()
         {
             if (!_hovered)
             {
@@ -207,41 +216,37 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             MarkDirtyRepaint();
         }
 
-        private void OnGlobalPointerDown(PointerDownEvent evt)
+        /// <summary>
+        ///     Called by the centralized pointer manager on pointer down.
+        ///     Records a press if near the edge curve.
+        /// </summary>
+        public void HandlePointerDown(Vector2 worldPos, int pointerId)
         {
-            if (evt.button != 0)
-            {
-                return;
-            }
-
-            var local = this.WorldToLocal(evt.position);
+            var local = this.WorldToLocal(worldPos);
 
             if (IsNearLine(local, GetLocalHitTolerance()))
             {
                 _pressedNearCurve = true;
-                _pressedPointerId = evt.pointerId;
-                _pressWorldPos = evt.position;
+                _pressedPointerId = pointerId;
+                _pressWorldPos = worldPos;
             }
         }
 
-        private void OnGlobalPointerUp(PointerUpEvent evt)
+        /// <summary>
+        ///     Called by the centralized pointer manager on pointer up.
+        ///     Promotes press + release near the curve into a click.
+        /// </summary>
+        public void HandlePointerUp(Vector2 worldPos, int pointerId, bool actionKey, bool shiftKey)
         {
-            if (evt.button != 0)
-            {
-                return;
-            }
+            var wasPressed = _pressedNearCurve && (_pressedPointerId == pointerId || _pressedPointerId == -1);
+            var movedFar = (worldPos - _pressWorldPos).sqrMagnitude > _clickPixelThreshold * _clickPixelThreshold;
 
-            var position = new Vector2(evt.localPosition.x, evt.localPosition.y);
-
-            var wasPressed = _pressedNearCurve && (_pressedPointerId == evt.pointerId || _pressedPointerId == -1);
-            var movedFar = (position - _pressWorldPos).sqrMagnitude > _clickPixelThreshold * _clickPixelThreshold;
-
-            var local = this.WorldToLocal(evt.position);
+            var local = this.WorldToLocal(worldPos);
             var isNear = IsNearLine(local, GetLocalHitTolerance());
 
             if (wasPressed && !movedFar && isNear)
             {
-                var additive = evt.actionKey || evt.shiftKey; // Ctrl/Cmd or Shift
+                var additive = actionKey || shiftKey; // Ctrl/Cmd or Shift
 
                 if (additive)
                 {
@@ -270,14 +275,33 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             return _baseHitTolerance / avgScale;
         }
 
-        // ---- Stepped path computation ----
+        // ---- Stepped path computation (with caching) ----
+
+        /// <summary>
+        ///     Returns the cached path, recomputing only if marked dirty.
+        /// </summary>
+        private List<Vector2> GetPath()
+        {
+            if (!_pathDirty)
+            {
+                return _cachedPath;
+            }
+
+            _pathDirty = false;
+            ComputePath();
+
+            _cachedPath.Clear();
+            _cachedPath.AddRange(_pathPoints);
+
+            return _cachedPath;
+        }
 
         /// <summary>
         ///     Computes an orthogonal path from the right edge of the source port to the left edge of
         ///     the target port, routing around both source and target node bounds with padding.
         ///     Returns a variable-length list of waypoints (always orthogonal segments).
         /// </summary>
-        private List<Vector2> ComputePath()
+        private void ComputePath()
         {
             _pathPoints.Clear();
 
@@ -346,8 +370,6 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             }
 
             _pathPoints.Add(end);
-
-            return _pathPoints;
         }
 
         // ---- Rendering ----
@@ -359,7 +381,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 return;
             }
 
-            var path = ComputePath();
+            var path = GetPath();
 
             if (path.Count < 2)
             {
@@ -438,7 +460,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 return false;
             }
 
-            var path = ComputePath();
+            var path = GetPath();
 
             for (var i = 0; i < path.Count - 1; i++)
             {

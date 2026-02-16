@@ -20,8 +20,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private readonly List<TransitionEdgeElement> _edges = new();
         private readonly Color _nodeBorderDefault = new(48 / 255f, 73 / 255f, 98 / 255f, 1f);
         private readonly Color _nodeBorderSelected = new(0.066f, 0.45f, 0.8313f, 1f);
-
         private readonly GraphNodeBackgroundVisualElement _background;
+        private readonly Dictionary<string, List<TransitionEdgeElement>> _edgesByNodeId = new();
 
         // ---- New node placement ----
         private static readonly Vector2Int NODE_PLACEMENT_OFFSET = new(250, 0);
@@ -40,6 +40,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private TransitionEdgeElement _previewEdge;
         private string _previewSourceId;
         private int _dragPointerId = -1;
+        private bool _syncPending;
+        private VisualElement _panelRoot;
 
         public StateMachineGraphView()
         {
@@ -76,6 +78,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             Debug.Assert(_transitionsContainer != null, "_transitionsContainer should not be null");
             Debug.Assert(_stateNodeTemplate != null, "_stateNodeTemplate should not be null");
             Debug.Assert(_background != null, "_background should not be null");
+
+            RegisterCallback<AttachToPanelEvent>(OnGraphAttachToPanel);
+            RegisterCallback<DetachFromPanelEvent>(OnGraphDetachFromPanel);
         }
 
         public void Bind(StateMachineDefinitionViewModel stateMachineDefinitionViewModel)
@@ -88,9 +93,123 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
             this.TrackPropertyValue(stateMachineDefinitionViewModel.StatesSerializedProperty, _ =>
             {
+                ScheduleSync();
+            });
+        }
+
+        private void ScheduleSync()
+        {
+            if (_syncPending)
+            {
+                return;
+            }
+
+            _syncPending = true;
+            EditorApplication.delayCall += () =>
+            {
+                _syncPending = false;
+
+                if (_stateMachineDefinitionViewModel == null)
+                {
+                    return;
+                }
+
+                // External data changed; invalidate cached ViewModels before re-syncing
+                _stateMachineDefinitionViewModel.InvalidateStatesCache();
                 SyncNodes();
                 SyncTransitions();
-            });
+            };
+        }
+
+        // ---- Centralized panel-level event handlers ----
+
+        private void OnGraphAttachToPanel(AttachToPanelEvent _)
+        {
+            _panelRoot = panel?.visualTree;
+
+            if (_panelRoot == null)
+            {
+                return;
+            }
+
+            _panelRoot.RegisterCallback<PointerMoveEvent>(OnCentralizedPointerMove, TrickleDown.TrickleDown);
+            _panelRoot.RegisterCallback<MouseLeaveWindowEvent>(OnCentralizedMouseLeave);
+            _panelRoot.RegisterCallback<PointerDownEvent>(OnCentralizedPointerDown, TrickleDown.TrickleDown);
+            _panelRoot.RegisterCallback<PointerUpEvent>(OnCentralizedPointerUp, TrickleDown.TrickleDown);
+        }
+
+        private void OnGraphDetachFromPanel(DetachFromPanelEvent e)
+        {
+            var root = (e?.originPanel ?? panel)?.visualTree;
+
+            if (root == null)
+            {
+                return;
+            }
+
+            root.UnregisterCallback<PointerMoveEvent>(OnCentralizedPointerMove, TrickleDown.TrickleDown);
+            root.UnregisterCallback<MouseLeaveWindowEvent>(OnCentralizedMouseLeave);
+            root.UnregisterCallback<PointerDownEvent>(OnCentralizedPointerDown, TrickleDown.TrickleDown);
+            root.UnregisterCallback<PointerUpEvent>(OnCentralizedPointerUp, TrickleDown.TrickleDown);
+
+            _panelRoot = null;
+            NodeClicked = null;
+            EdgeClicked = null;
+            CreateTransitionRequested = null;
+        }
+
+        /// <summary>
+        ///     Single pointer move handler that updates hover state for all edges.
+        /// </summary>
+        private void OnCentralizedPointerMove(PointerMoveEvent evt)
+        {
+            foreach (var edge in _edges)
+            {
+                edge.UpdateHoverState(evt.position);
+            }
+        }
+
+        /// <summary>
+        ///     Single mouse leave handler that clears hover state for all edges.
+        /// </summary>
+        private void OnCentralizedMouseLeave(MouseLeaveWindowEvent _)
+        {
+            foreach (var edge in _edges)
+            {
+                edge.ClearHover();
+            }
+        }
+
+        /// <summary>
+        ///     Single pointer down handler that forwards press events to all edges.
+        /// </summary>
+        private void OnCentralizedPointerDown(PointerDownEvent evt)
+        {
+            if (evt.button != 0)
+            {
+                return;
+            }
+
+            foreach (var edge in _edges)
+            {
+                edge.HandlePointerDown(evt.position, evt.pointerId);
+            }
+        }
+
+        /// <summary>
+        ///     Single pointer up handler that forwards click events to all edges.
+        /// </summary>
+        private void OnCentralizedPointerUp(PointerUpEvent evt)
+        {
+            if (evt.button != 0)
+            {
+                return;
+            }
+
+            foreach (var edge in _edges)
+            {
+                edge.HandlePointerUp(evt.position, evt.pointerId, evt.actionKey, evt.shiftKey);
+            }
         }
 
         // ---- Public API ----
@@ -154,8 +273,16 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
 
         private void SyncTransitions()
         {
+            // Dispose old edges to unregister their GeometryChanged callbacks
+            foreach (var edge in _edges)
+            {
+                edge.Clicked -= OnEdgeClickedInternal;
+                edge.Dispose();
+            }
+
             _transitionsContainer.Clear();
             _edges.Clear();
+            _edgesByNodeId.Clear();
 
             if (_stateMachineDefinitionViewModel == null)
             {
@@ -178,8 +305,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         /// </summary>
         private void AssignEdgeLanes()
         {
-            // Group edges by order-independent node pair key
-            var corridors = new Dictionary<string, List<TransitionEdgeElement>>();
+            // Group edges by order-independent node pair key using tuple (avoids string allocations)
+            var corridors = new Dictionary<(string, string), List<TransitionEdgeElement>>();
 
             foreach (var edge in _edges)
             {
@@ -212,11 +339,11 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             }
         }
 
-        private static string GetCorridorKey(string a, string b)
+        private static (string, string) GetCorridorKey(string a, string b)
         {
             return string.Compare(a, b, StringComparison.Ordinal) <= 0
-                ? $"{a}|{b}"
-                : $"{b}|{a}";
+                ? (a, b)
+                : (b, a);
         }
 
         private void CreateTransitionEdges(StateDefinitionViewModel source)
@@ -262,7 +389,25 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 edge.Clicked += OnEdgeClickedInternal;
                 _edges.Add(edge);
                 _transitionsContainer.Add(edge);
+
+                // Index edges by source and target node IDs for targeted repaint
+                IndexEdge(edge, source.Id);
+                IndexEdge(edge, targetId);
             }
+        }
+
+        /// <summary>
+        ///     Adds an edge to the node-to-edges index for the given node ID.
+        /// </summary>
+        private void IndexEdge(TransitionEdgeElement edge, string nodeId)
+        {
+            if (!_edgesByNodeId.TryGetValue(nodeId, out var list))
+            {
+                list = new List<TransitionEdgeElement>();
+                _edgesByNodeId[nodeId] = list;
+            }
+
+            list.Add(edge);
         }
 
         private StateGraphNode AddNode(StateDefinitionViewModel state)
@@ -284,10 +429,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             {
                 state.NodePosition = e.newValue;
 
-                // Invalidate all edges so they redraw while dragging
-                foreach (var edge in _edges)
+                // Invalidate only connected edges instead of all edges (Phase 3 fix)
+                if (_edgesByNodeId.TryGetValue(state.Id, out var connectedEdges))
                 {
-                    edge?.MarkDirtyRepaint();
+                    foreach (var edge in connectedEdges)
+                    {
+                        edge?.InvalidatePath();
+                    }
                 }
             });
 
@@ -524,7 +672,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private void OnCreateEdgePointerMove(PointerMoveEvent evt)
         {
             UpdateCursorAnchorPosition(evt.position);
-            _previewEdge?.MarkDirtyRepaint();
+            _previewEdge?.InvalidatePath();
             evt.StopPropagation();
         }
 
@@ -621,6 +769,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         {
             if (_previewEdge != null)
             {
+                _previewEdge.Dispose();
                 _previewEdge.RemoveFromHierarchy();
                 _previewEdge = null;
             }

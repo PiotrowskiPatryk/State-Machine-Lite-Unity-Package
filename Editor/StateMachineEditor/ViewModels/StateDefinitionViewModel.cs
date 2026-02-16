@@ -13,6 +13,9 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
     {
         private readonly SerializedInstanceSwitcher<IPayload> _payloadSwitcher;
 
+        private List<TransitionRuleDefinitionViewModel> _cachedTransitions;
+        private bool _transitionsCacheDirty = true;
+
         [CreateProperty]
         public bool IsValid => ((StateDefinition)SerializedProperty.boxedValue).IsValid();
 
@@ -96,17 +99,23 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get
             {
-                var transitions = new List<TransitionRuleDefinitionViewModel>();
+                if (!_transitionsCacheDirty)
+                {
+                    return _cachedTransitions;
+                }
+
+                _transitionsCacheDirty = false;
+                _cachedTransitions = new List<TransitionRuleDefinitionViewModel>();
                 var transitionsProperty =
                     SerializedProperty.FindPropertyRelative(StateDefinition.TRANSITION_RULES_PROPERTY_NAME);
 
                 for (var i = 0; i < transitionsProperty.arraySize; ++i)
                 {
                     var transition = transitionsProperty.GetArrayElementAtIndex(i);
-                    transitions.Add(new TransitionRuleDefinitionViewModel(transition));
+                    _cachedTransitions.Add(new TransitionRuleDefinitionViewModel(transition));
                 }
 
-                return transitions;
+                return _cachedTransitions;
             }
         }
 
@@ -149,6 +158,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             so.ApplyModifiedProperties();
 
+            _transitionsCacheDirty = true;
             Notify(nameof(Transitions));
         }
 
@@ -244,6 +254,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             transitionsProperty.DeleteArrayElementAtIndex(indexToRemove);
             so.ApplyModifiedProperties();
 
+            _transitionsCacheDirty = true;
             Notify(nameof(Transitions));
         }
 
@@ -336,6 +347,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             };
 
             so.ApplyModifiedProperties();
+            _transitionsCacheDirty = true;
             Notify(nameof(Transitions));
         }
     }
