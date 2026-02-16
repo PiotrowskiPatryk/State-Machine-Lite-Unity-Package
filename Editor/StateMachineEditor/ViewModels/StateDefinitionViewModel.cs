@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
@@ -6,6 +8,8 @@ using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 {
@@ -153,6 +157,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             var newTransitionSerializedProperty =
                 transitionsProperty.GetArrayElementAtIndex(transitionsProperty.arraySize - 1);
+
+            var conditionInstance = newTransitionSerializedProperty.FindPropertyRelative(
+                TransitionRuleDefinition.CONDITION_DEFINITIONS_PROPERTY_NAME);
+            conditionInstance.ClearArray();
+            so.ApplyModifiedProperties();
+
             var newTransition = new TransitionRuleDefinitionViewModel(newTransitionSerializedProperty);
             newTransition.CopyFrom(dataTransitionRuleDefinitionViewModel);
 

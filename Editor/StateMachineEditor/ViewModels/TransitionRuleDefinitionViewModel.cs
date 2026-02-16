@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 {
@@ -89,7 +93,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
                 _conditionsCacheDirty = false;
                 _cachedConditions = new List<ConditionDefinitionViewModel>();
-                
+
                 var conditionsProperty =
                     SerializedProperty.FindPropertyRelative(
                         TransitionRuleDefinition.CONDITION_DEFINITIONS_PROPERTY_NAME);
@@ -133,6 +137,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             so.ApplyModifiedProperties();
 
             var newConditionProperty = conditionsProperty.GetArrayElementAtIndex(conditionsProperty.arraySize - 1);
+
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.ID_PROPERTY_NAME).stringValue = "";
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.NAME_PROPERTY_NAME).stringValue = "";
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.DESCRIPTION_PROPERTY_NAME).stringValue = "";
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.TYPE_NAME_PROPERTY_NAME).stringValue = "";
+            so.ApplyModifiedProperties();
+
             var newCondition = new ConditionDefinitionViewModel(newConditionProperty);
             newCondition.CopyFrom(conditionDefinitionViewModel);
 
@@ -180,6 +191,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 AddCondition(condition);
             }
         }
-
     }
 }

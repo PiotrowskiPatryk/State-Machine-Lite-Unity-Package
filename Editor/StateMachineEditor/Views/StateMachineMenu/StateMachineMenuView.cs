@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core.Interfaces;
@@ -14,6 +16,8 @@ using Debug = UnityEngine.Debug;
 using ItemOptionsMenu = Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.ItemOptionsMenu;
 using TypePickerDropdownField =
     Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.TypePickerDropdownField;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineMenu
 {
@@ -188,7 +192,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             var listView = visualElement.Q<ListView>();
             var foldout = visualElement.Q<Foldout>("TransitionableStateItemEntry");
 
-            var stateVm = _stateMachineDefinitionViewModel.States[index];
+            StateDefinitionViewModel GetStateViewModel()
+            {
+                return _stateMachineDefinitionViewModel.States[index];
+            }
+
+            var stateVm = GetStateViewModel();
 
             // Map state id to its UI parts for cross-highlighting
             if (stateVm != null)
@@ -205,7 +214,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
                     button.clicked -= prevAddHandler;
                 }
 
-                Action addHandler = () => OnAddTransitionButtonPressed(stateVm);
+                Action addHandler = () => OnAddTransitionButtonPressed(GetStateViewModel());
                 button.userData = addHandler;
                 button.clicked += addHandler;
             }
@@ -225,7 +234,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
                         return;
                     }
 
-                    _stateMachineGraphView?.HighlightNodeById(stateVm.Id);
+                    _stateMachineGraphView?.HighlightNodeById(GetStateViewModel().Id);
                     evt.StopPropagation();
                 };
                 foldout.userData = foldoutCb;
@@ -235,7 +244,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineM
             if (listView != null)
             {
                 // Assign (not add) bind/unbind to avoid duplicate subscriptions per virtualization cycle
-                listView.bindItem = (element, itemIndex) => DoBindTransitionItemEntry(element, stateVm, itemIndex);
+                listView.bindItem = (element, itemIndex) =>
+                    DoBindTransitionItemEntry(element, GetStateViewModel(), itemIndex);
                 listView.unbindItem = (element, itemIndex) => DoUnbindTransitionItemEntry(element);
             }
 
