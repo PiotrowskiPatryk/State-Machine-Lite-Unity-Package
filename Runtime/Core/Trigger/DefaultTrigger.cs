@@ -1,16 +1,45 @@
+#region
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Abstraction;
 
+#endregion
+
 namespace Dev.Cortez.StateMachines.Core.Trigger
 {
-    public sealed class DefaultTrigger : TriggerBase<DefaultTriggerPayload>
+    public abstract class DefaultTrigger<TTriggerPayload> : DefaultTrigger where TTriggerPayload : DefaultTriggerPayload
     {
-        private DefaultTriggerPayload _payload;
+        protected new TTriggerPayload Payload { get; private set; }
 
+        protected DefaultTrigger(string id, string name, string description) : base(id, name, description)
+        {
+        }
+
+        protected abstract UniTask<bool> DoInitializeAsync(TTriggerPayload payload,
+            CancellationToken cancellationToken);
+
+        protected override UniTask<bool> DoInitializeInternalAsync(DefaultTriggerPayload payload,
+            CancellationToken cancellationToken)
+        {
+            if (payload is not TTriggerPayload triggerPayload)
+            {
+                return UniTask.FromResult(false);
+            }
+
+            Payload = triggerPayload;
+
+            return DoInitializeAsync(triggerPayload, cancellationToken);
+        }
+    }
+
+    public class DefaultTrigger : TriggerBase<DefaultTriggerPayload>
+    {
         private CancellationTokenSource _lifecycleCts;
+
+        protected DefaultTriggerPayload Payload;
 
         public DefaultTrigger(string id, string name, string description) : base(id, name, description)
         {
@@ -34,7 +63,7 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
                     await HandleActivationDelay(_lifecycleCts.Token);
                     IsTriggered = true;
 
-                    if (_payload.DeactivationRule == TriggerDeactivationRule.Never)
+                    if (Payload.DeactivationRule == TriggerDeactivationRule.Never)
                     {
                         return true;
                     }
@@ -62,12 +91,14 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
             return base.DoDisposeAsync();
         }
 
-        protected override UniTask<bool> InitializeAsync(DefaultTriggerPayload payload,
+        protected override async UniTask<bool> InitializeAsync(DefaultTriggerPayload payload,
             CancellationToken cancellationToken)
         {
-            _payload = payload;
+            Payload = payload;
 
-            return UniTask.FromResult(true);
+            var initializationResult = await DoInitializeInternalAsync(payload, cancellationToken);
+
+            return initializationResult;
         }
 
         private void CancelAndDisposeLifecycleToken()
@@ -77,19 +108,25 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
             _lifecycleCts = null;
         }
 
+        protected virtual UniTask<bool> DoInitializeInternalAsync(
+            DefaultTriggerPayload payload, CancellationToken cancellationToken)
+        {
+            return UniTask.FromResult(true);
+        }
+
         private UniTask HandleActivationDelay(CancellationToken cancellationToken)
         {
-            return _payload.ActivationRule switch
+            return Payload.ActivationRule switch
             {
-                TriggerActivationRule.AfterFixedFrame => UniTask.DelayFrame(_payload.ActivationFrameDelay,
+                TriggerActivationRule.AfterFixedFrame => UniTask.DelayFrame(Payload.ActivationFrameDelay,
                     PlayerLoopTiming.Update, cancellationToken),
-                TriggerActivationRule.AfterTime => UniTask.Delay(TimeSpan.FromSeconds(_payload.ActivationTimeDelay),
+                TriggerActivationRule.AfterTime => UniTask.Delay(TimeSpan.FromSeconds(Payload.ActivationTimeDelay),
                     cancellationToken: cancellationToken),
                 TriggerActivationRule.AfterTimeUnscaled => UniTask.Delay(
-                    TimeSpan.FromSeconds(_payload.ActivationTimeDelay), true, cancellationToken: cancellationToken),
+                    TimeSpan.FromSeconds(Payload.ActivationTimeDelay), true, cancellationToken: cancellationToken),
                 TriggerActivationRule.Immediately => UniTask.CompletedTask,
 #pragma warning disable S3928
-                _ => throw new ArgumentOutOfRangeException(nameof(_payload.ActivationRule),
+                _ => throw new ArgumentOutOfRangeException(nameof(Payload.ActivationRule),
                     "Unsupported activation rule.")
 #pragma warning restore S3928
             };
@@ -97,18 +134,18 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
 
         private UniTask HandleDeactivationDelay(CancellationToken cancellationToken)
         {
-            return _payload.DeactivationRule switch
+            return Payload.DeactivationRule switch
             {
                 TriggerDeactivationRule.NextFrame => UniTask.Yield(PlayerLoopTiming.Update, cancellationToken),
-                TriggerDeactivationRule.AfterFixedFrame => UniTask.DelayFrame(_payload.DeactivationFrameDelay,
+                TriggerDeactivationRule.AfterFixedFrame => UniTask.DelayFrame(Payload.DeactivationFrameDelay,
                     PlayerLoopTiming.Update, cancellationToken),
-                TriggerDeactivationRule.AfterTime => UniTask.Delay(TimeSpan.FromSeconds(_payload.DeactivationTimeDelay),
+                TriggerDeactivationRule.AfterTime => UniTask.Delay(TimeSpan.FromSeconds(Payload.DeactivationTimeDelay),
                     cancellationToken: cancellationToken),
                 TriggerDeactivationRule.AfterTimeUnscaled => UniTask.Delay(
-                    TimeSpan.FromSeconds(_payload.DeactivationTimeDelay), true, cancellationToken: cancellationToken),
+                    TimeSpan.FromSeconds(Payload.DeactivationTimeDelay), true, cancellationToken: cancellationToken),
                 TriggerDeactivationRule.Never => UniTask.CompletedTask,
 #pragma warning disable S3928
-                _ => throw new ArgumentOutOfRangeException(nameof(_payload.DeactivationRule), _payload.DeactivationRule,
+                _ => throw new ArgumentOutOfRangeException(nameof(Payload.DeactivationRule), Payload.DeactivationRule,
                     "Unsupported deactivation rule.")
 #pragma warning restore S3928
             };

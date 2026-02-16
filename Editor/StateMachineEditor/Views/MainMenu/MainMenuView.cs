@@ -98,6 +98,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             _stateMachineListView.columns[1].bindCell = DoBindStateMachineNameCell;
             _stateMachineListView.columns[2].bindCell = DoBindStateMachineDescriptionCell;
             _stateMachineListView.columns[3].bindCell = DoBindStateMachineTypeCell;
+            _stateMachineListView.columns[4].makeCell = () => new ItemOptionsMenu();
             _stateMachineListView.columns[4].bindCell = DoBindStateMachineMenuCell;
             _stateMachineListView.columns[4].unbindCell = DoUnbindStateMachineMenuCell;
             _stateMachineListView.itemIndexChanged += OnStateMachineItemIndexChanged;
@@ -149,6 +150,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.MainMenu
             _triggerListView.columns[1].bindCell = DoBindTriggerNameCell;
             _triggerListView.columns[2].bindCell = DoBindTriggerDescriptionCell;
             _triggerListView.columns[3].bindCell = DoBindTriggerTypeCell;
+            _triggerListView.columns[4].makeCell = () => new ItemOptionsMenu();
             _triggerListView.columns[4].bindCell = DoBindTriggerMenuCell;
             _stateMachineListView.columns[4].unbindCell = DoUnbindTriggerMenuCell;
             _triggerListView.itemIndexChanged += OnTriggerItemIndexChanged;

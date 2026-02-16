@@ -1,11 +1,15 @@
-﻿using System;
+﻿#region
+
+using System;
 using Dev.Cortez.StateMachines.Core.Interfaces;
 using UnityEngine;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Core.Trigger
 {
     [Serializable]
-    public sealed class DefaultTriggerPayload : IPayload
+    public class DefaultTriggerPayload : IPayload
     {
         [SerializeField]
         private TriggerActivationRule _triggerActivationRule;
@@ -53,7 +57,12 @@ namespace Dev.Cortez.StateMachines.Core.Trigger
                 _ => false
             };
 
-            return isActivationValid && isDeactivationValid;
+            return isActivationValid && isDeactivationValid && DoValidateInternal();
+        }
+
+        protected virtual bool DoValidateInternal()
+        {
+            return true;
         }
     }
 }

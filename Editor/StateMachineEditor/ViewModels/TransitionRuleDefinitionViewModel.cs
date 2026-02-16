@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core.Condition;
 using Dev.Cortez.StateMachines.Core.StateMachineConfiguration.Definition;
@@ -6,10 +8,17 @@ using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
 
+#endregion
+
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 {
     public class TransitionRuleDefinitionViewModel : ViewModelBase
     {
+        private StateDefinitionViewModel _cachedTargetState;
+        private bool _targetStateCacheDirty = true;
+        private List<ConditionDefinitionViewModel> _cachedConditions;
+        private bool _conditionsCacheDirty = true;
+
         [CreateProperty]
         public bool IsValid => ((TransitionRuleDefinition)SerializedProperty.boxedValue).IsValid();
 
@@ -34,11 +43,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get
             {
+                if (!_targetStateCacheDirty)
+                {
+                    return _cachedTargetState;
+                }
+
+                _targetStateCacheDirty = false;
                 var targetStateProperty =
                     SerializedProperty.FindPropertyRelative(
                         TransitionRuleDefinition.TARGET_STATE_PROPERTY_NAME);
 
-                return new StateDefinitionViewModel(targetStateProperty);
+                _cachedTargetState = new StateDefinitionViewModel(targetStateProperty);
+
+                return _cachedTargetState;
             }
             set
             {
@@ -46,6 +63,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 {
                     return;
                 }
+
+                _targetStateCacheDirty = true;
 
                 var targetStateProperty = SerializedProperty.FindPropertyRelative(
                     TransitionRuleDefinition.TARGET_STATE_PROPERTY_NAME);
@@ -67,7 +86,14 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
         {
             get
             {
-                var conditions = new List<ConditionDefinitionViewModel>();
+                if (!_conditionsCacheDirty)
+                {
+                    return _cachedConditions;
+                }
+
+                _conditionsCacheDirty = false;
+                _cachedConditions = new List<ConditionDefinitionViewModel>();
+
                 var conditionsProperty =
                     SerializedProperty.FindPropertyRelative(
                         TransitionRuleDefinition.CONDITION_DEFINITIONS_PROPERTY_NAME);
@@ -75,10 +101,10 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 for (var i = 0; i < conditionsProperty.arraySize; ++i)
                 {
                     var condition = conditionsProperty.GetArrayElementAtIndex(i);
-                    conditions.Add(new ConditionDefinitionViewModel(condition));
+                    _cachedConditions.Add(new ConditionDefinitionViewModel(condition));
                 }
 
-                return conditions;
+                return _cachedConditions;
             }
         }
 
@@ -111,11 +137,19 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             so.ApplyModifiedProperties();
 
             var newConditionProperty = conditionsProperty.GetArrayElementAtIndex(conditionsProperty.arraySize - 1);
+
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.ID_PROPERTY_NAME).stringValue = "";
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.NAME_PROPERTY_NAME).stringValue = "";
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.DESCRIPTION_PROPERTY_NAME).stringValue = "";
+            newConditionProperty.FindPropertyRelative(ConditionDefinition.TYPE_NAME_PROPERTY_NAME).stringValue = "";
+            so.ApplyModifiedProperties();
+
             var newCondition = new ConditionDefinitionViewModel(newConditionProperty);
             newCondition.CopyFrom(conditionDefinitionViewModel);
 
             so.ApplyModifiedProperties();
 
+            _conditionsCacheDirty = true;
             Notify(nameof(Conditions));
         }
 
@@ -126,6 +160,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
 
             condition?.CopyFrom(conditionDefinitionViewModel);
 
+            _conditionsCacheDirty = true;
             Notify(nameof(Conditions));
         }
 
@@ -141,6 +176,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
             conditionsProperty.DeleteArrayElementAtIndex(index);
             so.ApplyModifiedProperties();
 
+            _conditionsCacheDirty = true;
             Notify(nameof(Conditions));
         }
 
@@ -155,6 +191,5 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels
                 AddCondition(condition);
             }
         }
-
     }
 }

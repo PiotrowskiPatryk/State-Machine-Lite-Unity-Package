@@ -68,6 +68,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
         private sealed class DragManipulator : PointerManipulator
         {
             private readonly GraphNodeBase _owner;
+            private readonly EventCallback<PointerCaptureOutEvent> _onCaptureOut;
             private bool _active;
             private Vector2 _startLocal;
             private Vector2Int _startValue;
@@ -75,6 +76,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
             public DragManipulator(GraphNodeBase owner)
             {
                 _owner = owner;
+                _onCaptureOut = _ => _active = false;
             }
 
             protected override void RegisterCallbacksOnTarget()
@@ -82,7 +84,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 target.RegisterCallback<PointerDownEvent>(OnDown);
                 target.RegisterCallback<PointerMoveEvent>(OnMove);
                 target.RegisterCallback<PointerUpEvent>(OnUp);
-                target.RegisterCallback<PointerCaptureOutEvent>(_ => _active = false);
+                target.RegisterCallback(_onCaptureOut);
             }
 
             protected override void UnregisterCallbacksFromTarget()
@@ -90,7 +92,7 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.StateMachineG
                 target.UnregisterCallback<PointerDownEvent>(OnDown);
                 target.UnregisterCallback<PointerMoveEvent>(OnMove);
                 target.UnregisterCallback<PointerUpEvent>(OnUp);
-                target.UnregisterCallback<PointerCaptureOutEvent>(_ => _active = false);
+                target.UnregisterCallback(_onCaptureOut);
             }
 
             private void OnDown(PointerDownEvent evt)

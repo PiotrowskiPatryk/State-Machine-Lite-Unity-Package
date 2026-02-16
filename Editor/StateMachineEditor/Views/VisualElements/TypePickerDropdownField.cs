@@ -1,10 +1,13 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dev.Cortez.StateMachines.Core.Attributes;
 using Dev.Cortez.StateMachines.Editor.StateMachineEditor.Utilities;
-using UnityEditor;
 using UnityEngine.UIElements;
+
+#endregion
 
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements
 {
@@ -22,13 +25,13 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
         public string BaseTypeName { get; set; }
 
         /// <summary>
-        /// Gets the currently selected Type, or null if "(None)" is selected.
+        ///     Gets the currently selected Type, or null if "(None)" is selected.
         /// </summary>
         public Type SelectedType => _displayToType.TryGetValue(value, out var t) ? t : null;
 
         /// <summary>
-        /// Gets the AssemblyQualifiedName of the currently selected type, for storage.
-        /// Returns null if no type is selected.
+        ///     Gets the AssemblyQualifiedName of the currently selected type, for storage.
+        ///     Returns null if no type is selected.
         /// </summary>
         public string SelectedTypeAssemblyQualifiedName => SelectedType?.AssemblyQualifiedName;
 
@@ -44,8 +47,8 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
         }
 
         /// <summary>
-        /// Sets the selected type by its AssemblyQualifiedName.
-        /// Use this when loading a stored type name.
+        ///     Sets the selected type by its AssemblyQualifiedName.
+        ///     Use this when loading a stored type name.
         /// </summary>
         /// <param name="assemblyQualifiedName">The AssemblyQualifiedName of the type to select.</param>
         internal void SetSelectionByAssemblyQualifiedName(string assemblyQualifiedName)
@@ -97,16 +100,12 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             {
                 var hasCollision = group.Count() > 1;
 
-                foreach (var t in group)
+                foreach (var type in group)
                 {
-                    var namespaceName = string.IsNullOrEmpty(t.Namespace) ? "global" : t.Namespace;
-                    // Display short name, disambiguate with namespace if collision
-                    var displayLabel = hasCollision
-                        ? $"{t.Name} ({namespaceName})"
-                        : t.Name;
+                    var displayLabel = ResolveTypeNameToDisplay(type, hasCollision);
 
-                    _typeToDisplay[t] = displayLabel;
-                    _displayToType[displayLabel!] = t;
+                    _typeToDisplay[type] = displayLabel;
+                    _displayToType[displayLabel!] = type;
                 }
             }
 
@@ -127,6 +126,26 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElement
             {
                 SetValueWithoutNotify(NoneLabel);
             }
+        }
+
+        private static string ResolveTypeNameToDisplay(Type type, bool hasCollision)
+        {
+            if (type.IsDefined(typeof(DisplayAsAttribute), false))
+            {
+                var customAttribute =
+                    type.GetCustomAttributes(typeof(DisplayAsAttribute), false).FirstOrDefault() as
+                        DisplayAsAttribute;
+
+                return customAttribute.CustomName;
+            }
+
+            var namespaceName = string.IsNullOrEmpty(type.Namespace) ? "global" : type.Namespace;
+
+            var displayName = hasCollision
+                ? $"{type.Name} ({namespaceName})"
+                : type.Name;
+
+            return displayName;
         }
 
         private void TryPopulate(Type initialSelection = null)

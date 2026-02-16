@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Dev.Cortez.StateMachines.Core.Data;
@@ -11,15 +13,18 @@ using Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Common.Mocks;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
+#endregion
+
 namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
 {
     /// <summary>
-    /// Unit tests for StateMachineFactory.
-    /// Tests creation of state machines, states, triggers, and conditions including error paths.
+    ///     Unit tests for StateMachineFactory.
+    ///     Tests creation of state machines, states, triggers, and conditions including error paths.
     /// </summary>
     [TestFixture]
     public sealed class FactoryTest
     {
+        private readonly IStateMachineFactory _stateMachineFactory = StateMachineFactory.Default();
         private CancellationTokenSource _cts;
 
         [SetUp]
@@ -45,7 +50,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 WithType<MockState>().Build();
 
             // Act
-            var state = await StateMachineFactory.CreateStateAsync(stateDefinition, _cts.Token);
+            var state = await _stateMachineFactory.CreateStateAsync(stateDefinition, _cts.Token);
 
             // Assert
             Assert.That(state, Is.Not.Null);
@@ -63,7 +68,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 WithTypeName("Invalid.Type.Name, InvalidAssembly").Build();
 
             // Act
-            var state = await StateMachineFactory.CreateStateAsync(stateDefinition, _cts.Token);
+            var state = await _stateMachineFactory.CreateStateAsync(stateDefinition, _cts.Token);
 
             // Assert
             Assert.That(state, Is.Null);
@@ -78,7 +83,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             var stateDefinition = StateDefinitionBuilder.Create().WithId("state-1").WithTypeName(null).Build();
 
             // Act
-            var state = await StateMachineFactory.CreateStateAsync(stateDefinition, _cts.Token);
+            var state = await _stateMachineFactory.CreateStateAsync(stateDefinition, _cts.Token);
 
             // Assert
             Assert.That(state, Is.Null);
@@ -101,7 +106,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             );
 
             // Act
-            var trigger = await StateMachineFactory.CreateTriggerAsync(triggerDefinition, _cts.Token);
+            var trigger = await _stateMachineFactory.CreateTriggerAsync(triggerDefinition, _cts.Token);
 
             // Assert
             Assert.That(trigger, Is.Not.Null);
@@ -125,7 +130,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentException>(async () =>
-                await StateMachineFactory.CreateTriggerAsync(triggerDefinition, _cts.Token));
+                await _stateMachineFactory.CreateTriggerAsync(triggerDefinition, _cts.Token));
         }
 
         [Test]
@@ -144,7 +149,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentException>(async () =>
-                await StateMachineFactory.CreateTriggerAsync(triggerDefinition, _cts.Token));
+                await _stateMachineFactory.CreateTriggerAsync(triggerDefinition, _cts.Token));
         }
 
         #endregion
@@ -164,7 +169,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             );
 
             // Act
-            var condition = await StateMachineFactory.CreateConditionAsync(conditionDefinition, _cts.Token);
+            var condition = await _stateMachineFactory.CreateConditionAsync(conditionDefinition, _cts.Token);
 
             // Assert
             Assert.That(condition, Is.Not.Null);
@@ -186,7 +191,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             );
 
             // Act
-            var condition = await StateMachineFactory.CreateConditionAsync(conditionDefinition, _cts.Token);
+            var condition = await _stateMachineFactory.CreateConditionAsync(conditionDefinition, _cts.Token);
 
             // Assert
             Assert.That(condition, Is.Null);
@@ -207,7 +212,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
             );
 
             // Act
-            var condition = await StateMachineFactory.CreateConditionAsync(conditionDefinition, _cts.Token);
+            var condition = await _stateMachineFactory.CreateConditionAsync(conditionDefinition, _cts.Token);
 
             // Assert
             Assert.That(condition, Is.Null);
@@ -229,7 +234,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 WithTransitionSolverType<DefaultTransitionSolver>().WithInitialState(initialStateDefinition).Build();
 
             // Act
-            var stateMachine = await StateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
+            var stateMachine = await _stateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
 
             // Assert
             Assert.That(stateMachine, Is.Not.Null);
@@ -250,7 +255,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 WithTypeName("Invalid.Type.Name, InvalidAssembly").WithInitialState(initialStateDefinition).Build();
 
             // Act
-            var stateMachine = await StateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
+            var stateMachine = await _stateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
 
             // Assert
             Assert.That(stateMachine, Is.Null);
@@ -266,7 +271,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 WithType<MockStateMachine>().Build(); // No initial state
 
             // Act
-            var stateMachine = await StateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
+            var stateMachine = await _stateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
 
             // Assert
             Assert.That(stateMachine, Is.Null);
@@ -286,7 +291,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 .WithInitialState(initialStateDefinition).Build();
 
             // Act
-            var stateMachine = await StateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
+            var stateMachine = await _stateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
 
             // Assert
             Assert.That(stateMachine, Is.Null);
@@ -306,7 +311,7 @@ namespace Dev.Cortez.StateMachines.EditorTests.Tests.Editor.Unit.Core
                 WithInitialState(initialStateDefinition).Build();
 
             // Act
-            var stateMachine = await StateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
+            var stateMachine = await _stateMachineFactory.CreateStateMachineAsync(stateMachineDefinition, _cts.Token);
 
             // Assert
             Assert.That(stateMachine, Is.Null);

@@ -1,94 +1,69 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
-         editor-extension-mode="True">
-    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/Styling/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles"/>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/Styling/StateMachineEditor-Styles.uss?fileID=7433441132597879392&amp;guid=163ddde40eaf8431c92dc64dc65b31e9&amp;type=3#StateMachineEditor-Styles" />
     <ui:VisualElement name="Form" class="background-main" style="flex-grow: 1; min-height: 0; min-width: 0;">
         <ui:TabView style="flex-grow: 1; min-height: 0; min-width: 0; flex-shrink: 1;">
-            <ui:Tab label="General" name="GeneralInformationTab"
-                    style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; flex-direction: column;">
+            <ui:Tab label="General" name="GeneralInformationTab" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; flex-direction: column;">
                 <ui:TextField label="Id" placeholder-text="Id" readonly="true" name="StateMachineId">
                     <Bindings>
-                        <ui:DataBinding property="value" data-source-path="Id" binding-mode="ToTarget"/>
+                        <ui:DataBinding property="value" data-source-path="Id" binding-mode="ToTarget" />
                     </Bindings>
                 </ui:TextField>
                 <ui:TextField label="Name" name="StateMachineName">
                     <Bindings>
-                        <ui:DataBinding property="value" data-source-path="Name" binding-mode="TwoWay"/>
+                        <ui:DataBinding property="value" data-source-path="Name" binding-mode="TwoWay" />
                     </Bindings>
                 </ui:TextField>
-                <ui:TextField label="Description" name="StateMachineDescription" multiline="true"
-                              style="min-height: 128px; max-height: 128px;">
+                <ui:TextField label="Description" name="StateMachineDescription" multiline="true" style="min-height: 128px; max-height: 128px;">
                     <Bindings>
-                        <ui:DataBinding property="value" data-source-path="Description" binding-mode="TwoWay"/>
+                        <ui:DataBinding property="value" data-source-path="Description" binding-mode="TwoWay" />
                     </Bindings>
                 </ui:TextField>
-                <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.TypePickerDropdownField
-                        name="TransitionSolverTypeDropdown" label="Transition solver type"/>
-                <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.TypePickerDropdownField
-                        name="StateMachineTypeDropdown" label="State machine type"/>
-                <UnityEditor.UIElements.PropertyField name="PayloadPropertyField"/>
+                <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.TypePickerDropdownField name="TransitionSolverTypeDropdown" label="Transition solver type" />
+                <Dev.Cortez.StateMachines.Editor.StateMachineEditor.Views.VisualElements.TypePickerDropdownField name="StateMachineTypeDropdown" label="State machine type" />
+                <UnityEditor.UIElements.PropertyField name="PayloadPropertyField" />
             </ui:Tab>
-            <ui:Tab label="States" name="StatesTab"
-                    style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; flex-direction: column;">
+            <ui:Tab label="States" name="StatesTab" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; flex-direction: column;">
                 <ui:DropdownField label="Initial state" name="InitialStateDropdownField">
                     <Bindings>
-                        <ui:DataBinding property="choices" data-source-path="AvailableStates"
-                                        data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor"
-                                        binding-mode="ToTarget"/>
-                        <ui:DataBinding property="index" data-source-path="InitialStateIndex"
-                                        data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor"
-                                        binding-mode="TwoWay"/>
+                        <ui:DataBinding property="choices" data-source-path="AvailableStates" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="ToTarget" />
+                        <ui:DataBinding property="index" data-source-path="InitialStateIndex" data-source-type="Dev.Cortez.StateMachines.Editor.StateMachineEditor.ViewModels.StateMachineDefinitionViewModel, Dev.Cortez.StateMachines.Editor" binding-mode="TwoWay" />
                     </Bindings>
                 </ui:DropdownField>
-                <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
-                <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false"
-                                        virtualization-method="DynamicHeight" reorderable="true"
-                                        style="flex-grow: 1; min-height: 0;">
+                <ui:VisualElement name="Spacer" style="min-height: 20px;" />
+                <ui:MultiColumnListView name="StatesListView" allow-remove="false" allow-add="false" virtualization-method="DynamicHeight" reorderable="true" style="flex-grow: 1; min-height: 0;">
                     <Bindings>
-                        <ui:DataBinding property="itemsSource" data-source-path="States"/>
+                        <ui:DataBinding property="itemsSource" data-source-path="States" />
                     </Bindings>
                     <ui:Columns primary-column-name="Id">
-                        <ui:Column name="Id" title="Id" stretchable="true"/>
-                        <ui:Column name="Name" title="Name" stretchable="true"/>
-                        <ui:Column name="Description" title="Description" stretchable="true"/>
-                        <ui:Column name="Type" title="Type" stretchable="true"/>
-                        <ui:Column
-                                cell-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/CustomElements/TableItemButtons.uxml?fileID=9197481963319205126&amp;guid=d7807b0c1a28a9645889e99e42ab2369&amp;type=3#TableItemButtons"
-                                min-width="100px" max-width="100px" resizable="false"/>
+                        <ui:Column name="Id" title="Id" stretchable="true" />
+                        <ui:Column name="Name" title="Name" stretchable="true" />
+                        <ui:Column name="Description" title="Description" stretchable="true" />
+                        <ui:Column name="Type" title="Type" stretchable="true" />
+                        <ui:Column min-width="100px" max-width="100px" resizable="false" />
                     </ui:Columns>
-                    <ui:SortColumnDescriptions/>
+                    <ui:SortColumnDescriptions />
                 </ui:MultiColumnListView>
-                <ui:Button text="Add new state" name="AddStateButton"
-                           style="align-self: flex-end; min-height: 32px; max-height: 32px;"/>
+                <ui:Button text="Add new state" name="AddStateButton" style="align-self: flex-end; min-height: 32px; max-height: 32px;" />
             </ui:Tab>
-            <ui:Tab label="Transitions" name="GraphEditor"
-                    style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding: 0;">
+            <ui:Tab label="Transitions" name="GraphEditor" style="flex-grow: 1; flex-shrink: 1; min-height: 0; min-width: 0; padding: 0;">
                 <ui:VisualElement style="flex-grow: 1; flex-shrink: 1; flex-direction: row; min-height: 0;">
-                    <ui:VisualElement name="VisualElement"
-                                      style="flex-grow: 1; flex-shrink: 1; flex-direction: column; background-color: rgb(26, 36, 47); width: 25%; max-width: 30%; min-width: 220px; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); padding-top: 10px; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; align-self: stretch;">
-                        <ui:Label text="Transition inspector" name="Header" class="text-header"/>
-                        <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
-                        <ui:Label text="States" name="States" class="text-header" style="font-size: 16px;"/>
-                        <ui:VisualElement name="Spacer" style="min-height: 20px;"/>
-                        <ui:ListView binding-source-selection-mode="AutoAssign"
-                                     item-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/StateMachineGraphView/Templates/TransitionableStateItemEntry.uxml?fileID=9197481963319205126&amp;guid=c18cae7364fe0a14da273377f0580bad&amp;type=3#TransitionableStateItemEntry"
-                                     allow-remove="false" allow-add="false" name="TransitionableStatesListView"
-                                     virtualization-method="DynamicHeight" style="flex-grow: 1; min-height: 0;">
+                    <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-shrink: 1; flex-direction: column; background-color: rgb(26, 36, 47); width: 25%; max-width: 30%; min-width: 220px; border-left-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-top-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); padding-top: 10px; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; align-self: stretch;">
+                        <ui:Label text="Transition inspector" name="Header" class="text-header" />
+                        <ui:VisualElement name="Spacer" style="min-height: 20px;" />
+                        <ui:Label text="States" name="States" class="text-header" style="font-size: 16px;" />
+                        <ui:VisualElement name="Spacer" style="min-height: 20px;" />
+                        <ui:ListView binding-source-selection-mode="AutoAssign" item-template="project://database/Packages/dev.cortez.state-machines/Editor/StateMachineEditor/Views/StateMachineGraphView/Templates/TransitionableStateItemEntry.uxml?fileID=9197481963319205126&amp;guid=c18cae7364fe0a14da273377f0580bad&amp;type=3#TransitionableStateItemEntry" allow-remove="false" allow-add="false" name="TransitionableStatesListView" virtualization-method="DynamicHeight" style="flex-grow: 1; min-height: 0;">
                             <Bindings>
-                                <ui:DataBinding property="itemsSource" data-source-path="States"/>
+                                <ui:DataBinding property="itemsSource" data-source-path="States" />
                             </Bindings>
                         </ui:ListView>
                     </ui:VisualElement>
-                    <ui:VisualElement name="StateMachineGraphContainer"
-                                      style="overflow: hidden; flex-grow: 1; flex-shrink: 1; min-height: 0;"/>
+                    <ui:VisualElement name="StateMachineGraphContainer" style="overflow: hidden; flex-grow: 1; flex-shrink: 1; min-height: 0;" />
                 </ui:VisualElement>
             </ui:Tab>
         </ui:TabView>
     </ui:VisualElement>
-    <ui:VisualElement name="VisualElement"
-                      style="flex-grow: 1; position: absolute; right: 0; top: 2px; flex-direction: row;">
-        <ui:Button text="Back"
-                   icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Back.png?fileID=2800000&amp;guid=f79583d6a4014394a8f671b2de4d4529&amp;type=3#Icon_Back"
-                   name="BackButton"
-                   style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;"/>
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; position: absolute; right: 0; top: 2px; flex-direction: row;">
+        <ui:Button text="Back" icon-image="project://database/Packages/dev.cortez.state-machines/Runtime/Assets/Sprites/Icon_Back.png?fileID=2800000&amp;guid=f79583d6a4014394a8f671b2de4d4529&amp;type=3#Icon_Back" name="BackButton" style="position: relative; right: 10px; padding: 4px; max-height: 32px; min-height: 32px;" />
     </ui:VisualElement>
 </ui:UXML>

@@ -1,18 +1,52 @@
-﻿using Dev.Cortez.StateMachines.Core.Trigger;
+﻿#region
+
+using System.Collections.Generic;
+using Dev.Cortez.StateMachines.Core.Trigger;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
+#endregion
+
 namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
 {
-    [CustomPropertyDrawer(typeof(DefaultTriggerPayload))]
+    [CustomPropertyDrawer(typeof(DefaultTriggerPayload), true)]
     public class DefaultTriggerPayloadPropertyDrawer : UnityEditor.PropertyDrawer
     {
+        /// <summary>
+        ///     The serialized field names belonging to the base <see cref="DefaultTriggerPayload" /> class.
+        ///     Used to avoid drawing these fields twice when rendering a child class.
+        /// </summary>
+        private static readonly HashSet<string> BasePropertyNames = new()
+        {
+            "_triggerActivationRule",
+            "_triggerActivationFrameDelay",
+            "_triggerActivationTimeDelayInSeconds",
+            "_triggerDeactivationRule",
+            "_triggerDeactivationFrameDelay",
+            "_triggerDeactivationTimeDelayInSeconds"
+        };
+
         public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
             var root = new VisualElement();
 
-            // Find properties
+            var isChildType = fieldInfo.FieldType != typeof(DefaultTriggerPayload);
+
+            if (isChildType)
+            {
+                DrawChildPropertyGUI(property, root);
+            }
+            else
+            {
+                DrawBasePropertyGUI(property, root);
+            }
+
+            return root;
+        }
+
+        private void DrawBasePropertyGUI(SerializedProperty property, VisualElement root)
+        {
             var activationRuleProp = property.FindPropertyRelative("_triggerActivationRule");
             var activationFrameDelayProp = property.FindPropertyRelative("_triggerActivationFrameDelay");
             var activationTimeDelayProp = property.FindPropertyRelative("_triggerActivationTimeDelayInSeconds");
@@ -56,15 +90,52 @@ namespace Dev.Cortez.StateMachines.Editor.StateMachineEditor.PropertyDrawer
             root.Add(deactivationFrameDelayField);
             root.Add(deactivationTimeDelayField);
 
-            // Initial state
+            SetupVisibilityTracking(root, activationRuleProp, activationFrameDelayField, activationTimeDelayField,
+                deactivationRuleProp, deactivationFrameDelayField, deactivationTimeDelayField);
+        }
+
+        private void DrawChildPropertyGUI(SerializedProperty property, VisualElement root)
+        {
+            // Draw the base class properties first
+            DrawBasePropertyGUI(property, root);
+
+            // Draw additional child-specific serialized properties, skipping the base ones
+            var iterator = property.Copy();
+            var endProperty = iterator.GetEndProperty();
+
+            if (iterator.NextVisible(true))
+            {
+                do
+                {
+                    if (SerializedProperty.EqualContents(iterator, endProperty))
+                    {
+                        break;
+                    }
+
+                    if (BasePropertyNames.Contains(iterator.name))
+                    {
+                        continue;
+                    }
+
+                    root.Add(new PropertyField(iterator.Copy()));
+                } while (iterator.NextVisible(false));
+            }
+        }
+
+        private static void SetupVisibilityTracking(
+            VisualElement root,
+            SerializedProperty activationRuleProp,
+            PropertyField activationFrameDelayField,
+            PropertyField activationTimeDelayField,
+            SerializedProperty deactivationRuleProp,
+            PropertyField deactivationFrameDelayField,
+            PropertyField deactivationTimeDelayField)
+        {
             UpdateActivationVisibility(activationRuleProp);
             UpdateDeactivationVisibility(deactivationRuleProp);
 
-            // Track changes - use TrackPropertyValue for property drawers which is reliable
             root.TrackPropertyValue(activationRuleProp, UpdateActivationVisibility);
             root.TrackPropertyValue(deactivationRuleProp, UpdateDeactivationVisibility);
-
-            return root;
 
             void UpdateDeactivationVisibility(SerializedProperty changedProperty)
             {

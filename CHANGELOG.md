@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 
 ## [Unreleased]
 
+### Added
+- **TriggerProxyMono** — A `MonoBehaviour` bridge for bi-directional communication between `ITrigger` references and Unity Events (`UnityEvent<bool>`).
+- **DisplayAsAttribute** — A new attribute to override class display names in `TypePickerDropdownField`, improving type selection organization.
+
+### Changed
+- **Editor Styling** — refined `StateNodeTemplate` styles for improved readability in the Graph View.
+
+### Fixed
+- **StateMachineEditor** — Resolved transition rule cloning issues that occurred when creating new transitions.
+- **GraphView** — optimized `StateMachineGraphView` performance and fixed memory leaks during graph operations.
+
 ## [0.0.2] - 2026-02-14
 
 ### Added
